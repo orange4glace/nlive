@@ -1,0 +1,10 @@
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  browser/widgets/project/project_widget.h
+  browser/widgets/project/project_widget.cpp
+  browser/widgets/project/directory_view.h
+  browser/widgets/project/directory_view.cpp
+  browser/widgets/project/storage_item_view.h
+  browser/widgets/project/storage_item_view.cpp
+  PARENT_SCOPE
+)

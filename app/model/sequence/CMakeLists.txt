@@ -1,0 +1,10 @@
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  model/sequence/sequence.h
+  model/sequence/sequence.cpp
+  model/sequence/track.h
+  model/sequence/track.cpp
+  model/sequence/clip.h
+  model/sequence/clip.cpp
+  PARENT_SCOPE
+)
