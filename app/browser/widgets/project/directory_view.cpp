@@ -4,6 +4,7 @@
 #include "model/storage/storage_directory.h"
 #include "model/storage/storage_item.h"
 #include "browser/widgets/project/storage_item_view.h"
+#include "browser/widgets/project/storage_item_view_factory.h"
 
 namespace nlive {
 
@@ -15,7 +16,8 @@ DirectoryView::DirectoryView(QWidget* parent, StorageDirectory* storage_director
 }
 
 void DirectoryView::addStorageItemView(StorageItem* storage_item, int index) {
-  auto view = new StorageItemView(&grid_layout_, storage_item);
+  auto factory = StorageItemViewFactoryRegistry::getFactory(storage_item->type());
+  auto view = factory->create(&grid_layout_, storage_item);
   auto pair = make_pair(storage_item, view);
   view_items_.insert(view_items_.begin() + index, pair);
 }
@@ -27,7 +29,9 @@ void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
     i++;
   }
   if (i == -1) return;
+  auto view = view_items_[i].second;
   view_items_.erase(view_items_.begin() + i);
+  delete view;
 }
 
 StorageItemView* DirectoryView::getStorageItemView(StorageItem* storage_item) {

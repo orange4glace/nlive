@@ -30,7 +30,7 @@ MainWindow::MainWindow() {
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
 
-  auto project_widget = new project_widget::ProjectWidget(nullptr);
+  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service);
   addDockWidget(Qt::TopDockWidgetArea, project_widget);
 
 }

@@ -32,7 +32,7 @@ private:
   StorageItemView* getStorageItemView(StorageItem* storage_item);
 
 protected:
-  void paintEvent(QPaintEvent* event) override;
+  // void paintEvent(QPaintEvent* event) override;
 
 public:
   DirectoryView(QWidget* parent, StorageDirectory* storage_directory, IThemeService* theme_service);

@@ -24,6 +24,8 @@ protected:
   void resizeEvent(QResizeEvent* event) override;
 
 public:
+  static void Initialize();
+
   ProjectWidget(QWidget* parent, IThemeService* theme_service);
 
   void setDirectory(StorageDirectory* directory);

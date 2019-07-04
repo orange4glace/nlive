@@ -4,15 +4,21 @@
 #include "model/storage/storage_directory.h"
 #include "browser/widgets/project/directory_view.h"
 
+#include "browser/widgets/project/storage_item_view_factory.h"
+#include "browser/widgets/project/null_storage_item_view.h"
+
 namespace nlive {
 
 namespace project_widget {
 
-ProjectWidget::ProjectWidget(QWidget* parent, IThemeService* theme_service) :
-  theme_service_(theme_service), QDockWidget(parent), directory_view_(nullptr) {
+void ProjectWidget::Initialize() {
+  // Register pre-defined views
+  StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory());
+
 }
 
-void ProjectWidget::resizeEvent(QResizeEvent* event) {
+ProjectWidget::ProjectWidget(QWidget* parent, IThemeService* theme_service) :
+  theme_service_(theme_service), QDockWidget(parent), directory_view_(nullptr) {
 }
 
 void ProjectWidget::setDirectory(StorageDirectory* directory) {

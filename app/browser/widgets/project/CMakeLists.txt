@@ -6,5 +6,9 @@ set(NLIVE_SOURCES
   browser/widgets/project/directory_view.cpp
   browser/widgets/project/storage_item_view.h
   browser/widgets/project/storage_item_view.cpp
+  browser/widgets/project/null_storage_item_view.h
+  browser/widgets/project/null_storage_item_view.cpp
+  browser/widgets/project/storage_item_view_factory.h
+  browser/widgets/project/storage_item_view_factory.cpp
   PARENT_SCOPE
 )

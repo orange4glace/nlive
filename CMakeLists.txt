@@ -28,6 +28,7 @@ find_package(FFMPEG 3.4 REQUIRED
   swscale
   swresample
 )
+find_package(LibUV REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
