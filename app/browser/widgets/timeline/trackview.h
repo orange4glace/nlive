@@ -5,6 +5,7 @@
 #include "browser/widgets/timeline/tracktimelineview.h"
 
 #include <QWidget>
+#include <QSharedPointer>
 #include <QLayout>
 
 namespace nlive {
@@ -22,7 +23,7 @@ private:
   TrackTimelineView timeline_view_;
 
 public:
-  TrackView(Track* track, SequenceScrollView* scroll_view, IThemeService* theme_service);
+  TrackView(QSharedPointer<Track> track, SequenceScrollView* scroll_view, IThemeService* theme_service);
 
   TrackSideView* side_view();
   TrackTimelineView* timeline_view();

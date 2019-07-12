@@ -36,7 +36,7 @@ void TimelineWidget::resizeEvent(QResizeEvent* event) {
   QWidget::resizeEvent(event);
 }
 
-void TimelineWidget::setSequence(Sequence* sequence) {
+void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
   if (sequence_ != nullptr) {
     sequence_ = nullptr;
     split_left_view_.setContent(nullptr);
@@ -48,6 +48,14 @@ void TimelineWidget::setSequence(Sequence* sequence) {
   sequence_view_ = new SequenceView(sequence, theme_service_);
   split_left_view_.setContent(sequence_view_->side_view());
   split_right_view_.setContent(sequence_view_->timeline_view()->scroll_view());
+}
+
+QSharedPointer<Sequence> TimelineWidget::sequence() {
+  return sequence_;
+}
+
+SequenceView* TimelineWidget::sequence_view() {
+  return sequence_view_;
 }
 
 }

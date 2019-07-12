@@ -2,6 +2,7 @@
 #define _NLIVE_TIMELINE_WIDGET_SEQUENCE_SIDE_VIEW_H_
 
 #include <QWidget>
+#include <QSharedPointer>
 #include <QVBoxLayout>
 
 namespace nlive {
@@ -19,20 +20,20 @@ class SequenceSideView : public QWidget {
 private:
   IThemeService* theme_service_;
 
-  Sequence* sequence_;
+  QSharedPointer<Sequence> sequence_;
 
   std::vector<TrackSideView*> track_views_;
 
 private:
-  void addTrackView(Track* track, int index);
-  void removeTrackView(Track* track, int index);
+  void addTrackView(QSharedPointer<Track> track, int index);
+  void removeTrackView(QSharedPointer<Track> track, int index);
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  SequenceSideView(QWidget* parent, Sequence* sequence, IThemeService* theme_service);
+  SequenceSideView(QWidget* parent, QSharedPointer<Sequence> sequence, IThemeService* theme_service);
 
 };
 

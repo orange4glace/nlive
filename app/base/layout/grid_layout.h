@@ -16,6 +16,7 @@ private:
   QWidget* content_;
 
 protected:
+  void resizeEvent(QResizeEvent* event) override;
   void paintEvent(QPaintEvent* event) override;
 
 public:
@@ -30,6 +31,9 @@ private:
   std::vector<GridLayoutItem*> items_;
 
   size_t doAddWidget(QWidget* widget, size_t index);
+  int doRemoveWidget(QWidget* widget);
+
+  void doLayout();
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
@@ -38,6 +42,7 @@ public:
   GridLayout(QWidget* parent = nullptr);
   size_t addWidget(QWidget* widget);
   size_t insertWidget(QWidget* widget, size_t index);
+  int removeWidget(QWidget* widget);
   QWidget* getWidgetAt(size_t index);
   int getWidgetIndex(QWidget* widget) const;
   bool hasWidget(QWidget* widget) const;

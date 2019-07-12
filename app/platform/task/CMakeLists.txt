@@ -1,0 +1,10 @@
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  platform/task/task.h
+  platform/task/runnable_task.h
+  platform/task/runnable_task.cpp
+  platform/task/task_service.h
+  platform/task/task_service_impl.h
+  platform/task/task_service_impl.cpp
+  PARENT_SCOPE
+)

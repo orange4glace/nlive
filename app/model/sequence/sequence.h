@@ -2,7 +2,11 @@
 #define _NLIVE_SEQUENCE_H_
 
 #include <QObject>
+#include <QUndoStack>
+#include <QSharedPointer>
 #include <vector>
+
+#include "model/common/timebase.h"
 #include "model/sequence/track.h"
 
 namespace nlive {
@@ -11,33 +15,37 @@ class Sequence : public QObject {
   Q_OBJECT
 
 private:
-  int basetime_;
+  QUndoStack* undo_stack_;
+  Timebase timebase_;
   int duration_;
 
-  std::vector<Track*> tracks_;
+  std::vector<QSharedPointer<Track>> tracks_;
 
-  Track* const doAddTrack();
+  QSharedPointer<Track> doAddTrack();
   void doRemoveTrackAt(int index);
 
 public:
-  Sequence();
+  Sequence(QUndoStack* undo_stack, int basetime);
 
-  Track* const addTrack();
+  QSharedPointer<Track> addTrack();
   void removeTrackAt(int index);
-  Track* const getTrackAt(int index);
+  QSharedPointer<Track> getTrackAt(int index);
 
-  void setBasetime(int value);
+  void setTimebase(Timebase timebase);
+  const Timebase& timebase() const;
   int basetime() const;
 
   void setDuration(int value);
   int duration() const;
 
-  const std::vector<Track*>& tracks();
+  const std::vector<QSharedPointer<Track>>& tracks();
   int track_size() const;
 
+  QUndoStack* undo_stack();
+
 signals:
-  void onDidAddTrack(Track* const track, int index);
-  void onWillRemoveTrack(Track* const track, int index);
+  void onDidAddTrack(QSharedPointer<Track> track, int index);
+  void onWillRemoveTrack(QSharedPointer<Track> track, int index);
 
 };
 

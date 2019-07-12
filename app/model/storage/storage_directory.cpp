@@ -2,9 +2,11 @@
 
 namespace nlive {
 
-StorageDirectory::StorageDirectory(QString name, StorageItem* parent, QString uuid) :
-  StorageItem(QString("DIRECTORY"), name, parent, uuid) {
-
+StorageDirectory::StorageDirectory(
+  QString name,
+  QSharedPointer<StorageItem> parent,
+  QString uuid) :
+  StorageItem("DIRECTORY", name, parent, uuid) {
 }
 
 void StorageDirectory::addItem(StorageItem* item) {
@@ -32,6 +34,14 @@ int StorageDirectory::getItemIndex(StorageItem* item) const {
 
 bool StorageDirectory::hasItem(StorageItem* item) const {
   return getItemIndex(item) != -1;
+}
+
+QSharedPointer<Clip> StorageDirectory::cliperize(Timebase timebase) {
+  return nullptr;
+}
+
+const std::vector<StorageItem*>& StorageDirectory::items() {
+  return items_;
 }
 
 bool StorageDirectory::is_directory() const {

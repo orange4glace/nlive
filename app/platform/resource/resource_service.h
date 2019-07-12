@@ -1,8 +1,9 @@
 #ifndef _NLIVE_RESOURCE_SERVICE_H_
 #define _NLIVE_RESOURCE_SERVICE_H_
 
+#include <QSharedPointer>
+#include <functional>
 #include <QObject>
-#include <uv.h>
 
 namespace nlive {
 
@@ -12,10 +13,10 @@ class IResourceService : public QObject {
   Q_OBJECT
 
 protected:
-  IResourceService();
+  inline IResourceService() {}
 
 public:
-  virtual void loadResource(QString path, void (*callback)(Resource* resource)) = 0;
+  virtual void loadResource(QString path, std::function<void(QSharedPointer<Resource>)>&& callback) = 0;
 
 };
 

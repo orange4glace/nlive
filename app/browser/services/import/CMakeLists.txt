@@ -1,0 +1,9 @@
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  browser/services/import/import_service.h
+  browser/services/import/import_service_impl.h
+  browser/services/import/import_service_impl.cpp
+  browser/services/import/import_progress_dialog.h
+  browser/services/import/import_progress_dialog.cpp
+  PARENT_SCOPE
+)

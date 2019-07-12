@@ -1,13 +1,14 @@
 #include "browser/widgets/timeline/tracktimelineview.h"
 
 #include <QPainter>
+#include <QDebug>
+#include <QMouseEvent>
+#include <iostream>
 
 #include "model/sequence/track.h"
 #include "model/sequence/clip.h"
 #include "platform/theme/themeservice.h"
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
-
-#include <iostream>
 
 namespace nlive {
 
@@ -15,27 +16,54 @@ namespace timelinewidget {
 
 TrackTimelineView::TrackTimelineView(
   QWidget* const parent,
-  Track* const track,
+  QSharedPointer<Track> const track,
   SequenceScrollView* const scrollView,
   IThemeService* const theme_service) : 
   QWidget(parent), track_(track), scrollView_(scrollView), theme_service_(theme_service) {
 
   auto& clips = track->clips();
   for (auto& clip : clips) handleDidAddClip(clip);
-  QObject::connect(track, &Track::onDidAddClip, this, &TrackTimelineView::handleDidAddClip);
-  QObject::connect(track, &Track::onWillRemoveClip, this, &TrackTimelineView::handleWillRemoveClip);
-
+  QObject::connect(track.get(), &Track::onDidAddClip, this, &TrackTimelineView::handleDidAddClip);
+  QObject::connect(track.get(), &Track::onWillRemoveClip, this, &TrackTimelineView::handleWillRemoveClip);
 }
 
-void TrackTimelineView::handleDidAddClip(Clip* const clip) {
+void TrackTimelineView::handleDidAddClip(QSharedPointer<Clip> clip) {
   // Create and add Clip view
-  auto view = new TimelineWidgetClipView(this, clip, scrollView_, theme_service_);
-  clipViews_.emplace(clip->id(), view);
+  auto view = new ClipView(this, track_, clip, scrollView_, theme_service_);
+  QObject::connect(view, &ClipView::onDidFocus, this, [this, view]() {
+    focused_clip_views_.insert(view);
+    emit onDidFocusClip(view);
+  });
+  QObject::connect(view, &ClipView::onDidBlur, this, [this, view]() {
+    focused_clip_views_.erase(view);
+    emit onDidBlurClip(view);
+  });
+  clip_views_.emplace(view);
+  clip_to_view_map_.insert({ clip, view });
+  view->show();
 }
 
-void TrackTimelineView::handleWillRemoveClip(Clip* const clip) {
+void TrackTimelineView::handleWillRemoveClip(QSharedPointer<Clip> clip) {
   // Delete Track view
-  clipViews_.erase(clip->id());
+  auto it = clip_to_view_map_.find(clip);
+  Q_ASSERT(it != clip_to_view_map_.end());
+  auto view = it->second;
+  view->blur();
+  focused_clip_views_.erase(view);
+  clip_views_.erase(view);
+  clip_to_view_map_.erase(clip);
+  delete view;
+}
+
+void TrackTimelineView::blurAllClips() {
+  auto copied_focused_clip_views = focused_clip_views_;
+  for (auto clip_view : copied_focused_clip_views) {
+    clip_view->blur();
+  }
+}
+
+void TrackTimelineView::mouseMoveEvent(QMouseEvent* event) {
+  event->ignore();
 }
 
 void TrackTimelineView::paintEvent(QPaintEvent* event) {
@@ -44,6 +72,14 @@ void TrackTimelineView::paintEvent(QPaintEvent* event) {
   // p.fillRect(0, 0, width(), height(), theme.primaryColor());
   
   QWidget::paintEvent(event);
+}
+
+const std::set<ClipView*>& TrackTimelineView::clip_views() {
+  return clip_views_;
+}
+
+const std::set<ClipView*>& TrackTimelineView::focused_clip_views() {
+  return focused_clip_views_;
 }
 
 }

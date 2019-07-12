@@ -2,15 +2,18 @@
 #define _NLIVE_TIMELINE_WIDGET_TRACK_TIMELINE_VIEW_H_
 
 #include <QWidget>
+#include <QSharedPointer>
 #include <set>
+#include <map>
+#include <iostream>
+
+#include "model/sequence/clip.h"
 #include "browser/widgets/timeline/clipview.h"
 
-#include <iostream>
 
 namespace nlive {
 
 class Track;
-class Clip;
 class SequenceScrollView;
 class IThemeService;
 
@@ -23,30 +26,39 @@ private:
   SequenceScrollView* scrollView_;
   IThemeService* theme_service_;
 
-  Track* track_;
+  QSharedPointer<Track> track_;
 
-  std::map<int, TimelineWidgetClipView*> clipViews_;
+  std::set<ClipView*> clip_views_;
+  std::set<ClipView*> focused_clip_views_;
+  std::map<QSharedPointer<Clip>, ClipView*, ClipCompare> clip_to_view_map_;
 
 private slots:
-  void handleDidAddClip(Clip* const track);
-  void handleWillRemoveClip(Clip* const track);
+  void handleDidAddClip(QSharedPointer<Clip> track);
+  void handleWillRemoveClip(QSharedPointer<Clip> track);
+
 
 protected:
+  void mouseMoveEvent(QMouseEvent* event) override;
+
   void paintEvent(QPaintEvent* event) override;
 
 public:
   TrackTimelineView(
     QWidget* const parent,
-    Track* const track,
+    QSharedPointer<Track> const track,
     SequenceScrollView* const scrollView,
     IThemeService* const themeService);
 
-  TimelineWidgetClipView* const getClipView(const Clip* const clip);
+  ClipView* const getClipView(const Clip* const clip);
+  void blurAllClips();
+
+  const std::set<ClipView*>& clip_views();
+  const std::set<ClipView*>& focused_clip_views();
 
 signals:
   // These signals are kind of a relay which will be emitted when TimelineWidegtClipView emits `onDid...Clip()`
-  void onDidFocusClip();
-  void onDidFocusBlur();
+  void onDidFocusClip(ClipView* clip_view);
+  void onDidBlurClip(ClipView* clip_view);
 
 };
 

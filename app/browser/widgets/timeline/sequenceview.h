@@ -1,6 +1,8 @@
 #ifndef _NLIVE_TIMELINE_WIDGET_SEQUENCE_VIEW_H_
 #define _NLIVE_TIMELINE_WIDGET_SEQUENCE_VIEW_H_
 
+#include <QSharedPointer>
+
 #include "./sequencesideview.h"
 #include "./sequencetimelineview.h"
 
@@ -18,7 +20,7 @@ private:
   SequenceTimelineView timeline_view_;
 
 public:
-  SequenceView(Sequence* sequence, IThemeService* theme_service);
+  SequenceView(QSharedPointer<Sequence> sequence, IThemeService* theme_service);
 
   SequenceSideView* side_view();
   SequenceTimelineView* timeline_view();

@@ -14,27 +14,27 @@ namespace timelinewidget {
 
 SequenceSideView::SequenceSideView(
   QWidget* parent,
-  Sequence* sequence,
+  QSharedPointer<Sequence> sequence,
   IThemeService* theme_service) : 
   QWidget(parent), sequence_(sequence), theme_service_(theme_service) {
 
   auto& tracks = sequence->tracks();
   for (int i = 0; i < tracks.size(); i ++) addTrackView(tracks[i], i);
-  QObject::connect(sequence, &Sequence::onDidAddTrack, this, [this](Track* track, int index) {
+  QObject::connect(sequence.get(), &Sequence::onDidAddTrack, this, [this](QSharedPointer<Track> track, int index) {
     this->addTrackView(track, index);
   });
-  QObject::connect(sequence, &Sequence::onWillRemoveTrack, this, [this](Track* track, int index) {
+  QObject::connect(sequence.get(), &Sequence::onWillRemoveTrack, this, [this](QSharedPointer<Track> track, int index) {
     this->removeTrackView(track, index);
   });
 
 }
 
-void SequenceSideView::addTrackView(Track* track, int index) {
+void SequenceSideView::addTrackView(QSharedPointer<Track> track, int index) {
   TrackSideView* view = new TrackSideView(this, track, theme_service_);
   track_views_.emplace(track_views_.begin() + index, view);
 }
 
-void SequenceSideView::removeTrackView(Track* track, int index) {
+void SequenceSideView::removeTrackView(QSharedPointer<Track> track, int index) {
   auto view = track_views_[index];
   delete view;
 }

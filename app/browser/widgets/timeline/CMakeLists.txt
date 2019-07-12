@@ -25,5 +25,15 @@ set(NLIVE_SOURCES
 
   browser/widgets/timeline/clipview.h
   browser/widgets/timeline/clipview.cpp
+
+  browser/widgets/timeline/ghost_sequence_view.h
+  browser/widgets/timeline/ghost_sequence_view.cpp
+
+  browser/widgets/timeline/ghost_track_view.h
+  browser/widgets/timeline/ghost_track_view.cpp
+
+  browser/widgets/timeline/ghost_clip_view.h
+  browser/widgets/timeline/ghost_clip_view.cpp
+
   PARENT_SCOPE
 )

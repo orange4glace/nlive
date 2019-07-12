@@ -27,7 +27,7 @@ void SequenceScrollView::Indicator::paintEvent(QPaintEvent* event) {
 SequenceScrollView::SequenceScrollView(
   QWidget* const parent,
   QWidget* const content_widget,
-  Sequence* const sequence,
+  QSharedPointer<Sequence> sequence,
   IThemeService* theme_service) :
   QWidget(parent),
   theme_service_(theme_service),

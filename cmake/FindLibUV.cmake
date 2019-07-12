@@ -19,7 +19,7 @@ find_path(LIBUV_INCLUDE_DIR uv.h
 # If we're asked to use static linkage, add libuv.a as a preferred library name.
 if(LIBUV_USE_STATIC)
   list(APPEND LIBUV_NAMES
-    "${CMAKE_STATIC_LIBRARY_PREFIX}uv${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    "libuv${CMAKE_STATIC_LIBRARY_SUFFIX}")
 endif(LIBUV_USE_STATIC)
 
 list(APPEND LIBUV_NAMES uv)

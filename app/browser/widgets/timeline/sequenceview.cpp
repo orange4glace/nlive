@@ -4,7 +4,7 @@ namespace nlive {
 
 namespace timelinewidget {
 
-SequenceView::SequenceView(Sequence* sequence, IThemeService* theme_service) :
+SequenceView::SequenceView(QSharedPointer<Sequence> sequence, IThemeService* theme_service) :
   side_view_(nullptr, sequence, theme_service),
   timeline_view_(nullptr, sequence, theme_service) {
 

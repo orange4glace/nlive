@@ -2,6 +2,7 @@
 #define _NLIVE_TIMELINE_WIDGET_H_
 
 #include <QDockWidget>
+#include <QSharedPointer>
 #include <QLayout>
 
 #include "base/layout/fillparentview.h"
@@ -21,7 +22,7 @@ class TimelineWidget : public QDockWidget {
 private:
   IThemeService* theme_service_;
 
-  Sequence* sequence_;
+  QSharedPointer<Sequence> sequence_;
   SequenceView* sequence_view_;
 
   FillParentView split_left_view_;
@@ -33,7 +34,14 @@ protected:
 public:
   TimelineWidget(QWidget* parent, IThemeService* themeService);
 
-  void setSequence(Sequence* sequence);
+  void setSequence(QSharedPointer<Sequence> sequence);
+
+  QSharedPointer<Sequence> sequence();
+  SequenceView* sequence_view();
+  
+
+signals:
+  void onDidChangeSequence();
 
 };
 

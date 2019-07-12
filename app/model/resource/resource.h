@@ -3,22 +3,26 @@
 
 #include <QObject>
 #include <QString>
+#include <QUrl>
 
 namespace nlive {
+
+using ResourceIdentifier = QString;
 
 class Resource : public QObject {
   Q_OBJECT
 
 private:
+  ResourceIdentifier id_;
   QString type_;
-  QString path_;
+  QUrl url_;
 
 protected:
-  Resource(QString type, QString path);
+  Resource(QString type, QUrl url);
 
 public:
-  QString& type() const;
-  QString& path() const;
+  QString const& type() const;
+  QUrl const& url() const;
 
 };
 

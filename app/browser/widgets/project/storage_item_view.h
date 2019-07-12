@@ -12,8 +12,15 @@ namespace project_widget {
 
 class StorageItemView : public QWidget {
 
+private:
+  QColor col_;
+
 protected:
   StorageItem* storage_item_;
+
+  void mousePressEvent(QMouseEvent* event) override;
+
+  void paintEvent(QPaintEvent* event) override;
 
 public:
   StorageItemView(QWidget* parent, StorageItem* storage_item);

@@ -24,7 +24,7 @@ private:
 
   IThemeService* theme_service_;
 
-  Sequence* sequence_;
+  QSharedPointer<Sequence> sequence_;
 
   QWidget* content_widget_;
   SequenceScrollViewScrollbar scrollbar_;
@@ -48,7 +48,7 @@ public:
   SequenceScrollView(
     QWidget* const parent,
     QWidget* content_widget,
-    Sequence* const sequence,
+    QSharedPointer<Sequence> sequence,
     IThemeService* theme_service);
 
   void setContentWidget(QWidget* widget);

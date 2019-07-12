@@ -1,25 +1,53 @@
 #include "browser/widgets/project/directory_view.h"
 
 #include "platform/theme/themeservice.h"
+#include "platform/resource/resource_service.h"
 #include "model/storage/storage_directory.h"
 #include "model/storage/storage_item.h"
+#include "model/storage/resource_storage_item.h"
 #include "browser/widgets/project/storage_item_view.h"
 #include "browser/widgets/project/storage_item_view_factory.h"
+#include "browser/services/import/import_service.h"
+
+#include <QDragEnterEvent>
+#include <QMimeData>
+#include <QThread>
+#include <QPainter>
+#include <QTimer>
+#include <QDebug>
 
 namespace nlive {
 
 namespace project_widget {
 
-DirectoryView::DirectoryView(QWidget* parent, StorageDirectory* storage_directory, IThemeService* theme_service) :
-  theme_service_(theme_service), QWidget(parent), storage_directory_(storage_directory), grid_layout_(this) {
+DirectoryView::DirectoryView(
+  QWidget* parent,
+  QSharedPointer<StorageDirectory> storage_directory, 
+  IThemeService* theme_service,
+  IImportService* import_service) :
+  theme_service_(theme_service),
+  import_service_(import_service),
+  QWidget(parent), storage_directory_(storage_directory), grid_layout_(this) {
+  setAcceptDrops(true);
 
+  int i = 0;
+  for (auto item : storage_directory->items())
+    addStorageItemView(item, i ++);
+  QObject::connect(storage_directory.get(), &StorageDirectory::onDidAddItem, this, [this](StorageItem* item, int index) {
+    addStorageItemView(item, index);
+  });
+  QObject::connect(storage_directory.get(), &StorageDirectory::onWillRemoveItem, this, [this](StorageItem* item, int index) {
+    removeStorageItemView(item);
+  });
 }
 
 void DirectoryView::addStorageItemView(StorageItem* storage_item, int index) {
+  qDebug() << QThread::currentThreadId() << "\n";
   auto factory = StorageItemViewFactoryRegistry::getFactory(storage_item->type());
-  auto view = factory->create(&grid_layout_, storage_item);
+  auto view = factory->create(nullptr, storage_item);
   auto pair = make_pair(storage_item, view);
   view_items_.insert(view_items_.begin() + index, pair);
+  grid_layout_.addWidget(view);
 }
 
 void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
@@ -31,6 +59,7 @@ void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
   if (i == -1) return;
   auto view = view_items_[i].second;
   view_items_.erase(view_items_.begin() + i);
+  grid_layout_.removeWidget(view);
   delete view;
 }
 
@@ -40,7 +69,30 @@ StorageItemView* DirectoryView::getStorageItemView(StorageItem* storage_item) {
   return nullptr;
 }
 
-StorageDirectory* DirectoryView::storage_directory() {
+void DirectoryView::resizeEvent(QResizeEvent* event) {
+  grid_layout_.setGeometry(rect());
+}
+
+void DirectoryView::paintEvent(QPaintEvent* event) {
+  QPainter p(this);
+}
+
+void DirectoryView::dragEnterEvent(QDragEnterEvent* event) {
+  const QMimeData* mime_data = event->mimeData();
+
+  if (mime_data->hasUrls()) {
+    QStringList path_list;
+    QList<QUrl> url_list = mime_data->urls();
+
+    for (int i = 0; i < url_list.size(); i ++) {
+      qDebug() << url_list.at(i).toLocalFile() << "\n";
+    }
+
+    import_service_->import(url_list, storage_directory_);
+  }
+}
+
+QSharedPointer<StorageDirectory> DirectoryView::storage_directory() {
   return storage_directory_;
 }
 

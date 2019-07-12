@@ -2,9 +2,14 @@
 #define _NLIVE_STORAGE_ITEM_H_
 
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 
+#include "model/common/timebase.h"
+
 namespace nlive {
+
+class Clip;
 
 class StorageItem : public QObject {
   Q_OBJECT
@@ -17,11 +22,13 @@ private:
   StorageItem* parent_;
 
 protected:
-  StorageItem(QString type, QString name, StorageItem* parent = nullptr, QString uuid = QString());
+  StorageItem(QString type, QString name, QSharedPointer<StorageItem> parent = nullptr, QString uuid = QString());
   
 public:
   void setParent(StorageItem* item);
   QString getAbsolutePath() const;
+
+  virtual QSharedPointer<Clip> cliperize(Timebase timebase) = 0;
 
   StorageItem* parent();
 

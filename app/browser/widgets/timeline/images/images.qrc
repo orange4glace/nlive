@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/timeline_widget">
+    <file>resize-e.png</file>
+    <file>resize-w.png</file>
+  </qresource>
+</RCC>

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+set (LIBUV_USE_STATIC TRUE)
 
 project(nlive)
 
@@ -9,11 +10,12 @@ set(CMAKE_AUTORCC ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
-find_package(Qt5 5.6 REQUIRED
+find_package(Qt5 REQUIRED
   COMPONENTS
   Core
   Gui
   Widgets
+  Concurrent
   Multimedia
   OpenGL
   Svg
@@ -29,6 +31,7 @@ find_package(FFMPEG 3.4 REQUIRED
   swresample
 )
 find_package(LibUV REQUIRED)
+message(STATUS ${LIBUV_INCLUDE_DIRS})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

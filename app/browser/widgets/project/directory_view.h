@@ -2,6 +2,7 @@
 #define _NLIVE_PROJECT_WIDGET_DIRECTORY_VIEW_H_
 
 #include <QWidget>
+#include <QSharedPointer>
 #include <vector>
 #include <map>
 
@@ -10,6 +11,7 @@
 namespace nlive {
 
 class IThemeService;
+class IImportService;
 class StorageItem;
 class StorageDirectory;
 
@@ -21,7 +23,8 @@ class DirectoryView : public QWidget {
 
 private:
   IThemeService* theme_service_;
-  StorageDirectory* storage_directory_;
+  IImportService* import_service_;
+  QSharedPointer<StorageDirectory> storage_directory_;
 
   std::vector<std::pair<StorageItem*, StorageItemView*>> view_items_;
   
@@ -32,12 +35,17 @@ private:
   StorageItemView* getStorageItemView(StorageItem* storage_item);
 
 protected:
-  // void paintEvent(QPaintEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
+  void paintEvent(QPaintEvent* event) override;
+  void dragEnterEvent(QDragEnterEvent* event) override;
 
 public:
-  DirectoryView(QWidget* parent, StorageDirectory* storage_directory, IThemeService* theme_service);
+  DirectoryView(QWidget* parent,
+    QSharedPointer<StorageDirectory> storage_directory,
+    IThemeService* theme_service,
+    IImportService* import_service);
 
-  StorageDirectory* storage_directory();
+  QSharedPointer<StorageDirectory> storage_directory();
   
 };
 

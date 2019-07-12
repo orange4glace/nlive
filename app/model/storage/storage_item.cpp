@@ -2,7 +2,11 @@
 
 namespace nlive {
 
-StorageItem::StorageItem(QString type, QString name, StorageItem* parent, QString uuid) :
+StorageItem::StorageItem(
+  QString type,
+  QString name,
+  QSharedPointer<StorageItem> parent,
+  QString uuid) :
   type_(type), name_(name), parent_(nullptr) {
   
 }

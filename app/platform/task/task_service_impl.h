@@ -2,6 +2,8 @@
 #define _NLIVE_TASK_SERVICE_IMPL_H_
 
 #include "platform/task/task_service.h"
+#include <QThread>
+#include <QRunnable>
 
 namespace nlive {
 
@@ -9,12 +11,12 @@ class TaskService : public ITaskService {
   Q_OBJECT
 
 private:
-  uv_loop_t* loop_;
+  QThread* thread_;
 
 public:
   TaskService();
 
-  void queueTask(uv_work_cb work_cb, uv_work_t* req, uv_after_work_cb after_work_cb) override;
+  void queueTask(Task* task, std::function<void(Task*)>&& callback) override;
 
 };
 

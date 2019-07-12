@@ -9,6 +9,13 @@ namespace nlive {
 GridLayoutItem::GridLayoutItem(GridLayout* grid_layout, QWidget* content) :
   QWidget(grid_layout), grid_layout_(grid_layout), content_(content) {
   content->setParent(this);
+  content->show();
+}
+
+void GridLayoutItem::resizeEvent(QResizeEvent* event) {
+  content_->setGeometry(rect());
+  qDebug() << "resiz " << content_ << " " << content_->isVisible() << " " << rect() << "\n";
+  QWidget::resizeEvent(event);
 }
 
 void GridLayoutItem::paintEvent(QPaintEvent* event) {
@@ -25,7 +32,25 @@ GridLayout::GridLayout(QWidget* parent) :
 
 }
 
-void GridLayout::resizeEvent(QResizeEvent* event) {
+size_t GridLayout::doAddWidget(QWidget* widget, size_t index) {
+  GridLayoutItem* item = new GridLayoutItem(this, widget);
+  index = qMin(index, items_.size());
+  items_.insert(items_.begin() + index, item);
+  item->show();
+  doLayout();
+  return index;
+}
+
+int GridLayout::doRemoveWidget(QWidget* widget) {
+  int idx = getWidgetIndex(widget);
+  if (idx == -1) return -1;
+  items_.erase(items_.begin() + idx);
+  widget->setParent(nullptr);
+  doLayout();
+  return idx;
+}
+
+void GridLayout::doLayout() {
   int max_width = 200;
   int column_size = qCeil(width() / (qreal)max_width);
   int row_size = items_.size() / column_size + (items_.size() % column_size != 0);
@@ -51,6 +76,10 @@ size_t GridLayout::insertWidget(QWidget* widget, size_t index) {
   return doAddWidget(widget, index);
 }
 
+int GridLayout::removeWidget(QWidget* widget) {
+  return doRemoveWidget(widget);
+}
+
 QWidget* GridLayout::getWidgetAt(size_t index) {
   if (index >= items_.size()) return nullptr;
   return items_[index]->content();
@@ -70,11 +99,8 @@ bool GridLayout::hasWidget(QWidget* widget) const {
   return getWidgetIndex(widget) != -1;
 }
 
-size_t GridLayout::doAddWidget(QWidget* widget, size_t index) {
-  GridLayoutItem* item = new GridLayoutItem(this, widget);
-  index = qMin(index, items_.size());
-  items_.insert(items_.begin() + index, item);
-  return index;
+void GridLayout::resizeEvent(QResizeEvent* event) {
+  doLayout();
 }
 
 }
