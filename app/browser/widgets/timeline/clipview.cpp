@@ -66,8 +66,8 @@ bool ClipView::focused() const {
 }
 
 void ClipView::updateView() {
-  const int HANDLE_MAX_SIZE = 30;
-  const int BAR_HANDLE_MIN_SIZE = 20;
+  const int HANDLE_MAX_SIZE = 15;
+  const int BAR_HANDLE_MIN_SIZE = 15;
   QSharedPointer<Clip> next = nullptr;
   QSharedPointer<Clip> prev = nullptr;
   int next_pos = next ? scrollView_->getPositionRelativeToView(next->start_time()) : std::numeric_limits<int>::max();

@@ -16,6 +16,7 @@
 #include "browser/services/import/import_service_impl.h"
 
 #include "platform/task/task.h"
+#include "platform/logger/logger.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -56,6 +57,8 @@ protected:
 }
 
 MainWindow::MainWindow() {
+
+  registerLoggers();
 
   // Initialize services
   ThemeService::Initialize();

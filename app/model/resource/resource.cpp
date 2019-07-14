@@ -2,12 +2,12 @@
 
 namespace nlive {
 
-Resource::Resource(QString type, QUrl url) :
+Resource::Resource(std::string type, QUrl url) :
   type_(type), url_(url) {
 
 }
 
-QString const& Resource::type() const {
+std::string const& Resource::type() const {
   return type_;
 }
 

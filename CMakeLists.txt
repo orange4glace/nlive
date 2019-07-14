@@ -31,7 +31,8 @@ find_package(FFMPEG 3.4 REQUIRED
   swresample
 )
 find_package(LibUV REQUIRED)
-message(STATUS ${LIBUV_INCLUDE_DIRS})
+find_package(spdlog REQUIRED)
+message(STATUS ${spdlog_INCLUDE_DIR})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

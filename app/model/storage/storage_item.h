@@ -15,26 +15,26 @@ class StorageItem : public QObject {
   Q_OBJECT
 
 private:
-  QString uuid_;
-  QString type_;
+  std::string uuid_;
+  std::string type_;
   QString name_;
 
   StorageItem* parent_;
 
 protected:
-  StorageItem(QString type, QString name, QSharedPointer<StorageItem> parent = nullptr, QString uuid = QString());
+  StorageItem(std::string type, QString name, QSharedPointer<StorageItem> parent = nullptr, std::string uuid = std::string());
   
 public:
   void setParent(StorageItem* item);
-  QString getAbsolutePath() const;
+  std::string getAbsolutePath() const;
 
   virtual QSharedPointer<Clip> cliperize(Rational time_base) = 0;
 
   StorageItem* parent();
 
-  QString const& uuid() const;
+  std::string const& uuid() const;
   QString const& name() const;
-  QString const& type() const;
+  std::string const& type() const;
   virtual bool is_directory() const = 0;
 
 };

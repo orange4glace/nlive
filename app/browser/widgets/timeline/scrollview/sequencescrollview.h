@@ -41,6 +41,8 @@ private:
   void doResize();
 
 protected:
+  void mouseMoveEvent(QMouseEvent* event) override;
+
   void paintEvent(QPaintEvent* event) override;
   void resizeEvent(QResizeEvent* event) override;
 

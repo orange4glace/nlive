@@ -8,6 +8,7 @@ extern "C" {
 #include <libavutil/dict.h>
 }
 
+#include "platform/logger/logger.h"
 #include "platform/task/task_service.h"
 #include "platform/task/task.h"
 #include "model/resource/video_resource.h"
@@ -23,6 +24,19 @@ struct VideoMetadata {
   int64_t duration;
 };
 
+// void getFirstVideoFrame(AVFormatContext* fmt_ctx, AVStream* stream) {
+//   AVCodecContext* video_dec_ctx_ = nullptr;
+//   if (open_codec_)
+//   AVPacket pkt;
+//   av_init_packet(&pkt);
+//   pkt.data = nullptr;
+//   pkt.size = 0;
+//   int ret = 0;
+//   int decoded = pkt.size;
+
+//   if (pkt.)
+// }
+
 VideoMetadata* findBestVideoMetadata(QString path) {
   av_register_all();
   AVFormatContext* fmt_ctx = nullptr;
@@ -30,26 +44,27 @@ VideoMetadata* findBestVideoMetadata(QString path) {
   int ret;
   ret = avformat_open_input(&fmt_ctx, path.toStdString().c_str(), NULL, NULL);
   if (ret != 0) {
-    qDebug() << "Err1 " << ret << " " << path << "\n";
+    spdlog::get(LOGGER_DEFAULT)->critical("[ResourceLoadTask] Failed to avformat_open_input path = {} result = {}", path.toStdString().c_str(), ret);
     return nullptr;
   }
   ret = avformat_find_stream_info(fmt_ctx, nullptr);
   if (ret != 0) {
-    qDebug() << "Err2 " << ret << " " << path << "\n";
+    spdlog::get(LOGGER_DEFAULT)->critical("[ResourceLoadTask] Failed to avformat_find_stream_info path = {} result = {}", path.toStdString().c_str(), ret);
     return nullptr;
   }
 
   VideoMetadata* metadata = nullptr;
   for (int i = 0; i < fmt_ctx->nb_streams; i ++) {
     auto stream = fmt_ctx->streams[i];
+    spdlog::get(LOGGER_DEFAULT)->info("[ResourceLoadTask] Search video stream. stream idx = {} codec_type = {}", i, stream->codecpar->codec_type);
     qDebug() << "Search video stream " << i << " " << stream->codecpar->codec_type << "\n";
     if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
       metadata = new VideoMetadata();
       metadata->time_base = stream->time_base;
       metadata->frame_rate = stream->avg_frame_rate;
       metadata->duration = stream->duration;
-      qDebug() << "Found video stream " << stream->time_base.num << "/" << stream->time_base.den <<
-               " " << stream->avg_frame_rate.num << "/" << stream->avg_frame_rate.den << " " << stream->duration << "\n";
+      spdlog::get(LOGGER_DEFAULT)->info("[ResourceLoadTask] Found video stream. time_base = {}/{} avg_frame_rate = {}/{} duration = {}",
+        stream->time_base.num, stream->time_base.den, stream->avg_frame_rate.num, stream->avg_frame_rate.den, stream->duration);
       avformat_free_context(fmt_ctx);
       return metadata;
     }

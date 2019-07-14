@@ -1,6 +1,8 @@
 #ifndef _NLIVE_VIDEO_RESOUCE_H_
 #define _NLIVE_VIDEO_RESOUCE_H_
 
+#include <string>
+
 #include "model/resource/resource.h"
 #include "model/common/rational.h"
 
@@ -15,7 +17,7 @@ private:
   int64_t duration_;
 
 public:
-  static const QString TYPE;
+  static const std::string TYPE;
 
   VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration);
 

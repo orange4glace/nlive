@@ -14,17 +14,8 @@ namespace nlive {
 
 namespace project_widget {
 
-StorageItemView::StorageItemView(QWidget* parent, StorageItem* item) :
-  QWidget(parent), storage_item_(item) {
-
-
-  QTimer* t = new QTimer();
-  connect(t, &QTimer::timeout, this, [this]() {
-    if (col_ == Qt::red) col_ = Qt::blue;
-    else col_ = Qt::red;
-    repaint();
-  });
-  t->start(1000);
+StorageItemView::StorageItemView(QWidget* parent, StorageItem* item, IThemeService* theme_service) :
+  theme_service_(theme_service), QWidget(parent), storage_item_(item) {
 
 }
 
@@ -38,11 +29,6 @@ void StorageItemView::mousePressEvent(QMouseEvent* event) {
     StaticDragAndDrop::setData(drag, this);
     drag->exec();
   }
-}
-
-void StorageItemView::paintEvent(QPaintEvent* event) {
-  QPainter p(this);
-  p.fillRect(rect(), col_);
 }
 
 StorageItem* StorageItemView::storage_item() {

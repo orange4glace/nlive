@@ -15,7 +15,7 @@ private:
 
 public:
   ResourceStorageItem(
-    QString type,
+    std::string type,
     QSharedPointer<StorageItem> parent,
     QSharedPointer<Resource> resource);
 

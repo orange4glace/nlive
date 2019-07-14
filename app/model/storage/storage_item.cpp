@@ -3,10 +3,10 @@
 namespace nlive {
 
 StorageItem::StorageItem(
-  QString type,
+  std::string type,
   QString name,
   QSharedPointer<StorageItem> parent,
-  QString uuid) :
+  std::string uuid) :
   type_(type), name_(name), parent_(nullptr) {
   
 }
@@ -15,7 +15,7 @@ void StorageItem::setParent(StorageItem* item) {
   parent_ = item;
 }
 
-QString StorageItem::getAbsolutePath() const {
+std::string StorageItem::getAbsolutePath() const {
   if (parent_ == nullptr) return uuid_;
   return parent_->getAbsolutePath() + "/" + uuid_;
 }
@@ -24,7 +24,7 @@ StorageItem* StorageItem::parent() {
   return parent_;
 }
 
-QString const& StorageItem::uuid() const {
+std::string const& StorageItem::uuid() const {
   return uuid_;
 }
 
@@ -32,7 +32,7 @@ QString const& StorageItem::name() const {
   return name_;
 }
 
-QString const& StorageItem::type() const {
+std::string const& StorageItem::type() const {
   return type_;
 }
 

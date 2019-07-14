@@ -17,7 +17,6 @@ private:
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
-  void paintEvent(QPaintEvent* event) override;
 
 public:
   GridLayoutItem(GridLayout* grid_layout, QWidget* content);

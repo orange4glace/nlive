@@ -15,6 +15,7 @@ add_executable(nlive
 target_include_directories(${CMAKE_PROJECT_NAME} BEFORE
   PRIVATE
   ${LIBUV_INCLUDE_DIRS}
+  ${spdlog_INCLUDE_DIR}
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

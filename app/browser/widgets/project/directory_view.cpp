@@ -1,5 +1,6 @@
 #include "browser/widgets/project/directory_view.h"
 
+#include "platform/logger/logger.h"
 #include "platform/theme/themeservice.h"
 #include "platform/resource/resource_service.h"
 #include "model/storage/storage_directory.h"
@@ -23,7 +24,7 @@ namespace project_widget {
 
 DirectoryView::DirectoryView(
   QWidget* parent,
-  QSharedPointer<StorageDirectory> storage_directory, 
+  QSharedPointer<StorageDirectory> storage_directory,
   IThemeService* theme_service,
   IImportService* import_service) :
   theme_service_(theme_service),
@@ -43,9 +44,16 @@ DirectoryView::DirectoryView(
 }
 
 void DirectoryView::addStorageItemView(StorageItem* storage_item, int index) {
-  qDebug() << QThread::currentThreadId() << "\n";
   auto factory = StorageItemViewFactoryRegistry::getFactory(storage_item->type());
-  auto view = factory->create(nullptr, storage_item);
+  if (!factory) {
+    spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] StorageItemViewFactory not found! expected factory type = {}", storage_item->type());
+    return;
+  }
+  auto view = factory->create(nullptr, storage_item, theme_service_);
+  if (!view) {
+    spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] View is null! item type = {}", storage_item->type());
+    return;
+  }
   auto pair = make_pair(storage_item, view);
   view_items_.insert(view_items_.begin() + index, pair);
   grid_layout_.addWidget(view);
@@ -57,7 +65,10 @@ void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
     if (it.first == storage_item) break;
     i++;
   }
-  if (i == -1) return;
+  if (i == view_items_.size()) {
+    spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] removeStorageItemView failed! View not found.");
+    return;
+  }
   auto view = view_items_[i].second;
   view_items_.erase(view_items_.begin() + i);
   grid_layout_.removeWidget(view);
@@ -67,6 +78,7 @@ void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
 StorageItemView* DirectoryView::getStorageItemView(StorageItem* storage_item) {
   for (auto it : view_items_)
     if (it.first == storage_item) return it.second;
+  spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] getStorageItemView is null! item type = {}", storage_item->type());
   return nullptr;
 }
 

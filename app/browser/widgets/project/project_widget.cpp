@@ -6,6 +6,7 @@
 
 #include "browser/widgets/project/storage_item_view_factory.h"
 #include "browser/widgets/project/null_storage_item_view.h"
+#include "browser/widgets/project/video_resource_storage_item_view.h"
 
 #include <QDebug>
 
@@ -16,17 +17,18 @@ namespace project_widget {
 void ProjectWidget::Initialize() {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory());
+  StorageItemViewFactoryRegistry::registerDefaultFactory(new VideoResourceStorageItemViewFactory());
 
 }
 
 ProjectWidget::ProjectWidget(QWidget* parent,
     IThemeService* theme_service,
     IImportService* import_service) :
+  QDockWidget(parent),
   theme_service_(theme_service),
   import_service_(import_service),
-  QDockWidget(parent),
   directory_view_(nullptr) {
-
+  setTitleBarWidget(new QWidget());
 }
 
 void ProjectWidget::setDirectory(QSharedPointer<StorageDirectory> directory) {

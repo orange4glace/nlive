@@ -1,8 +1,10 @@
 #ifndef _NLIVE_STORAGE_ITEM_VIEW_FACTORY_H_
 #define _NLIVE_STORAGE_ITEM_VIEW_FACTORY_H_
 
-#include <QString>
+#include <string>
 #include <map>
+
+#include "platform/theme/themeservice.h"
 
 class QWidget;
 
@@ -18,7 +20,7 @@ class StorageItemViewFactory {
 
 public:
   StorageItemViewFactory();
-  virtual StorageItemView* create(QWidget* widget, StorageItem* item) = 0;
+  virtual StorageItemView* create(QWidget* widget, StorageItem* item, IThemeService* theme_service) = 0;
 
 };
 
@@ -26,12 +28,12 @@ class StorageItemViewFactoryRegistry {
 
 private:
   static StorageItemViewFactory* default_factory_;
-  static std::map<QString, StorageItemViewFactory*> factories_;
+  static std::map<std::string, StorageItemViewFactory*> factories_;
 
 public:
   static void registerDefaultFactory(StorageItemViewFactory* factory);
-  static void registerFactory(QString type, StorageItemViewFactory* factory);
-  static StorageItemViewFactory* getFactory(QString type);
+  static void registerFactory(std::string type, StorageItemViewFactory* factory);
+  static StorageItemViewFactory* getFactory(std::string type);
 
 };
 

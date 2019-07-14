@@ -5,7 +5,7 @@
 namespace nlive {
 
 ResourceStorageItem::ResourceStorageItem(
-  QString type,
+  std::string type,
   QSharedPointer<StorageItem> parent,
   QSharedPointer<Resource> resource) :
   StorageItem(type, "", parent),

@@ -3,9 +3,10 @@
 
 #include <QWidget>
 
+#include "platform/theme/themeservice.h"
+
 namespace nlive {
 
-class IThemeService;
 class StorageItem;
 
 namespace project_widget {
@@ -16,14 +17,14 @@ private:
   QColor col_;
 
 protected:
+  IThemeService* theme_service_;
+
   StorageItem* storage_item_;
 
   void mousePressEvent(QMouseEvent* event) override;
 
-  void paintEvent(QPaintEvent* event) override;
-
 public:
-  StorageItemView(QWidget* parent, StorageItem* storage_item);
+  StorageItemView(QWidget* parent, StorageItem* storage_item, IThemeService* theme_service);
 
   StorageItem* storage_item();
   

@@ -5,7 +5,7 @@ namespace nlive {
 namespace project_widget {
 
 StorageItemViewFactory* StorageItemViewFactoryRegistry::default_factory_ = nullptr;
-std::map<QString, StorageItemViewFactory*> StorageItemViewFactoryRegistry::factories_;
+std::map<std::string, StorageItemViewFactory*> StorageItemViewFactoryRegistry::factories_;
 
 StorageItemViewFactory::StorageItemViewFactory() {}
 
@@ -13,11 +13,11 @@ void StorageItemViewFactoryRegistry::registerDefaultFactory(StorageItemViewFacto
   default_factory_ = factory;
 }
 
-void StorageItemViewFactoryRegistry::registerFactory(QString type, StorageItemViewFactory* factory) {
+void StorageItemViewFactoryRegistry::registerFactory(std::string type, StorageItemViewFactory* factory) {
   factories_.emplace(type, factory);
 }
 
-StorageItemViewFactory* StorageItemViewFactoryRegistry::getFactory(QString type) {
+StorageItemViewFactory* StorageItemViewFactoryRegistry::getFactory(std::string type) {
   if (factories_.count(type) == 0) return default_factory_;
   return factories_[type];
 }

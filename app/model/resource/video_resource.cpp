@@ -2,7 +2,7 @@
 
 namespace nlive {
 
-const QString VideoResource::TYPE = "nlive.Resource.VideoResource";
+const std::string VideoResource::TYPE = "nlive.Resource.VideoResource";
 
 VideoResource::VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration) :
   Resource(VideoResource::TYPE, path),

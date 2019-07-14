@@ -16,7 +16,7 @@ public:
   StorageDirectory(
     QString name,
     QSharedPointer<StorageItem> parent = nullptr,
-    QString uuid = QString());
+    std::string uuid = std::string());
   
   void addItem(StorageItem* item);
   void removeItem(StorageItem* item);

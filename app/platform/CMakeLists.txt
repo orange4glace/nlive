@@ -1,3 +1,4 @@
+add_subdirectory(logger)
 add_subdirectory(theme)
 add_subdirectory(task)
 add_subdirectory(resource)

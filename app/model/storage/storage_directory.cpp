@@ -5,7 +5,7 @@ namespace nlive {
 StorageDirectory::StorageDirectory(
   QString name,
   QSharedPointer<StorageItem> parent,
-  QString uuid) :
+  std::string uuid) :
   StorageItem("DIRECTORY", name, parent, uuid) {
 }
 

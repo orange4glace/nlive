@@ -4,7 +4,7 @@
 
 namespace nlive {
 
-const QString VideoResourceStorageItem::TYPE = "nlive.StorageItem.VideoResourceStorageItem";
+const std::string VideoResourceStorageItem::TYPE = "nlive.StorageItem.VideoResourceStorageItem";
 
 VideoResourceStorageItem::VideoResourceStorageItem(
   QSharedPointer<StorageItem> parent,

@@ -1,9 +1,11 @@
 #include "model/sequence/sequence.h"
 
+#include "platform/logger/logger.h"
+
 namespace nlive {
 
 Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
-  undo_stack_(undo_stack), time_base_(1, base_time) {
+  undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0) {
 }
 
 QSharedPointer<Track> Sequence::addTrack() {
@@ -11,11 +13,20 @@ QSharedPointer<Track> Sequence::addTrack() {
 }
 
 QSharedPointer<Track> Sequence::doAddTrack() {
-  // Stack allocation would be enough but leave it now
   QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_));
   tracks_.emplace_back(track);
-  onDidAddTrack(track, tracks_.size() - 1);
+  std::vector<QMetaObject::Connection> connections;
+  connections.emplace_back(connect(track.get(), &Track::onDidAddClip, this, [this, track](QSharedPointer<Clip> clip) {
+    handleDidAddClip(track, clip);
+  }));
+  emit onDidAddTrack(track, tracks_.size() - 1);
   return track;
+}
+
+void Sequence::handleDidAddClip(QSharedPointer<Track> track, QSharedPointer<Clip> clip) {
+  if (clip->end_time() > duration_) {
+    doSetDuration(clip->end_time() + Rational::rescale(5000, Rational(1, 1000), time_base_));
+  }
 }
 
 void Sequence::removeTrackAt(int index) {
@@ -23,10 +34,26 @@ void Sequence::removeTrackAt(int index) {
 }
 
 void Sequence::doRemoveTrackAt(int index) {
-  if (index < 0 || tracks_.size() >= index) return;
+  if (index < 0 || tracks_.size() >= index) {
+    spdlog::get(LOGGER_DEFAULT)->warn(
+      "[Sequence] Failed to doRemoveTrackAt. Track ID = {}, index = {}", id_, index);
+    return;
+  }
   QSharedPointer<Track> track = tracks_[index];
-  onWillRemoveTrack(track, index);
+  emit onWillRemoveTrack(track, index);
   tracks_.erase(tracks_.begin() + index);
+}
+
+void Sequence::doSetCurrentTime(int64_t value) {
+  int64_t old = current_time_;
+  current_time_ = value;
+  emit onDidChangeCurrentTime(old);
+}
+
+void Sequence::doSetDuration(int64_t value) {
+  int64_t old = duration_;
+  duration_ = value;
+  emit onDidChangeDuration(old);
 }
 
 QSharedPointer<Track> Sequence::getTrackAt(int index) {
@@ -46,12 +73,24 @@ int Sequence::base_time() const {
   return time_base_.num();
 }
 
-void Sequence::setDuration(int value) {
-  duration_ = value;
+void Sequence::setCurrentTime(int64_t value) {
+  doSetCurrentTime(value);
 }
 
-int Sequence::duration() const {
+int64_t Sequence::current_time() const {
+  return current_time_;
+}
+
+void Sequence::setDuration(int64_t value) {
+  doSetDuration(value);
+}
+
+int64_t Sequence::duration() const {
   return duration_;
+}
+
+const std::string& Sequence::id() {
+  return id_;
 }
 
 const std::vector<QSharedPointer<Track>>& Sequence::tracks() {

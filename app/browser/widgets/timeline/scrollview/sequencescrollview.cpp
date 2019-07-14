@@ -6,6 +6,7 @@
 #include <QtMath>
 #include <QPen>
 #include <QPainter>
+#include <QMouseEvent>
 #include <QDebug>
 
 namespace nlive {
@@ -39,6 +40,12 @@ SequenceScrollView::SequenceScrollView(
   doUpdate();
 
   QObject::connect(&scrollbar_, &SequenceScrollViewScrollbar::onDidUpdate, this, [this]() {
+    doUpdate();
+  });
+  QObject::connect(sequence_.get(), &Sequence::onDidChangeDuration, this, [this]() {
+    doUpdate();
+  });
+  QObject::connect(sequence_.get(), &Sequence::onDidChangeCurrentTime, this, [this]() {
     doUpdate();
   });
 }
@@ -114,12 +121,17 @@ void SequenceScrollView::doUpdate() {
   int ruler_height = 30;
 
   // Indicator
-  int indicator_pos = getPositionRelativeToView(65);
+  int indicator_pos = getPositionRelativeToView(sequence_->current_time());
   indicator_.move(indicator_pos, ruler_height);
 
   QWidget::update();
   
   emit onDidUpdate();
+}
+
+void SequenceScrollView::mouseMoveEvent(QMouseEvent* event) {
+  int64_t time = getTimeRelativeToView(event->pos().x());
+  sequence_->setCurrentTime(time);
 }
 
 void SequenceScrollView::paintEvent(QPaintEvent* event) {
@@ -174,7 +186,7 @@ void SequenceScrollView::paintEvent(QPaintEvent* event) {
 
   // Draw indicator tip
   p.setRenderHint(QPainter::Antialiasing);
-  int indicator_pos = getPositionRelativeToView(65);
+  int indicator_pos = getPositionRelativeToView(sequence_->current_time());
   QPainterPath path;
   path.moveTo(indicator_pos, ruler_height);
   path.lineTo(indicator_pos - 9, ruler_height - 13);

@@ -14,14 +14,14 @@ class Resource : public QObject {
 
 private:
   ResourceIdentifier id_;
-  QString type_;
+  std::string type_;
   QUrl url_;
 
 protected:
-  Resource(QString type, QUrl url);
+  Resource(std::string type, QUrl url);
 
 public:
-  QString const& type() const;
+  std::string const& type() const;
   QUrl const& url() const;
 
 };

@@ -40,7 +40,8 @@ protected:
   void dragEnterEvent(QDragEnterEvent* event) override;
 
 public:
-  DirectoryView(QWidget* parent,
+  DirectoryView(
+    QWidget* parent,
     QSharedPointer<StorageDirectory> storage_directory,
     IThemeService* theme_service,
     IImportService* import_service);

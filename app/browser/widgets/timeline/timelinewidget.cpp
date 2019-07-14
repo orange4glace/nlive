@@ -24,7 +24,7 @@ TimelineWidget::TimelineWidget(
   sequence_view_(nullptr),
   split_left_view_(this, nullptr),
   split_right_view_(this, nullptr) {
-
+  setTitleBarWidget(new QWidget());
 }
 
 void TimelineWidget::resizeEvent(QResizeEvent* event) {

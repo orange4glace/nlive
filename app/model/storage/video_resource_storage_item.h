@@ -14,7 +14,7 @@ private:
   QSharedPointer<VideoResource> video_resource_;
 
 public:
-  static const QString TYPE;
+  static const std::string TYPE;
 
   VideoResourceStorageItem(
     QSharedPointer<StorageItem> parent,

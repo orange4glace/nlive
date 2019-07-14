@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QThread>
 
+#include "platform/logger/logger.h"
 #include "platform/resource/resource_service.h"
 #include "model/storage/storage_directory.h"
 #include "model/storage/resource_storage_item.h"
@@ -25,11 +26,17 @@ void ImportService::import(QList<QFileInfo> urls, QSharedPointer<StorageDirector
   progress_dialog->show();
 
   for (auto& url : urls) {
-    resource_service_->loadResource(url.absoluteFilePath(), [directory, progress_dialog](QSharedPointer<Resource> resource) {
+    resource_service_->loadResource(url.absoluteFilePath(), [directory, progress_dialog, url](QSharedPointer<Resource> resource) {
       ResourceStorageItem* item = nullptr;
-      if (resource->type() == VideoResource::TYPE) {
-        auto video_resource = qSharedPointerCast<VideoResource>(resource);
-        item = new VideoResourceStorageItem(directory, video_resource);
+      if (resource == nullptr) {
+        spdlog::get(LOGGER_DEFAULT)->warn("[ImportService] Resource is null. file path = {}", url.absoluteFilePath().toStdString());
+      }
+      else {
+        if (resource->type() == VideoResource::TYPE) {
+          auto video_resource = qSharedPointerCast<VideoResource>(resource);
+          item = new VideoResourceStorageItem(directory, video_resource);
+        }
+        spdlog::get(LOGGER_DEFAULT)->warn("[ImportService] No supported type found. type = {}", resource->type());
       }
       if (item) {
         directory->addItem(item);

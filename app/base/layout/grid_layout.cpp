@@ -18,11 +18,6 @@ void GridLayoutItem::resizeEvent(QResizeEvent* event) {
   QWidget::resizeEvent(event);
 }
 
-void GridLayoutItem::paintEvent(QPaintEvent* event) {
-  QPainter p(this);
-  p.drawRect(0, 0, width() - 1, height() - 1);
-}
-
 QWidget* GridLayoutItem::content() {
   return content_;
 }
