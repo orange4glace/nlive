@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-set (LIBUV_USE_STATIC TRUE)
 
 project(nlive)
 
@@ -30,7 +29,6 @@ find_package(FFMPEG 3.4 REQUIRED
   swscale
   swresample
 )
-find_package(LibUV REQUIRED)
 find_package(spdlog REQUIRED)
 message(STATUS ${spdlog_INCLUDE_DIR})
 
