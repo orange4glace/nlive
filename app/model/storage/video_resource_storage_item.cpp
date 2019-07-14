@@ -4,17 +4,22 @@
 
 namespace nlive {
 
+const QString VideoResourceStorageItem::TYPE = "nlive.StorageItem.VideoResourceStorageItem";
+
 VideoResourceStorageItem::VideoResourceStorageItem(
   QSharedPointer<StorageItem> parent,
   QSharedPointer<VideoResource> video_resource) :
-  ResourceStorageItem("nlive.StorageItem.VideoResourceStorageItem", parent, video_resource),
+  ResourceStorageItem(VideoResourceStorageItem::TYPE, parent, video_resource),
   video_resource_(video_resource) {
 
 }
 
-QSharedPointer<Clip> VideoResourceStorageItem::cliperize(Timebase timebase) {
-  return QSharedPointer<Clip>(new Clip(nullptr, timebase, 0,
-    Timebase::rescale(video_resource_->duration(), video_resource_->timebase(), timebase), 0));
+QSharedPointer<Clip> VideoResourceStorageItem::cliperize(Rational time_base) {
+  qDebug() << "cliperize " << video_resource_->duration() << " " <<
+      video_resource_->time_base().num() << video_resource_->time_base().den() << " " <<
+      time_base.num() << " " << time_base.den() << "\n";
+  return QSharedPointer<Clip>(new Clip(nullptr, time_base, 0,
+    Rational::rescale(video_resource_->duration(), video_resource_->time_base(), time_base), 0));
 }
 
 QSharedPointer<VideoResource> VideoResourceStorageItem::video_resource() {

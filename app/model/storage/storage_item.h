@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "model/common/timebase.h"
+#include "model/common/rational.h"
 
 namespace nlive {
 
@@ -28,7 +28,7 @@ public:
   void setParent(StorageItem* item);
   QString getAbsolutePath() const;
 
-  virtual QSharedPointer<Clip> cliperize(Timebase timebase) = 0;
+  virtual QSharedPointer<Clip> cliperize(Rational time_base) = 0;
 
   StorageItem* parent();
 

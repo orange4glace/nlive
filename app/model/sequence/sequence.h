@@ -6,7 +6,7 @@
 #include <QSharedPointer>
 #include <vector>
 
-#include "model/common/timebase.h"
+#include "model/common/rational.h"
 #include "model/sequence/track.h"
 
 namespace nlive {
@@ -16,7 +16,7 @@ class Sequence : public QObject {
 
 private:
   QUndoStack* undo_stack_;
-  Timebase timebase_;
+  Rational time_base_;
   int duration_;
 
   std::vector<QSharedPointer<Track>> tracks_;
@@ -25,15 +25,15 @@ private:
   void doRemoveTrackAt(int index);
 
 public:
-  Sequence(QUndoStack* undo_stack, int basetime);
+  Sequence(QUndoStack* undo_stack, int base_time);
 
   QSharedPointer<Track> addTrack();
   void removeTrackAt(int index);
   QSharedPointer<Track> getTrackAt(int index);
 
-  void setTimebase(Timebase timebase);
-  const Timebase& timebase() const;
-  int basetime() const;
+  void setTimeBase(Rational time_base);
+  const Rational& time_base() const;
+  int base_time() const;
 
   void setDuration(int value);
   int duration() const;

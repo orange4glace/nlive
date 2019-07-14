@@ -2,8 +2,8 @@
 
 namespace nlive {
 
-Sequence::Sequence(QUndoStack* undo_stack, int basetime) :
-  undo_stack_(undo_stack), timebase_(basetime, 1) {
+Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
+  undo_stack_(undo_stack), time_base_(1, base_time) {
 }
 
 QSharedPointer<Track> Sequence::addTrack() {
@@ -34,16 +34,16 @@ QSharedPointer<Track> Sequence::getTrackAt(int index) {
   return tracks_[index];
 }
 
-void Sequence::setTimebase(Timebase timebase) {
-  timebase_ = timebase;
+void Sequence::setTimeBase(Rational time_base) {
+  time_base_ = time_base;
 }
 
-const Timebase& Sequence::timebase() const {
-  return timebase_;
+const Rational& Sequence::time_base() const {
+  return time_base_;
 }
 
-int Sequence::basetime() const {
-  return timebase_.num();
+int Sequence::base_time() const {
+  return time_base_.num();
 }
 
 void Sequence::setDuration(int value) {

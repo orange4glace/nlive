@@ -36,7 +36,7 @@ bool StorageDirectory::hasItem(StorageItem* item) const {
   return getItemIndex(item) != -1;
 }
 
-QSharedPointer<Clip> StorageDirectory::cliperize(Timebase timebase) {
+QSharedPointer<Clip> StorageDirectory::cliperize(Rational time_base) {
   return nullptr;
 }
 

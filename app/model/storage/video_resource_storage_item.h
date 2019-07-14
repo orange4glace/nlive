@@ -14,11 +14,13 @@ private:
   QSharedPointer<VideoResource> video_resource_;
 
 public:
+  static const QString TYPE;
+
   VideoResourceStorageItem(
     QSharedPointer<StorageItem> parent,
     QSharedPointer<VideoResource> video_resource);
 
-  QSharedPointer<Clip> cliperize(Timebase timebase) override;
+  QSharedPointer<Clip> cliperize(Rational time_base) override;
 
   QSharedPointer<VideoResource> video_resource();
 

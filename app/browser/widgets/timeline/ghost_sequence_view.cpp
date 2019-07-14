@@ -44,7 +44,6 @@ GhostSequenceView::GhostSequenceView(
 }
 
 void GhostSequenceView::doUpdate() {
-  qDebug() << start_extent_ << " " <<  translation_ << " " <<  start_magnet_time_ << "\n";
   for (auto gtv : ghost_track_views_) {
     for (auto ghost_clip : gtv->ghost_clip_views()) {
       int start_time = ghost_clip->start_time();
@@ -55,6 +54,15 @@ void GhostSequenceView::doUpdate() {
       ghost_clip->setExtendedTime(extended_start_time, extended_end_time);
     }
   }
+  
+  for (int i = 0; i < ghost_track_views_.size(); i ++) {
+    int j = i - track_offset_;
+    if (j < 0 || j >= ghost_track_views_.size()) continue;
+    auto& track_view = ghost_track_views_[j];
+    track_view->resize(width(), 29);
+    track_view->move(0, i * 30);
+  }
+  
   QWidget::update();
 }
 
@@ -157,13 +165,7 @@ void GhostSequenceView::paintEvent(QPaintEvent* event) {
 }
 
 void GhostSequenceView::resizeEvent(QResizeEvent* event) {
-  for (int i = 0; i < ghost_track_views_.size(); i ++) {
-    auto& track_view = ghost_track_views_[i];
-    track_view->resize(width(), 29);
-    track_view->move(0, i * 30);
-  }
-
-  QWidget::resizeEvent(event);
+  doUpdate();
 }
 
 bool GhostSequenceView::magnet_start() const {

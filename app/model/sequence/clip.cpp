@@ -6,29 +6,29 @@ namespace {
   int __next_id = 0;
 }
 
-Clip::Clip(QUndoStack* undo_stack, Timebase timebase, int start_time, int end_time, int b_time) :
-  undo_stack_(undo_stack), timebase_(timebase), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
+Clip::Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
+  undo_stack_(undo_stack), time_base_(time_base), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
 
 }
 
 Clip::Clip(const Clip& clip) :
-  Clip(clip.undo_stack_, clip.timebase_, clip.start_time_, clip.end_time_, clip.b_time_) {
+  Clip(clip.undo_stack_, clip.time_base_, clip.start_time_, clip.end_time_, clip.b_time_) {
 
 }
 
-void Clip::setTime(int start_time, int end_time, int b_time) {
-  int old_start_time = start_time_;
-  int old_end_time = end_time_;
-  int old_b_time = b_time_;
+void Clip::setTime(int64_t start_time, int64_t end_time, int64_t b_time) {
+  int64_t old_start_time = start_time_;
+  int64_t old_end_time = end_time_;
+  int64_t old_b_time = b_time_;
   start_time_ = start_time;
   end_time_ = end_time;
   b_time_ = b_time;
   emit onDidChangeTime(old_start_time, old_end_time, old_b_time);
 }
 
-int Clip::start_time() const { return start_time_; }
-int Clip::end_time() const { return end_time_; }
-int Clip::b_time() const { return b_time_; }
+int64_t Clip::start_time() const { return start_time_; }
+int64_t Clip::end_time() const { return end_time_; }
+int64_t Clip::b_time() const { return b_time_; }
 int Clip::id() const { return id_; }
 
 QUndoStack* Clip::undo_stack() {

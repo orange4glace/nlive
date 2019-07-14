@@ -1,10 +1,11 @@
 #include "browser/services/import/import_service_impl.h"
 
 #include <QList>
-#include <QUrl>
+#include <QFileInfo>
 #include <QSharedPointer>
 #include <QDebug>
 #include <QThread>
+
 #include "platform/resource/resource_service.h"
 #include "model/storage/storage_directory.h"
 #include "model/storage/resource_storage_item.h"
@@ -18,17 +19,22 @@ ImportService::ImportService(IResourceService* resource_service) :
 
 }
 
-void ImportService::import(QList<QUrl> urls, QSharedPointer<StorageDirectory> directory) {
+void ImportService::import(QList<QFileInfo> urls, QSharedPointer<StorageDirectory> directory) {
   auto progress_dialog = new ImportProgressDialog(urls.size());
   progress_dialog->setModal(true);
   progress_dialog->show();
 
   for (auto& url : urls) {
-    resource_service_->loadResource(url.url(), [directory, progress_dialog](QSharedPointer<Resource> resource) {
-      auto video_resource = qSharedPointerCast<VideoResource>(resource);
-      ResourceStorageItem* item = new VideoResourceStorageItem(directory, nullptr);
-      directory->addItem(item);
-      progress_dialog->setProgress(progress_dialog->progress() + 1);
+    resource_service_->loadResource(url.absoluteFilePath(), [directory, progress_dialog](QSharedPointer<Resource> resource) {
+      ResourceStorageItem* item = nullptr;
+      if (resource->type() == VideoResource::TYPE) {
+        auto video_resource = qSharedPointerCast<VideoResource>(resource);
+        item = new VideoResourceStorageItem(directory, video_resource);
+      }
+      if (item) {
+        directory->addItem(item);
+        progress_dialog->setProgress(progress_dialog->progress() + 1);
+      }
     });
   }
 }

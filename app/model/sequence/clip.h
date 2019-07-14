@@ -6,7 +6,7 @@
 #include <QSharedPointer>
 #include <QUndoStack>
 
-#include "model/common/timebase.h"
+#include "model/common/rational.h"
 
 namespace nlive {
 
@@ -17,24 +17,24 @@ private:
   QUndoStack* undo_stack_;
   int id_;
 
-  Timebase timebase_;
+  Rational time_base_;
 
-  int start_time_;
-  int end_time_;
-  int b_time_;
+  int64_t start_time_;
+  int64_t end_time_;
+  int64_t b_time_;
 
 signals:
-  void onDidChangeTime(int old_start_time, int old_end_time, int old_b_time);
+  void onDidChangeTime(int64_t old_start_time, int64_t old_end_time, int64_t old_b_time);
 
 public:
-  Clip(QUndoStack* undo_stack, Timebase timebase, int start_time, int end_time, int b_time);
+  Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
   Clip(const Clip&);
 
-  void setTime(int start_time, int end_time, int b_time);
+  void setTime(int64_t start_time, int64_t end_time, int64_t b_time);
 
-  int start_time() const;
-  int end_time() const;
-  int b_time() const;
+  int64_t start_time() const;
+  int64_t end_time() const;
+  int64_t b_time() const;
   int id() const;
 
   QUndoStack* undo_stack();

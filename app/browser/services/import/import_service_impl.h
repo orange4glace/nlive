@@ -14,12 +14,12 @@ class ImportService : public IImportService {
 private:
   IResourceService* resource_service_;
 
-  QList<QUrl> current_urls_;
+  QList<QFileInfo> current_urls_;
 
 public:
   ImportService(IResourceService* resource_service);
 
-  void import(QList<QUrl> urls, QSharedPointer<StorageDirectory> directory) override;
+  void import(QList<QFileInfo> urls, QSharedPointer<StorageDirectory> directory) override;
 
 };
 

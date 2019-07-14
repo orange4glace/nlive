@@ -76,8 +76,8 @@ MainWindow::MainWindow() {
   sequence->addTrack();
   auto track1 = sequence->addTrack();
   auto track2 = sequence->addTrack();
-  track1->addClip(QSharedPointer<Clip>(new nlive::Clip(track1->undo_stack(), sequence->timebase(), 30, 150, 0)));
-  track2->addClip(QSharedPointer<Clip>(new nlive::Clip(track2->undo_stack(), sequence->timebase(), 120, 260, 0)));
+  track1->addClip(QSharedPointer<Clip>(new nlive::Clip(track1->undo_stack(), sequence->time_base(), 30, 150, 0)));
+  track2->addClip(QSharedPointer<Clip>(new nlive::Clip(track2->undo_stack(), sequence->time_base(), 120, 260, 0)));
 
   auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service);
   timeline_widget->setSequence(sequence);

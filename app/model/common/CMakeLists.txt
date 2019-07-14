@@ -1,6 +1,6 @@
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
-  model/common/timebase.h
-  model/common/timebase.cpp
+  model/common/rational.h
+  model/common/rational.cpp
   PARENT_SCOPE
 )

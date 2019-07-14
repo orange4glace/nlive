@@ -14,6 +14,7 @@
 #include <QThread>
 #include <QPainter>
 #include <QTimer>
+#include <QFileInfo>
 #include <QDebug>
 
 namespace nlive {
@@ -79,13 +80,13 @@ void DirectoryView::paintEvent(QPaintEvent* event) {
 
 void DirectoryView::dragEnterEvent(QDragEnterEvent* event) {
   const QMimeData* mime_data = event->mimeData();
+  QList<QFileInfo> url_list;
 
   if (mime_data->hasUrls()) {
-    QStringList path_list;
-    QList<QUrl> url_list = mime_data->urls();
 
-    for (int i = 0; i < url_list.size(); i ++) {
-      qDebug() << url_list.at(i).toLocalFile() << "\n";
+    for (auto url : mime_data->urls()) {
+      url_list.push_back(QFileInfo(url.toLocalFile()));
+      qDebug() << (*url_list.rbegin()).filePath() << " " << (*url_list.rbegin()).suffix() << "\n";
     }
 
     import_service_->import(url_list, storage_directory_);

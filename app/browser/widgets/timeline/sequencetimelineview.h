@@ -73,6 +73,9 @@ private:
   void handleClipTranslate(QMouseEvent* event);
   void endClipTranslate(QMouseEvent* event);
 
+  void handleDrag(QDragMoveEvent* event);
+  void handleDrop(QDropEvent* event);
+
   void updateGhostSequenceView();
 
 /*#endregion*/
@@ -90,6 +93,9 @@ protected:
   void mouseReleaseEvent(QMouseEvent* event) override;
   
   void dragEnterEvent(QDragEnterEvent* event) override;
+  void dragLeaveEvent(QDragLeaveEvent* event) override;
+  void dragMoveEvent(QDragMoveEvent* event) override;
+  void dropEvent(QDropEvent* event) override;
 
 public:
   SequenceTimelineView(

@@ -23,7 +23,7 @@ public:
   int getItemIndex(StorageItem* item) const;
   bool hasItem(StorageItem* item) const;
 
-  QSharedPointer<Clip> cliperize(Timebase timebase) override;
+  QSharedPointer<Clip> cliperize(Rational time_base) override;
 
   const std::vector<StorageItem*>& items();
   bool is_directory() const override;
