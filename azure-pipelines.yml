@@ -22,6 +22,14 @@ steps:
   displayName: 'Install FFmpeg'
 
 - script: |
+    sudo apt-get install cmake
+  displayName: 'Install CMake'
+
+- script: |
+    sudo apt-get install ninja
+  displayName: 'Install Ninja'
+
+- script: |
     sudo apt-get install qt59-meta-minimal
     source /opt/qt59/bin/qt59-env.sh
   displayName: 'Install Qt5'
