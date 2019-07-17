@@ -35,5 +35,11 @@ steps:
   displayName: 'Install Qt5'
 
 - script: |
-    ls
-  displayName: 'LS'
+    mkdir build
+    cd build
+    cmake -G Ninja ..
+  displayName: 'Run CMake'
+
+- script: |
+    ninja
+  displayName: 'Run Ninja'
