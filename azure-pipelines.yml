@@ -37,7 +37,7 @@ steps:
 - script: |
     mkdir build
     cd build
-    sudo cmake
+    sudo cmake ..
   displayName: 'Run CMake'
 
 - script: |
