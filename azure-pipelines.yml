@@ -8,12 +8,11 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-
+  
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y
+    sudo apt-get update
+    sudo apt-get install qt58base qt58svg qt58charts-no-lgpl qt58xmlpatterns
+    source /opt/qt58/bin/qt58-env.sh
+  displayName: 'Install Qt5'
