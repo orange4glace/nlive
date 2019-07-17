@@ -24,5 +24,4 @@ steps:
 
 - script: |
     sudo apt-get install ffmpeg
-    source /opt/qt59/bin/qt59-env.sh
   displayName: 'Install FFmpeg'
