@@ -37,9 +37,9 @@ steps:
 - script: |
     mkdir build
     cd build
-    cmake -G Ninja ..
+    sudo cmake -G Ninja ..
   displayName: 'Run CMake'
 
 - script: |
-    ninja
+    sudo ninja
   displayName: 'Run Ninja'
