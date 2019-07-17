@@ -16,6 +16,6 @@ steps:
   displayName: 'Update apt repository'
 
 - script: |
-    sudo apt-get install qt591base
-    source /opt/qt591/bin/qt591-env.sh
+    sudo apt-get install qt59-meta-minimal
+    source /opt/qt59/bin/qt59-env.sh
   displayName: 'Install Qt5'
