@@ -35,5 +35,9 @@ set(NLIVE_SOURCES
   browser/widgets/timeline/ghost_clip_view.h
   browser/widgets/timeline/ghost_clip_view.cpp
 
+  browser/widgets/timeline/timeline_widget_service.h
+  browser/widgets/timeline/timeline_widget_service_impl.h
+  browser/widgets/timeline/timeline_widget_service_impl.cpp
+
   PARENT_SCOPE
 )

@@ -24,7 +24,7 @@ VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory() {}
 StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, StorageItem* item, IThemeService* theme_service) {
   if (item->type() != VideoResourceStorageItem::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
-      "[VideoResourceStorageItemViewFactory] StorageItem type not match! expected={}, got={}", VideoResourceStorageItem::TYPE, item->type());
+      "[VideoResourceStorageItemViewFactory] StorageItem type not match! expected = {}, got = {}", VideoResourceStorageItem::TYPE, item->type());
     return nullptr;
   }
   VideoResourceStorageItem* vrsi = static_cast<VideoResourceStorageItem*>(item);

@@ -7,6 +7,7 @@ add_subdirectory(base)
 add_subdirectory(model)
 add_subdirectory(platform)
 add_subdirectory(browser)
+add_subdirectory(renderer)
 
 add_executable(nlive
   ${NLIVE_SOURCES}

@@ -10,6 +10,7 @@
 namespace nlive {
 
 class IThemeService;
+class ITimelineWidgetService;
 class Sequence;
 
 namespace timelinewidget {
@@ -21,6 +22,7 @@ class TimelineWidget : public QDockWidget {
 
 private:
   IThemeService* theme_service_;
+  QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
 
   QSharedPointer<Sequence> sequence_;
   SequenceView* sequence_view_;
@@ -30,9 +32,13 @@ private:
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
+  void focusInEvent(QFocusEvent* event) override;
 
 public:
-  TimelineWidget(QWidget* parent, IThemeService* themeService);
+  TimelineWidget(
+    QWidget* parent,
+    IThemeService* themeService,
+    QSharedPointer<ITimelineWidgetService> timeline_widget_service);
 
   void setSequence(QSharedPointer<Sequence> sequence);
 
@@ -41,7 +47,7 @@ public:
   
 
 signals:
-  void onDidChangeSequence();
+  void onDidChangeSequence(QSharedPointer<Sequence> sequence);
 
 };
 

@@ -1,11 +1,24 @@
 #include "model/sequence/sequence.h"
 
 #include "platform/logger/logger.h"
+#include "renderer/video_renderer/renderer.h"
+#include "renderer/video_renderer/command_buffer.h"
+
+#include <QTimer>
 
 namespace nlive {
 
 Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
-  undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0) {
+  undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
+  width_(1080), height_(720) {
+
+  QTimer* t = new QTimer();
+  connect(t, &QTimer::timeout, this, [this]() {
+    this->onDirty(nullptr);
+  });
+  t->setInterval(1000);
+  t->start();
+
 }
 
 QSharedPointer<Track> Sequence::addTrack() {
@@ -65,6 +78,28 @@ void Sequence::setTimeBase(Rational time_base) {
   time_base_ = time_base;
 }
 
+void Sequence::setCurrentTime(int64_t value) {
+  doSetCurrentTime(value);
+}
+
+void Sequence::setDuration(int64_t value) {
+  doSetDuration(value);
+} 
+
+void Sequence::renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer) {
+  
+}
+
+void Sequence::renderVideo(QSharedPointer<video_renderer::Renderer> renderer) {
+  QSharedPointer<video_renderer::CommandBuffer> command_buffer
+    = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
+  renderVideoCommandBuffer(command_buffer);
+}
+
+const std::string& Sequence::id() {
+  return id_;
+}
+
 const Rational& Sequence::time_base() const {
   return time_base_;
 }
@@ -73,24 +108,20 @@ int Sequence::base_time() const {
   return time_base_.num();
 }
 
-void Sequence::setCurrentTime(int64_t value) {
-  doSetCurrentTime(value);
-}
-
 int64_t Sequence::current_time() const {
   return current_time_;
-}
-
-void Sequence::setDuration(int64_t value) {
-  doSetDuration(value);
 }
 
 int64_t Sequence::duration() const {
   return duration_;
 }
 
-const std::string& Sequence::id() {
-  return id_;
+int Sequence::width() const {
+  return width_;
+}
+
+int Sequence::height() const {
+  return height_;
 }
 
 const std::vector<QSharedPointer<Track>>& Sequence::tracks() {

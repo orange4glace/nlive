@@ -13,6 +13,11 @@
 
 namespace nlive {
 
+namespace video_renderer {
+class Renderer;
+class CommandBuffer;
+}
+
 class Sequence : public QObject {
   Q_OBJECT
 
@@ -22,6 +27,9 @@ private:
   Rational time_base_;
   int64_t current_time_;
   int64_t duration_;
+
+  int width_;
+  int height_;
 
   std::vector<QSharedPointer<Track>> tracks_;
   std::map<QSharedPointer<Track>, std::vector<QMetaObject::Connection*>> track_connections_;
@@ -41,26 +49,31 @@ public:
   QSharedPointer<Track> getTrackAt(int index);
 
   void setTimeBase(Rational time_base);
-  const Rational& time_base() const;
-  int base_time() const;
-
   void setCurrentTime(int64_t value);
-  int64_t current_time() const;
-
   void setDuration(int64_t value);
-  int64_t duration() const;
+
+  void renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
 
   const std::string& id();
+  const Rational& time_base() const;
+  int base_time() const;
+  int64_t current_time() const;
+  int64_t duration() const;
+  int width() const;
+  int height() const;
   const std::vector<QSharedPointer<Track>>& tracks();
   int track_size() const;
-
   QUndoStack* undo_stack();
+
+public slots:
+  void renderVideo(QSharedPointer<video_renderer::Renderer> renderer);
 
 signals:
   void onDidAddTrack(QSharedPointer<Track> track, int index);
   void onWillRemoveTrack(QSharedPointer<Track> track, int index);
   void onDidChangeCurrentTime(int64_t old_current_time);
   void onDidChangeDuration(int64_t old_duration);
+  void onDirty(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
 
 };
 

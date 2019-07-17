@@ -1,0 +1,12 @@
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  renderer/video_renderer/renderer.h
+  renderer/video_renderer/renderer.cpp
+  renderer/video_renderer/render_command.h
+  renderer/video_renderer/video_render_command.h
+  renderer/video_renderer/command_buffer.h
+  renderer/video_renderer/command_buffer.cpp
+  renderer/video_renderer/sequence_renderer.h
+  renderer/video_renderer/sequence_renderer.cpp
+  PARENT_SCOPE
+)

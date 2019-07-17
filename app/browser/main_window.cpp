@@ -12,7 +12,9 @@
 #include "model/project/project.h"
 
 #include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget_service_impl.h"
 #include "browser/widgets/project/project_widget.h"
+#include "browser/widgets/monitor/monitor_widget.h"
 #include "browser/services/import/import_service_impl.h"
 
 #include "platform/task/task.h"
@@ -62,8 +64,10 @@ MainWindow::MainWindow() {
 
   // Initialize services
   ThemeService::Initialize();
+  TimelineWidgetService::Initialize();
 
   auto theme_service = ThemeService::instance();
+  auto timeline_widget_service = TimelineWidgetService::instance();
   auto task_service = new TaskService();
   auto resource_service = new ResourceService(task_service);
   auto import_service = new ImportService(resource_service);
@@ -82,15 +86,18 @@ MainWindow::MainWindow() {
   track1->addClip(QSharedPointer<Clip>(new nlive::Clip(track1->undo_stack(), sequence->time_base(), 30, 150, 0)));
   track2->addClip(QSharedPointer<Clip>(new nlive::Clip(track2->undo_stack(), sequence->time_base(), 120, 260, 0)));
 
-  auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service);
+  auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service, timeline_widget_service);
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
 
-  project_widget::ProjectWidget::Initialize();
-  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, import_service);
-  addDockWidget(Qt::TopDockWidgetArea, project_widget);
+  // project_widget::ProjectWidget::Initialize();
+  // auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, import_service);
+  // addDockWidget(Qt::TopDockWidgetArea, project_widget);
 
-  project_widget->setDirectory(project->root_storage_directory());
+  // project_widget->setDirectory(project->root_storage_directory());
+
+  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service);
+  addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
 
 }
 
