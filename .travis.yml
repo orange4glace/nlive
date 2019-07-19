@@ -11,6 +11,14 @@ before_install:
   sudo apt-get -y update
 script:
 - |
+  wget https://cmake.org/files/v3.11/cmake-3.11.0.tar.gz
+  tar -zxvf cmake-3.11.0.tar.gz
+  cd cmake-3.11.0
+  ./bootstrap
+  make
+  sudo make install
+  cmake --version
+
   sudo apt-get -y install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
   sudo apt-get -y install cmake
   sudo apt-get -y install ninja
