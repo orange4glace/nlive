@@ -18,7 +18,7 @@ find_package(Qt5 REQUIRED
   Multimedia
   OpenGL
   Svg
-  LinguistTools
+  # LinguistTools
 )
 find_package(FFMPEG 3.4 REQUIRED
   COMPONENTS
@@ -29,8 +29,7 @@ find_package(FFMPEG 3.4 REQUIRED
   swscale
   swresample
 )
-find_package(spdlog REQUIRED)
-message(STATUS ${spdlog_INCLUDE_DIR})
+# find_package(spdlog REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
