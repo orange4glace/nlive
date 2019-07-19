@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(nlive)
 
 set(CMAKE_AUTOMOC ON)
@@ -18,7 +21,7 @@ find_package(Qt5 REQUIRED
   Multimedia
   OpenGL
   Svg
-  LinguistTools
+  # LinguistTools
 )
 find_package(FFMPEG 3.4 REQUIRED
   COMPONENTS
@@ -29,8 +32,7 @@ find_package(FFMPEG 3.4 REQUIRED
   swscale
   swresample
 )
-find_package(spdlog REQUIRED)
-message(STATUS ${spdlog_INCLUDE_DIR})
+# find_package(spdlog REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

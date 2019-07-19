@@ -1,0 +1,52 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+  
+steps:
+- script: |
+    git submodule init
+    git submodule update
+  displayName: 'Git submodule'
+
+- script: |
+    sudo add-apt-repository ppa:beineri/opt-qt-5.12.3-xenial
+    sudo add-apt-repository ppa:jonathonf/ffmpeg-3
+    sudo apt-get update
+  displayName: 'Update apt repository'
+
+- script: |
+    sudo apt-get install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
+  displayName: 'Install libav'
+
+- script: |
+    sudo apt-get install cmake
+  displayName: 'Install CMake'
+
+- script: |
+    sudo apt-get install ninja
+  displayName: 'Install Ninja'
+
+- script: |
+    sudo apt-get install qt512-meta-minimal qt512multimedia qt512svg
+    source /opt/qt512/bin/qt512-env.sh
+  displayName: 'Install Qt5'
+
+- script: |
+    mkdir build
+    cd build
+    sudo cmake ..
+    ls
+  displayName: 'Run CMake'
+
+- script: |
+    pwd
+    cd build
+    sudo make
+  displayName: 'Run Make'
