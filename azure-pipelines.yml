@@ -30,7 +30,7 @@ steps:
   displayName: 'Install Ninja'
 
 - script: |
-    sudo apt-get install qt59-meta-minimal
+    sudo apt-get install qt59-meta-minimal qt59multimedia qt59svg
     source /opt/qt59/bin/qt59-env.sh
   displayName: 'Install Qt5'
 
