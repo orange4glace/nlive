@@ -16,7 +16,7 @@ steps:
   displayName: 'Git submodule'
 
 - script: |
-    sudo add-apt-repository ppa:beineri/opt-qt591-xenial
+    sudo add-apt-repository ppa:beineri/opt-qt-5.12.3-xenial
     sudo add-apt-repository ppa:jonathonf/ffmpeg-3
     sudo apt-get update
   displayName: 'Update apt repository'
@@ -34,8 +34,8 @@ steps:
   displayName: 'Install Ninja'
 
 - script: |
-    sudo apt-get install qt59-meta-minimal qt59multimedia qt59svg
-    source /opt/qt59/bin/qt59-env.sh
+    sudo apt-get install qt512-meta-minimal qt512multimedia qt512svg
+    source /opt/qt512/bin/qt512-env.sh
   displayName: 'Install Qt5'
 
 - script: |
