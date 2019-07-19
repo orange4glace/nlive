@@ -18,8 +18,8 @@ steps:
   displayName: 'Update apt repository'
 
 - script: |
-    sudo apt-get install libav-tools
-  displayName: 'Install libav'
+    sudo apt-get install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
+    displayName: 'Install libav'
 
 - script: |
     sudo apt-get install cmake
