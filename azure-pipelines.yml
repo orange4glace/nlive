@@ -37,9 +37,11 @@ steps:
     mkdir build
     cd build
     sudo cmake ..
+    ls
   displayName: 'Run CMake'
 
 - script: |
+    pwd
     cd build
     sudo make
   displayName: 'Run Make'
