@@ -23,7 +23,7 @@ public:
 
   QSharedPointer<Sequence> createSequence();
 
-  QUndoStack Project::undo_stack();
+  QUndoStack undo_stack();
 
 
 
