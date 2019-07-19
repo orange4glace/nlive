@@ -11,10 +11,10 @@ before_install:
   sudo apt-get update
 script:
 - |
-  sudo apt-get install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
-  sudo apt-get install cmake
-  sudo apt-get install ninja
-  sudo apt-get install qt512-meta-minimal qt512multimedia qt512svg
+  sudo apt-get -y install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
+  sudo apt-get -y install cmake
+  sudo apt-get -y install ninja
+  sudo apt-get -y install qt512-meta-minimal qt512multimedia qt512svg
   source /opt/qt512/bin/qt512-env.sh
   mkdir build
   cd build
