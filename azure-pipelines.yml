@@ -13,13 +13,12 @@ steps:
 - script: |
     sudo add-apt-repository ppa:beineri/opt-qt591-xenial
     sudo add-apt-repository ppa:jonathonf/ffmpeg-3
-
     sudo apt-get update
   displayName: 'Update apt repository'
 
 - script: |
     sudo apt-get install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
-    displayName: 'Install libav'
+  displayName: 'Install libav'
 
 - script: |
     sudo apt-get install cmake
