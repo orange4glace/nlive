@@ -1,0 +1,25 @@
+language: cpp
+sudo: required
+dist: xenial
+compiler:
+- clang
+os:
+- linux
+before_install:
+- |
+  sudo add-apt-repository ppa:beineri/opt-qt-5.12.3-xenial
+  sudo apt-get update
+script:
+- |
+  sudo apt-get install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
+  sudo apt-get install cmake
+  sudo apt-get install ninja
+  sudo apt-get install qt512-meta-minimal qt512multimedia qt512svg
+  source /opt/qt512/bin/qt512-env.sh
+  mkdir build
+  cd build
+  sudo cmake ..
+  sudo make
+branches:
+  only:
+  - travis
