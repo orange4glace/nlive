@@ -18,8 +18,8 @@ steps:
   displayName: 'Update apt repository'
 
 - script: |
-    sudo apt-get install ffmpeg
-  displayName: 'Install FFmpeg'
+    sudo apt-get install libav-tools
+  displayName: 'Install libav'
 
 - script: |
     sudo apt-get install cmake
