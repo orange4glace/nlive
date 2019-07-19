@@ -20,7 +20,6 @@ script:
   cd ${TRAVIS_BUILD_DIR}
 
   sudo apt-get -y install libavformat-dev libavcodec-dev libavfilter-dev libavutil-dev libswscale-dev libswresample-dev
-  sudo apt-get -y install cmake
   sudo apt-get -y install ninja
   sudo apt-get -y install qt512-meta-minimal qt512multimedia qt512svg
   source /opt/qt512/bin/qt512-env.sh
