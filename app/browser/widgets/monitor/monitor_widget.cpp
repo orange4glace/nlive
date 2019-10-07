@@ -1,6 +1,7 @@
 #include "browser/widgets/monitor/monitor_widget.h"
 
 #include <QDebug>
+#include <QPainter>
 
 #include "browser/widgets/timeline/timeline_widget_service.h"
 #include "browser/widgets/timeline/timelinewidget.h"
@@ -49,6 +50,19 @@ void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
   if (sequence) {
     qDebug() << "seq view create\n";
     sequence_view_ = new SequenceView(this, sequence);
+  }
+}
+
+void MonitorWidget::paintEvent(QPaintEvent* event) {
+  QPainter p(this);
+  p.fillRect(rect(), Qt::darkYellow);
+  qDebug() << "FILL " << size() << "\n";
+}
+
+void MonitorWidget::resizeEvent(QResizeEvent* event) {
+  qDebug() << "RESIZING " << size() << "\n";
+  if (sequence_view_) {
+    sequence_view_->resize(size());
   }
 }
 

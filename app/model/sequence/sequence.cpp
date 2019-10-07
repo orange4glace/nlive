@@ -3,8 +3,12 @@
 #include "platform/logger/logger.h"
 #include "renderer/video_renderer/renderer.h"
 #include "renderer/video_renderer/command_buffer.h"
+#include "renderer/video_renderer/simple_render_command.h"
 
 #include <QTimer>
+
+#include <cstdlib>
+#include <ctime>
 
 namespace nlive {
 
@@ -12,11 +16,17 @@ Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
   undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
   width_(1080), height_(720) {
 
+    srand((unsigned int)time(NULL));
   QTimer* t = new QTimer();
   connect(t, &QTimer::timeout, this, [this]() {
-    this->onDirty(nullptr);
+    auto cb = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
+    cb->addCommand(
+      new video_renderer::SimpleRenderCommand(
+        0, 0, 0, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX
+      ));
+    this->onDirty(cb);
   });
-  t->setInterval(1000);
+  t->setInterval(2000);
   t->start();
 
 }
@@ -90,7 +100,7 @@ void Sequence::renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBu
   
 }
 
-void Sequence::renderVideo(QSharedPointer<video_renderer::Renderer> renderer) {
+void Sequence::renderVideo(QSharedPointer<video_renderer::Renderer> renderer, int64_t timecode) {
   QSharedPointer<video_renderer::CommandBuffer> command_buffer
     = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
   renderVideoCommandBuffer(command_buffer);

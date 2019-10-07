@@ -4,9 +4,12 @@ namespace nlive {
 
 const std::string VideoResource::TYPE = "nlive.Resource.VideoResource";
 
-VideoResource::VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration) :
+VideoResource::VideoResource(
+  QUrl path, Rational time_base, Rational frame_rate, int64_t duration,
+  int width, int height) :
   Resource(VideoResource::TYPE, path),
-  time_base_(time_base), frame_rate_(frame_rate), duration_(duration) {
+  time_base_(time_base), frame_rate_(frame_rate), duration_(duration),
+  width_(width), height_(height) {
 
 }
 
@@ -20,6 +23,14 @@ const Rational& VideoResource::frame_rate() const {
 
 int64_t VideoResource::duration() const {
   return duration_;
+}
+
+int VideoResource::width() const {
+  return width_;
+}
+
+int VideoResource::height() const {
+  return height_;
 }
 
 }

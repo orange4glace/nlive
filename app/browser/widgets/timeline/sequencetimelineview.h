@@ -109,6 +109,11 @@ public:
   int getTrackIndexAtPoint(QPoint&& point) const;
   SequenceScrollView* scroll_view();
 
+  const std::set<ClipView*>& focused_clip_views();
+
+signals:
+  void onDidChangeFocusedClips();
+
 };
 
 }

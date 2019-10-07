@@ -1,5 +1,7 @@
 #include "model/sequence/clip.h"
 
+#include "model/effect/effect.h"
+
 namespace nlive {
 
 namespace {
@@ -26,9 +28,21 @@ void Clip::setTime(int64_t start_time, int64_t end_time, int64_t b_time) {
   emit onDidChangeTime(old_start_time, old_end_time, old_b_time);
 }
 
+void Clip::addEffect(QSharedPointer<effect::Effect> effect) {
+  effects_.push_back(effect);
+  emit onDidAddEffect(effect);
+}
+
+void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
+  
+}
+
 int64_t Clip::start_time() const { return start_time_; }
 int64_t Clip::end_time() const { return end_time_; }
 int64_t Clip::b_time() const { return b_time_; }
+
+const std::vector<QSharedPointer<effect::Effect>>& Clip::effects() { return effects_; }
+
 int Clip::id() const { return id_; }
 
 QUndoStack* Clip::undo_stack() {

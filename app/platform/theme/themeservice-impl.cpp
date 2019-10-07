@@ -1,13 +1,14 @@
 #include "platform/theme/themeservice-impl.h"
 
 #include <QColor>
+#include <QSharedPointer>
 
 namespace nlive {
 
-ThemeService* ThemeService::instance_ = nullptr;
+QSharedPointer<ThemeService> ThemeService::instance_ = nullptr;
 
 void ThemeService::Initialize() {
-  ThemeService::instance_ = new ThemeService();
+  ThemeService::instance_ = QSharedPointer<ThemeService>(new ThemeService());
 }
 
 ThemeService::ThemeService() :

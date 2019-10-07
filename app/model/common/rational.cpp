@@ -32,7 +32,7 @@ int Rational::den() const {
   return den_;
 }
 
-int64_t Rational::rescale(int a, const Rational& from, const Rational& to, Rounding rounding) {
+int64_t Rational::rescale(int64_t a, const Rational& from, const Rational& to, Rounding rounding) {
   return av_rescale_q(a, { from.num_, from.den_ }, { to.num_, to.den_ });
 }
 

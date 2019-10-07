@@ -8,6 +8,14 @@ CommandBuffer::CommandBuffer() {
   
 }
 
+void CommandBuffer::addCommand(RenderCommand* command) {
+  commands_.push_back(command);
+}
+
+const std::vector<RenderCommand*>& CommandBuffer::commands() {
+  return commands_;
+}
+
 }
 
 }

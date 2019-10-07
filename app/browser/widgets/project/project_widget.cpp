@@ -17,7 +17,7 @@ namespace project_widget {
 void ProjectWidget::Initialize() {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory());
-  StorageItemViewFactoryRegistry::registerDefaultFactory(new VideoResourceStorageItemViewFactory());
+  StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory());
 
 }
 

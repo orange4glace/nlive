@@ -37,7 +37,7 @@ public:
   int num() const;
   int den() const;
 
-  static int64_t rescale(int a, const Rational& from, const Rational& to, Rounding rounding = Rounding::ROUND_NEAR_INF);
+  static int64_t rescale(int64_t a, const Rational& from, const Rational& to, Rounding rounding = Rounding::ROUND_NEAR_INF);
   static Rational fromAVRational(const AVRational& rational);
 
 };

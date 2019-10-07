@@ -15,6 +15,7 @@ add_executable(nlive
 
 target_include_directories(${CMAKE_PROJECT_NAME} BEFORE
   PRIVATE
+  ${Boost_INCLUDE_DIRS}
   ${spdlog_INCLUDE_DIR}
 )
 
@@ -34,4 +35,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
   FFMPEG::avfilter
   FFMPEG::swscale
   FFMPEG::swresample
+  ${Boost_LIBRARIES}
 )

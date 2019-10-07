@@ -16,6 +16,7 @@ class SequenceTimelineView;
 class SequenceView {
 
 private:
+  QSharedPointer<Sequence> sequence_;
   SequenceSideView side_view_;
   SequenceTimelineView timeline_view_;
 
@@ -24,6 +25,8 @@ public:
 
   SequenceSideView* side_view();
   SequenceTimelineView* timeline_view();
+
+  QSharedPointer<Sequence> sequence();
 
 
 };

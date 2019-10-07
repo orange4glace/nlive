@@ -66,7 +66,7 @@ public:
   QUndoStack* undo_stack();
 
 public slots:
-  void renderVideo(QSharedPointer<video_renderer::Renderer> renderer);
+  void renderVideo(QSharedPointer<video_renderer::Renderer> renderer, int64_t timecode);
 
 signals:
   void onDidAddTrack(QSharedPointer<Track> track, int index);

@@ -48,11 +48,14 @@ void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int in
 
   for (auto clip_view : view->focused_clip_views())
     focused_clip_views_.insert(clip_view);
+  emit onDidChangeFocusedClips();
   connect(view, &TrackTimelineView::onDidFocusClip, this, [this](ClipView* clip_view) {
     focused_clip_views_.insert(clip_view);
+    emit onDidChangeFocusedClips();
   });
   connect(view, &TrackTimelineView::onDidBlurClip, this, [this](ClipView* clip_view) {
     focused_clip_views_.erase(clip_view);
+    emit onDidChangeFocusedClips();
   });
 }
 
@@ -414,6 +417,10 @@ void SequenceTimelineView::paintEvent(QPaintEvent* event) {
 
 SequenceScrollView* SequenceTimelineView::scroll_view() {
   return &scroll_view_;
+}
+
+const std::set<ClipView*>& SequenceTimelineView::focused_clip_views() {
+  return focused_clip_views_;
 }
 
 }

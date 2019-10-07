@@ -3,6 +3,7 @@
 
 #include <set>
 #include <QObject>
+#include <QSharedPointer>
 #include <QDebug>
 #include <QUndoStack>
 #include <QMetaObject>
@@ -10,6 +11,10 @@
 #include "model/sequence/clip.h"
 
 namespace nlive {
+
+namespace video_renderer {
+class CommandBuffer;
+}
 
 struct ClipStartCompare {
   using is_transparent = void;
@@ -72,6 +77,8 @@ public:
 
   QSharedPointer<Clip> getNextClip(QSharedPointer<Clip> clip);
   QSharedPointer<Clip> getPrevClip(QSharedPointer<Clip> clip);
+
+  void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
 
   const std::set<QSharedPointer<Clip>, ClipCompare>& clips();
 

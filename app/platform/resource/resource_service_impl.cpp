@@ -21,6 +21,8 @@ namespace {
 struct VideoMetadata {
   AVRational time_base;
   AVRational frame_rate;
+  int width;
+  int height;
   int64_t duration;
 };
 
@@ -62,6 +64,8 @@ VideoMetadata* findBestVideoMetadata(QString path) {
       metadata = new VideoMetadata();
       metadata->time_base = stream->time_base;
       metadata->frame_rate = stream->avg_frame_rate;
+      metadata->width = stream->codec->width;
+      metadata->height = stream->codec->height;
       metadata->duration = stream->duration;
       spdlog::get(LOGGER_DEFAULT)->info("[ResourceLoadTask] Found video stream. time_base = {}/{} avg_frame_rate = {}/{} duration = {}",
         stream->time_base.num, stream->time_base.den, stream->avg_frame_rate.num, stream->avg_frame_rate.den, stream->duration);
@@ -90,7 +94,7 @@ protected:
     VideoMetadata* video_metadata = findBestVideoMetadata(path_);
     if (video_metadata) {
       QSharedPointer<VideoResource> video_resource = QSharedPointer<VideoResource>(
-        new VideoResource(path_, Rational::fromAVRational(video_metadata->time_base), Rational::fromAVRational(video_metadata->frame_rate), video_metadata->duration));
+        new VideoResource(path_, Rational::fromAVRational(video_metadata->time_base), Rational::fromAVRational(video_metadata->frame_rate), video_metadata->duration, video_metadata->width, video_metadata->height));
       result_ = video_resource;
       delete video_metadata;
       return;

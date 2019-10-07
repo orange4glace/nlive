@@ -35,6 +35,8 @@ private:
   void handleDidChangeSequence(QSharedPointer<Sequence> sequence);
 
 protected:
+  void paintEvent(QPaintEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
 
 public:
   MonitorWidget(QWidget* parent,

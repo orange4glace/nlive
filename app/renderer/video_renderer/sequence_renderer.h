@@ -28,7 +28,9 @@ public:
     QSharedPointer<Sequence> sequence,
     QOpenGLContext* target_gl);
 
-  std::unique_ptr<RenderTexture> getRenderData();
+  // std::unique_ptr<RenderTexture> getRenderData();
+  void initialize();
+  void paint();
 
 public slots:
   void render(QSharedPointer<CommandBuffer> command_buffer);

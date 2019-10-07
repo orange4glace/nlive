@@ -18,6 +18,8 @@ public:
   CommandBuffer();
   void addCommand(RenderCommand* command);
 
+  const std::vector<RenderCommand*>& commands();
+
 };
 
 }

@@ -25,6 +25,10 @@ private:
 
   void scheduleRender();
 
+  int vertexLocation;
+  int matrixLocation;
+  int colorLocation;
+
 protected:
   void initializeGL() override;
   void resizeGL(int w, int h) override;

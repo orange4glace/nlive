@@ -15,15 +15,20 @@ private:
   Rational time_base_;
   Rational frame_rate_;
   int64_t duration_;
+  int width_;
+  int height_;
 
 public:
   static const std::string TYPE;
 
-  VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration);
+  VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration,
+    int width, int height);
 
   const Rational& time_base() const;
   const Rational& frame_rate() const;
   int64_t duration() const;
+  int width() const;
+  int height() const;
 
 };
 
