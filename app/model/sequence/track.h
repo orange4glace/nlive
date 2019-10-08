@@ -66,6 +66,8 @@ private:
 
   void handleOnDidChangeClipTime(QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time);
 
+  void doInvalidate();
+
 public:
   Track(QUndoStack* undo_stack);
 
@@ -74,9 +76,12 @@ public:
   void attachClip(QSharedPointer<Clip> clip);
   void detachClip(QSharedPointer<Clip> clip);
   bool hasClip(QSharedPointer<Clip> clip) const;
+  QSharedPointer<Clip> getClipAt(int64_t time);
 
   QSharedPointer<Clip> getNextClip(QSharedPointer<Clip> clip);
   QSharedPointer<Clip> getPrevClip(QSharedPointer<Clip> clip);
+
+  void invalidate();
 
   void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
 
@@ -88,6 +93,7 @@ signals:
   void onDidAddClip(QSharedPointer<Clip> clip);
   void onWillRemoveClip(QSharedPointer<Clip> clip);
   void onDidChangeClipTime(QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time);
+  void onInvalidate();
 
 };
 

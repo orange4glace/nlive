@@ -13,9 +13,9 @@ VideoClip::VideoClip(QUndoStack* undo_stack, QSharedPointer<VideoResource> video
 
 void VideoClip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timecode) {
   int64_t pts = Rational::rescale(timecode, time_base_, resource_->time_base());
-  // video_renderer::VideoRenderCommand* cmd = 
-  //   new video_renderer::VideoRenderCommand(resource_, decoder_, pts);
-  // command_buffer->addCommand(cmd);
+  video_renderer::VideoRenderCommand* cmd = 
+    new video_renderer::VideoRenderCommand(resource_, decoder_, pts);
+  command_buffer->addCommand(cmd);
 }
 
 }

@@ -2,6 +2,9 @@
 
 #include "model/effect/effect.h"
 
+#include "renderer/video_renderer/simple_render_command.h"
+#include "renderer/video_renderer/command_buffer.h"
+
 namespace nlive {
 
 namespace {
@@ -34,7 +37,9 @@ void Clip::addEffect(QSharedPointer<effect::Effect> effect) {
 }
 
 void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
-  
+  video_renderer::SimpleRenderCommand* cmd = 
+    new video_renderer::SimpleRenderCommand(0, 0, 0, -0.5f, -0.5f);
+  command_buffer->addCommand(cmd);
 }
 
 int64_t Clip::start_time() const { return start_time_; }

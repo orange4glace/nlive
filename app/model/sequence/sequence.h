@@ -5,6 +5,7 @@
 #include <QMetaObject>
 #include <QUndoStack>
 #include <QSharedPointer>
+#include <QTimer>
 #include <map>
 #include <vector>
 
@@ -28,11 +29,14 @@ private:
   int64_t current_time_;
   int64_t duration_;
 
+  bool invalidated_;
+  QTimer* invalidateTimer_;
+
   int width_;
   int height_;
 
   std::vector<QSharedPointer<Track>> tracks_;
-  std::map<QSharedPointer<Track>, std::vector<QMetaObject::Connection*>> track_connections_;
+  std::map<QSharedPointer<Track>, std::vector<QMetaObject::Connection>, TrackCompare> track_connections_;
 
   QSharedPointer<Track> doAddTrack();
   void doRemoveTrackAt(int index);
@@ -40,6 +44,9 @@ private:
   void doSetDuration(int64_t value);
 
   void handleDidAddClip(QSharedPointer<Track> track, QSharedPointer<Clip> clip);
+
+  void doMakeDirty();
+  void doInvalidate();
 
 public:
   Sequence(QUndoStack* undo_stack, int base_time);
@@ -53,6 +60,8 @@ public:
   void setDuration(int64_t value);
 
   void renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
+
+  void invalidate();
 
   const std::string& id();
   const Rational& time_base() const;

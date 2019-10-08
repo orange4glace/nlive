@@ -35,6 +35,10 @@ void Track::handleOnDidChangeClipTime(QSharedPointer<Clip> clip, int old_start_t
   attachClip(clip);
 }
 
+void Track::doInvalidate() {
+  emit onInvalidate();
+}
+
 void Track::removeClip(QSharedPointer<Clip> clip) {
   doRemoveClip(clip);
 }
@@ -42,6 +46,7 @@ void Track::removeClip(QSharedPointer<Clip> clip) {
 void Track::doRemoveClip(QSharedPointer<Clip> clip) {
   if (!hasClip(clip)) return;
   auto connections = clip_connections_.find(clip);
+  Q_ASSERT(connections != clip_connections_.end());
   for (auto& connection : connections->second) disconnect(connection);
   clip_connections_.erase(connections);
   auto sptr = *clips_.find(clip);
@@ -112,6 +117,14 @@ void Track::doDetachClip(QSharedPointer<Clip> clip) {
 bool Track::hasClip(QSharedPointer<Clip> clip) const {
   return clips_.count(clip) > 0;
 }
+  
+// TODO : Remove O(N) complexity
+QSharedPointer<Clip> Track::getClipAt(int64_t time) {
+  for (auto clip : clips_) {
+    if (clip->start_time() <= time && time < clip->end_time()) return clip;
+  }
+  return nullptr;
+}
 
 QSharedPointer<Clip> Track::getNextClip(QSharedPointer<Clip> clip) {
   if (!hasClip(clip)) return nullptr;
@@ -125,6 +138,16 @@ QSharedPointer<Clip> Track::getPrevClip(QSharedPointer<Clip> clip) {
   auto it = clip_start_ordered_set_.find(clip);
   if (it == clip_start_ordered_set_.begin()) return nullptr;
   return *std::prev(it);
+}
+
+void Track::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
+  auto clip = getClipAt(time);
+  if (clip == nullptr) return;
+  clip->render(command_buffer, time);
+}
+
+void Track::invalidate() {
+  doInvalidate();
 }
 
 const std::set<QSharedPointer<Clip>, ClipCompare>& Track::clips() {

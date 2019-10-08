@@ -5,8 +5,6 @@
 #include "renderer/video_renderer/command_buffer.h"
 #include "renderer/video_renderer/simple_render_command.h"
 
-#include <QTimer>
-
 #include <cstdlib>
 #include <ctime>
 
@@ -14,21 +12,32 @@ namespace nlive {
 
 Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
   undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
+  invalidated_(false),
   width_(1080), height_(720) {
 
-    srand((unsigned int)time(NULL));
-  QTimer* t = new QTimer();
-  connect(t, &QTimer::timeout, this, [this]() {
-    auto cb = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
-    cb->addCommand(
-      new video_renderer::SimpleRenderCommand(
-        0, 0, 0, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX
-      ));
-    this->onDirty(cb);
+  invalidateTimer_ = new QTimer();
+  connect(invalidateTimer_, &QTimer::timeout, this, [this]() {
+    if (invalidated_) {
+      invalidated_ = false;
+      doMakeDirty();
+    }
   });
-  t->setInterval(2000);
-  t->start();
+  invalidateTimer_->setInterval(1000);
+  invalidateTimer_->start();
+}
 
+void Sequence::doMakeDirty() {
+  QSharedPointer<video_renderer::CommandBuffer> command_buffer =
+    QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
+  for (auto track : tracks_) {
+    track->render(command_buffer, current_time_);
+  }
+  qDebug() << "Dirty!\n";
+  emit onDirty(command_buffer);
+}
+
+void Sequence::doInvalidate() {
+  invalidated_ = true;
 }
 
 QSharedPointer<Track> Sequence::addTrack() {
@@ -37,11 +46,15 @@ QSharedPointer<Track> Sequence::addTrack() {
 
 QSharedPointer<Track> Sequence::doAddTrack() {
   QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_));
-  tracks_.emplace_back(track);
+  tracks_.push_back(track);
   std::vector<QMetaObject::Connection> connections;
-  connections.emplace_back(connect(track.get(), &Track::onDidAddClip, this, [this, track](QSharedPointer<Clip> clip) {
+  connections.push_back(connect(track.get(), &Track::onDidAddClip, this, [this, track](QSharedPointer<Clip> clip) {
     handleDidAddClip(track, clip);
   }));
+  connections.push_back(connect(track.get(), &Track::onInvalidate, this, [this]() {
+    doInvalidate();
+  }));
+  track_connections_.insert({track, connections});
   emit onDidAddTrack(track, tracks_.size() - 1);
   return track;
 }
@@ -64,18 +77,24 @@ void Sequence::doRemoveTrackAt(int index) {
   }
   QSharedPointer<Track> track = tracks_[index];
   emit onWillRemoveTrack(track, index);
+  auto connections = track_connections_.find(track);
+  Q_ASSERT(connections != track_connections_.end());
+  for (auto& connection : connections->second) disconnect(connection);
+  track_connections_.erase(connections);
   tracks_.erase(tracks_.begin() + index);
 }
 
 void Sequence::doSetCurrentTime(int64_t value) {
   int64_t old = current_time_;
   current_time_ = value;
+  doInvalidate();
   emit onDidChangeCurrentTime(old);
 }
 
 void Sequence::doSetDuration(int64_t value) {
   int64_t old = duration_;
   duration_ = value;
+  doInvalidate();
   emit onDidChangeDuration(old);
 }
 
@@ -104,6 +123,10 @@ void Sequence::renderVideo(QSharedPointer<video_renderer::Renderer> renderer, in
   QSharedPointer<video_renderer::CommandBuffer> command_buffer
     = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
   renderVideoCommandBuffer(command_buffer);
+}
+
+void Sequence::invalidate() {
+  doInvalidate();
 }
 
 const std::string& Sequence::id() {
