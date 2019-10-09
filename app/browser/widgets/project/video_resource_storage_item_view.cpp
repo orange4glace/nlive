@@ -8,7 +8,7 @@ namespace nlive {
 
 namespace project_widget {
 
-VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, VideoResourceStorageItem* item, IThemeService* theme_service) :
+VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, VideoResourceStorageItem* item, QSharedPointer<IThemeService> theme_service) :
   StorageItemView(parent, item, theme_service) {
 
 }
@@ -21,7 +21,7 @@ void VideoResourceStorageItemView::paintEvent(QPaintEvent* event) {
 }
 
 VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory() {}
-StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, StorageItem* item, IThemeService* theme_service) {
+StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, StorageItem* item, QSharedPointer<IThemeService> theme_service) {
   if (item->type() != VideoResourceStorageItem::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
       "[VideoResourceStorageItemViewFactory] StorageItem type not match! expected = {}, got = {}", VideoResourceStorageItem::TYPE, item->type());

@@ -25,8 +25,8 @@ namespace project_widget {
 DirectoryView::DirectoryView(
   QWidget* parent,
   QSharedPointer<StorageDirectory> storage_directory,
-  IThemeService* theme_service,
-  IImportService* import_service) :
+  QSharedPointer<IThemeService> theme_service,
+  QSharedPointer<IImportService> import_service) :
   theme_service_(theme_service),
   import_service_(import_service),
   QWidget(parent), storage_directory_(storage_directory), grid_layout_(this) {

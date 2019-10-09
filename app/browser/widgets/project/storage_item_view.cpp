@@ -14,7 +14,7 @@ namespace nlive {
 
 namespace project_widget {
 
-StorageItemView::StorageItemView(QWidget* parent, StorageItem* item, IThemeService* theme_service) :
+StorageItemView::StorageItemView(QWidget* parent, StorageItem* item, QSharedPointer<IThemeService> theme_service) :
   theme_service_(theme_service), QWidget(parent), storage_item_(item) {
 
 }

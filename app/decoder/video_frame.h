@@ -24,7 +24,8 @@ public:
   VideoFrame(AVFrame* frame, int width, int height, AVPixelFormat pix_fmt);
   ~VideoFrame();
 
-  void scale(void* out_data);
+  void scale(void* out_data, 
+      AVPixelFormat dst_pix_fmt = AV_PIX_FMT_RGB32);
 
 };
 

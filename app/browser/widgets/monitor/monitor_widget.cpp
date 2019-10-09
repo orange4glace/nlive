@@ -19,6 +19,7 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   theme_service_(theme_service),
   sequence_view_(nullptr) {
 
+  qDebug() << "MONITOR WIDGET CREATED\n";
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
   connect(timeline_widget_service_.get(), &ITimelineWidgetService::onDidChangeCurrentWidget, 
     this, &MonitorWidget::handleDidChangeCurrentTimelineWidget);
@@ -29,11 +30,12 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::Timelin
   for (auto& connection : widget_connections_)
     disconnect(connection);
   widget_connections_.clear();
-  if (sequence_view_) delete sequence_view_;
+  if (sequence_view_) {
+    // TODO
+    // delete sequence_view_;
+  }
   sequence_view_ = nullptr;
-    qDebug() << "timeline widget " << timeline_widget << "\n";
   if (timeline_widget != nullptr) {
-    qDebug() << " Seq = > " << timeline_widget->sequence()<< "\n";
     handleDidChangeSequence(timeline_widget->sequence());
     widget_connections_.push_back(
       connect(timeline_widget, &timelinewidget::TimelineWidget::onDidChangeSequence,
@@ -42,13 +44,12 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::Timelin
 }
 
 void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
-    qDebug() << "seq " << sequence << "\n";
   if (sequence_view_ != nullptr) {
-    delete sequence_view_;
+    // TODO
+    // delete sequence_view_;
   }
   sequence_view_ = nullptr;
   if (sequence) {
-    qDebug() << "seq view create\n";
     sequence_view_ = new SequenceView(this, sequence);
   }
 }
@@ -56,11 +57,9 @@ void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
 void MonitorWidget::paintEvent(QPaintEvent* event) {
   QPainter p(this);
   p.fillRect(rect(), Qt::darkYellow);
-  qDebug() << "FILL " << size() << "\n";
 }
 
 void MonitorWidget::resizeEvent(QResizeEvent* event) {
-  qDebug() << "RESIZING " << size() << "\n";
   if (sequence_view_) {
     sequence_view_->resize(size());
   }

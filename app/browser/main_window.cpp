@@ -62,6 +62,8 @@ protected:
 
 MainWindow::MainWindow() {
 
+  qDebug() << "Main thread = " << thread() << "\n";
+
   registerLoggers();
 
   // Initialize services
@@ -73,6 +75,9 @@ MainWindow::MainWindow() {
   auto task_service = new TaskService();
   auto resource_service = new ResourceService(task_service);
   auto import_service = new ImportService(resource_service);
+
+  auto s_resource_service = new QSharedPointer<ResourceService>(resource_service);
+  auto s_import_service = new QSharedPointer<ImportService>(import_service);
 
   // task_service->setParent(this);
   resource_service->setParent(this);
@@ -96,11 +101,11 @@ MainWindow::MainWindow() {
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
 
-  // project_widget::ProjectWidget::Initialize();
-  // auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, import_service);
-  // addDockWidget(Qt::TopDockWidgetArea, project_widget);
+  project_widget::ProjectWidget::Initialize();
+  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service);
+  addDockWidget(Qt::TopDockWidgetArea, project_widget);
 
-  // project_widget->setDirectory(project->root_storage_directory());
+  project_widget->setDirectory(project->root_storage_directory());
 
   auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service.get());
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);

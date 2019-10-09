@@ -1,6 +1,7 @@
 #include "renderer/video_renderer/renderer_context.h"
 
 #include <QOpenGLFunctions>
+#include <QDebug>
 
 namespace nlive {
 
@@ -11,10 +12,11 @@ namespace {
 }
 
 RendererContext::RendererContext(QOpenGLContext* gl) :
-  gl_(gl), front_buffer_index_(0) {
+  gl_(gl), front_buffer_index_(0), initialized_(false) {
 }
   
-void RendererContext::initialize() {
+void RendererContext::initialize() { 
+  if (initialized_) return;
   for (int i = 0; i < 2; i ++) {
     RenderTexture rt;
     rt.id = next_render_texture_id ++;
@@ -33,6 +35,7 @@ void RendererContext::initialize() {
     glf->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     swap_buffers_.push_back(rt);
   }
+  initialized_ = true;
 }
 
 RenderTexture RendererContext::getTemporaryRenderTexture() {
@@ -77,6 +80,10 @@ RenderTexture RendererContext::getBackRenderTexture() {
 
 void RendererContext::swapRenderTextures() {
   front_buffer_index_ = (front_buffer_index_ + 1) % 2;
+}
+
+bool RendererContext::initialized() const {
+  return initialized_;
 }
 
 QOpenGLContext* RendererContext::gl() {

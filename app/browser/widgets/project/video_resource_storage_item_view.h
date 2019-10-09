@@ -15,7 +15,7 @@ protected:
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  VideoResourceStorageItemView(QWidget* parent, VideoResourceStorageItem* item, IThemeService* theme_service);
+  VideoResourceStorageItemView(QWidget* parent, VideoResourceStorageItem* item, QSharedPointer<IThemeService> theme_service);
 
 };
 
@@ -23,7 +23,7 @@ class VideoResourceStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
   VideoResourceStorageItemViewFactory();
-  StorageItemView* create(QWidget* widget, StorageItem* item, IThemeService* theme_service) override;
+  StorageItemView* create(QWidget* widget, StorageItem* item, QSharedPointer<IThemeService> theme_service) override;
 
 };
 

@@ -21,7 +21,7 @@ private:
 public:
   static const std::string TYPE;
 
-  VideoResource(QUrl path, Rational time_base, Rational frame_rate, int64_t duration,
+  VideoResource(std::string path, Rational time_base, Rational frame_rate, int64_t duration,
     int width, int height);
 
   const Rational& time_base() const;

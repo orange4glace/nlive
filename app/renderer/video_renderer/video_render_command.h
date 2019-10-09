@@ -37,16 +37,17 @@ private:
   inline void initialize(QOpenGLContext* gl) {
     if (initialized_) return;
     initialized_ = true;
-    QOpenGLFunctions gf(gl);
-    vert_shader_ = gf.glCreateShader(GL_VERTEX_SHADER);
-    frag_shader_ = gf.glCreateShader(GL_FRAGMENT_SHADER);
+    auto gf = gl->functions();
+    vert_shader_ = gf->glCreateShader(GL_VERTEX_SHADER);
+    frag_shader_ = gf->glCreateShader(GL_FRAGMENT_SHADER);
     
     const char* vert_shader_source_ =
         "#version 300 es\n"
         "in vec2 a_position;\n"
         "in vec2 a_texCoord;\n"
         "out vec2 v_texCoord;\n"
-        "void main() {"
+        "void main() {\n"
+          "gl_Position = vec4(a_position, 0, 1);\n"
           "v_texCoord = a_texCoord;\n"
         "}";
     const char* frag_shader_source_ = 
@@ -58,25 +59,25 @@ private:
         "void main() {\n"
           "outColor = texture(u_image, v_texCoord);\n"
         "}";
-    gf.glShaderSource(vert_shader_, 1, &vert_shader_source_, NULL);
-    gf.glShaderSource(frag_shader_, 1, &frag_shader_source_, NULL);
+    gf->glShaderSource(vert_shader_, 1, &vert_shader_source_, NULL);
+    gf->glShaderSource(frag_shader_, 1, &frag_shader_source_, NULL);
 
-    gf.glCompileShader(vert_shader_);
-    gf.glCompileShader(frag_shader_);
+    gf->glCompileShader(vert_shader_);
+    gf->glCompileShader(frag_shader_);
 
-    program_ = gf.glCreateProgram();
-    gf.glAttachShader(program_, vert_shader_);
-    gf.glAttachShader(program_, frag_shader_);
-    gf.glLinkProgram(program_);
+    program_ = gf->glCreateProgram();
+    gf->glAttachShader(program_, vert_shader_);
+    gf->glAttachShader(program_, frag_shader_);
+    gf->glLinkProgram(program_);
 
-    position_loc_ = gf.glGetAttribLocation(program_, "a_position");
-    texCoord_loc_ = gf.glGetAttribLocation(program_, "a_texCoord");
-    image_loc_ = gf.glGetAttribLocation(program_, "u_image");
+    position_loc_ = gf->glGetAttribLocation(program_, "a_position");
+    texCoord_loc_ = gf->glGetAttribLocation(program_, "a_texCoord");
+    image_loc_ = gf->glGetAttribLocation(program_, "u_image");
 
-    gf.glGenBuffers(1, &position_buffer_);
-    gf.glGenBuffers(1, &texCoord_buffer_);
+    gf->glGenBuffers(1, &position_buffer_);
+    gf->glGenBuffers(1, &texCoord_buffer_);
 
-    gf.glGenTextures(1, &tex_);
+    gf->glGenTextures(1, &tex_);
   }
 
 public:
@@ -96,42 +97,56 @@ public:
     QOpenGLContext* gl = ctx->gl();
     decoder_->open();
     QSharedPointer<VideoFrame> video_frame = decoder_->decode(timestamp_);
-    video_frame->scale((void*)buffer_);
-    QOpenGLFunctions gf(gl);
-    RenderTexture rt = ctx->getTemporaryRenderTexture();
+    qDebug() << "FRAME = " << video_frame << "\n";
+    // TODO: If video_frame == NULL
+    if (!video_frame) return;
+    uint8_t* buf = new uint8_t[resource_->width() * resource_->height() * 4];
+    video_frame->scale((void*)buf);
+    auto gf = gl->functions();
+    RenderTexture rt = ctx->getBackRenderTexture();
     
-    gf.glBindTexture(GL_TEXTURE_2D, rt.texture);
-    gf.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resource_->width(), resource_->height(),
-      0, GL_RGB, GL_UNSIGNED_BYTE, buffer_);
-    gf.glUseProgram(program_);
-    gf.glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
-    float position[12] = {
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-      0.0f, 1.0f,
-      0.0f, 1.0f,
-      1.0f, 0.0f,
-      1.0f, 1.0f
-    };
-    gf.glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)position, GL_DYNAMIC_DRAW);
-    gf.glBindBuffer(GL_ARRAY_BUFFER, texCoord_buffer_);
-    float texCoord[12] = {
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-      0.0f, 1.0f,
-      0.0f, 1.0f,
-      1.0f, 0.0f,
-      1.0f, 1.0f
-    };
-    gf.glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)texCoord, GL_DYNAMIC_DRAW);
-    gf.glEnableVertexAttribArray(texCoord_loc_);
-    gf.glVertexAttribPointer(texCoord_loc_, 2, GL_FLOAT, false, 0, (void*)0);
-    gf.glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
-    gf.glActiveTexture(GL_TEXTURE0);
-    gf.glBindTexture(GL_TEXTURE_2D, tex_);
-    gf.glDrawArrays(GL_TRIANGLES, 0, 6);
+    gf->glBindTexture(GL_TEXTURE_2D, rt.texture);
+    gf->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resource_->width(), resource_->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+    gf->glBindTexture(GL_TEXTURE_2D, 0);
+    // gf->glBindFramebuffer(rt.framebuffer);
+    // gf->glClearColor(1.0f, 1.0f, 0, 1.0f);
+    // gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // gf->glUseProgram(program_);
+    // gf->glActiveTexture(GL_TEXTURE0);
+    // gf->glBindTexture(GL_TEXTURE_2D, front_render_texture.texture);
+    // gf->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // gf->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    // gf->glUniform1i(image_loc_, 0);
+    // gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
+    // float position[12] = {
+    //   0.0f, 0.0f,
+    //   1.0f, 0.0f,
+    //   0.0f, 1.0f,
+    //   0.0f, 1.0f,
+    //   1.0f, 0.0f,
+    //   1.0f, 1.0f
+    // };
+    // gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)position, GL_DYNAMIC_DRAW);
+    // gf->glEnableVertexAttribArray(position_loc_);
+    // gf->glVertexAttribPointer(position_loc_, 2, GL_FLOAT, false, 0, (void*)0);
+    // gf->glBindBuffer(GL_ARRAY_BUFFER, texCoord_buffer_);
+    // float texCoord[12] = {
+    //   0.0f, 0.0f,
+    //   1.0f, 0.0f,
+    //   0.0f, 1.0f,
+    //   0.0f, 1.0f,
+    //   1.0f, 0.0f,
+    //   1.0f, 1.0f
+    // };
+    // gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)texCoord, GL_DYNAMIC_DRAW);
+    // gf->glEnableVertexAttribArray(texCoord_loc_);
+    // gf->glVertexAttribPointer(texCoord_loc_, 2, GL_FLOAT, false, 0, (void*)0);
+    // gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
+    // gf->glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    ctx->releaseTemporaryRenderTexture(rt);
+    // ctx->releaseTemporaryRenderTexture(rt);
+
+    delete buf;
   }
 
 };

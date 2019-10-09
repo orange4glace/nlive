@@ -28,12 +28,16 @@ Renderer::Renderer(
 }
 
 Renderer::~Renderer() {
+  // TODO
   delete surface_;
 }
 
 void Renderer::run() {
+  qDebug() << "[Renderer] Thread started " << currentThreadId() << "\n";
   gl_->makeCurrent(surface_);
+  buffer_swap_mutex_.lock();
   renderer_ctx_->initialize();
+  buffer_swap_mutex_.unlock();
   auto gf = gl_->functions();
 
   vert_shader_ = gf->glCreateShader(GL_VERTEX_SHADER);
@@ -71,9 +75,10 @@ void Renderer::run() {
   while (true) {
     command_buffer_mutex_.lock();
     if (current_command_buffer_ == nullptr) {
-      qDebug() << "Wait for commands..\n";
+      qDebug() << "Wait for commands.. " << this << " " << thread() << "\n";
       command_buffer_wait_.wait(&command_buffer_mutex_);
     }
+    qDebug() << "Got commands.. " << current_command_buffer_->commands().size() << "\n";
     // Got a CommandBuffer that can be rendered into surface
     QSharedPointer<CommandBuffer> command_buffer = current_command_buffer_;
     current_command_buffer_ = nullptr;

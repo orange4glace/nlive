@@ -4,6 +4,7 @@ namespace nlive {
 
 VideoFrame::VideoFrame(AVFrame* frame, int width, int height, AVPixelFormat pix_fmt) :
   frame_(nullptr), width_(width), height_(height), pix_fmt_(pix_fmt) {
+  frame_ = av_frame_alloc();
   av_frame_move_ref(frame_, frame);
 }
 

@@ -24,6 +24,8 @@ private:
   std::vector<RenderTexture> swap_buffers_;
   int front_buffer_index_;
 
+  bool initialized_;
+
 public:
   RendererContext(QOpenGLContext* gl);
 
@@ -36,6 +38,8 @@ public:
   // void blit(RenderTexture& rt);
   // int getProgram(const char* name);
   void swapRenderTextures();
+
+  bool initialized() const;
   
   QOpenGLContext* gl();
 

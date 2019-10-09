@@ -39,6 +39,8 @@ private:
   int stream_index_;
   AVPixelFormat pix_fmt_;
 
+  int64_t last_pts_;
+
   int doSeek(int64_t pts);
   QSharedPointer<VideoFrame> doDecode(int64_t timestamp);
 

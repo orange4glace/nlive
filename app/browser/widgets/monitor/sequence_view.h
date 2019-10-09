@@ -21,13 +21,8 @@ class SequenceView : public QOpenGLWidget, protected QOpenGLFunctions {
 private:
   QSharedPointer<Sequence> sequence_;
   video_renderer::SequenceRenderer* sequence_renderer_;
-  QOpenGLShaderProgram program;
 
   void scheduleRender();
-
-  int vertexLocation;
-  int matrixLocation;
-  int colorLocation;
 
 protected:
   void initializeGL() override;
@@ -36,6 +31,7 @@ protected:
 
 public:
   SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence);
+  ~SequenceView();
 
 };
 

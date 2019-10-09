@@ -20,7 +20,7 @@ class StorageItemViewFactory {
 
 public:
   StorageItemViewFactory();
-  virtual StorageItemView* create(QWidget* widget, StorageItem* item, IThemeService* theme_service) = 0;
+  virtual StorageItemView* create(QWidget* widget, StorageItem* item, QSharedPointer<IThemeService> theme_service) = 0;
 
 };
 

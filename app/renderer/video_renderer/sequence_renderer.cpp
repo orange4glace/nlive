@@ -90,8 +90,14 @@ void SequenceRenderer::render(QSharedPointer<CommandBuffer> command_buffer) {
 
 void SequenceRenderer::paint() {
   renderer_->buffer_swap_mutex()->lock();
+  if (!renderer_->context()->initialized()) {
+    // No need to lock to check if intialized since
+    // it is guaranteed that there's no chance to write
+    // `initialized` variable at this moment
+    renderer_->buffer_swap_mutex()->unlock();
+    return;
+  }
   auto gf = target_gl_->functions();
-
   auto front_render_texture = renderer_->context()->getFrontRenderTexture();
   gf->glClearColor(1.0f, 1.0f, 0, 1.0f);
   gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

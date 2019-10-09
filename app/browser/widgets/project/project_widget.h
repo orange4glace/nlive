@@ -17,8 +17,8 @@ class DirectoryView;
 class ProjectWidget : public QDockWidget {
 
 private:
-  IThemeService* theme_service_;
-  IImportService* import_service_;
+  QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IImportService> import_service_;
 
   QSharedPointer<StorageDirectory> directory_;
   DirectoryView* directory_view_;
@@ -30,8 +30,8 @@ public:
   static void Initialize();
 
   ProjectWidget(QWidget* parent,
-    IThemeService* theme_service,
-    IImportService* import_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IImportService> import_service);
 
   void setDirectory(QSharedPointer<StorageDirectory> directory);
 

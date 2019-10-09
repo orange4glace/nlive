@@ -22,8 +22,8 @@ void ProjectWidget::Initialize() {
 }
 
 ProjectWidget::ProjectWidget(QWidget* parent,
-    IThemeService* theme_service,
-    IImportService* import_service) :
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IImportService> import_service) :
   QDockWidget(parent),
   theme_service_(theme_service),
   import_service_(import_service),

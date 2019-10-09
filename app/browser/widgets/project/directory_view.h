@@ -22,8 +22,8 @@ class StorageItemView;
 class DirectoryView : public QWidget {
 
 private:
-  IThemeService* theme_service_;
-  IImportService* import_service_;
+  QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IImportService> import_service_;
   QSharedPointer<StorageDirectory> storage_directory_;
 
   std::vector<std::pair<StorageItem*, StorageItemView*>> view_items_;
@@ -43,8 +43,8 @@ public:
   DirectoryView(
     QWidget* parent,
     QSharedPointer<StorageDirectory> storage_directory,
-    IThemeService* theme_service,
-    IImportService* import_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IImportService> import_service);
 
   QSharedPointer<StorageDirectory> storage_directory();
   

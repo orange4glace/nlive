@@ -94,7 +94,7 @@ protected:
     VideoMetadata* video_metadata = findBestVideoMetadata(path_);
     if (video_metadata) {
       QSharedPointer<VideoResource> video_resource = QSharedPointer<VideoResource>(
-        new VideoResource(path_, Rational::fromAVRational(video_metadata->time_base), Rational::fromAVRational(video_metadata->frame_rate), video_metadata->duration, video_metadata->width, video_metadata->height));
+        new VideoResource(path_.toStdString(), Rational::fromAVRational(video_metadata->time_base), Rational::fromAVRational(video_metadata->frame_rate), video_metadata->duration, video_metadata->width, video_metadata->height));
       result_ = video_resource;
       delete video_metadata;
       return;

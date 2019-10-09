@@ -6,5 +6,7 @@ set(NLIVE_SOURCES
   model/sequence/track.cpp
   model/sequence/clip.h
   model/sequence/clip.cpp
+  model/sequence/video_clip.h
+  model/sequence/video_clip.cpp
   PARENT_SCOPE
 )

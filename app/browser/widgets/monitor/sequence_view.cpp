@@ -23,7 +23,13 @@ namespace {
 SequenceView::SequenceView(QWidget* widget, QSharedPointer<Sequence> sequence) :
   QOpenGLWidget(widget),
   sequence_(sequence), sequence_renderer_(nullptr) {
+  qDebug() << "SEQUENCE VIEW CREATED\n";
   show();
+}
+
+SequenceView::~SequenceView() {
+  // TODO
+  qDebug() << "#########################\n";
 }
 
 void SequenceView::scheduleRender() {
@@ -54,7 +60,6 @@ namespace {
 }
 
 void SequenceView::paintGL() {
-  qDebug() << "PAINT GL\n";
   sequence_renderer_->paint();
 }
 

@@ -2,8 +2,8 @@
 
 namespace nlive {
 
-Resource::Resource(std::string type, QUrl url) :
-  type_(type), url_(url) {
+Resource::Resource(std::string type, std::string path) :
+  type_(type), path_(path) {
 
 }
 
@@ -11,8 +11,8 @@ std::string const& Resource::type() const {
   return type_;
 }
 
-QUrl const& Resource::url() const {
-  return url_;
+std::string const& Resource::path() const {
+  return path_;
 }
 
 }

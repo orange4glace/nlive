@@ -17,14 +17,14 @@ private:
   QColor col_;
 
 protected:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   StorageItem* storage_item_;
 
   void mousePressEvent(QMouseEvent* event) override;
 
 public:
-  StorageItemView(QWidget* parent, StorageItem* storage_item, IThemeService* theme_service);
+  StorageItemView(QWidget* parent, StorageItem* storage_item, QSharedPointer<IThemeService> theme_service);
 
   StorageItem* storage_item();
   
