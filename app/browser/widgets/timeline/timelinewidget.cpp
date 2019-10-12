@@ -53,14 +53,14 @@ void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
   }
   sequence_ = sequence;
   if (sequence == nullptr) {
-    emit onDidChangeSequence(sequence);
+    onDidChangeSequence(sequence);
     return;
   }
   qDebug() << "emiti seq chan " << sequence << "\n";
   sequence_view_ = new SequenceView(sequence, theme_service_);
   split_left_view_.setContent(sequence_view_->side_view());
   split_right_view_.setContent(sequence_view_->timeline_view()->scroll_view());
-  emit onDidChangeSequence(sequence);
+  onDidChangeSequence(sequence);
 }
 
 QSharedPointer<Sequence> TimelineWidget::sequence() {

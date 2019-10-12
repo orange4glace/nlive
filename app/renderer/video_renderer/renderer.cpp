@@ -22,7 +22,11 @@ Renderer::Renderer(
   gl_->create();
   gl_->functions()->initializeOpenGLFunctions();
 
-  renderer_ctx_ = QSharedPointer<RendererContext>(new RendererContext(gl_));
+  sharing_ctx_ = QSharedPointer<RenderSharingContext>(
+    new RenderSharingContext(gl_));
+  sharing_ctx_->initialize();
+  renderer_ctx_ = QSharedPointer<RendererContext>(
+    new RendererContext(gl_, width, height, sharing_ctx_));
 
   gl_->moveToThread(this);
 }

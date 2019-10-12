@@ -3,8 +3,9 @@
 
 #include <QDockWidget>
 #include <QSharedPointer>
-#include <QMetaObject>
 #include <vector>
+
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -22,13 +23,13 @@ namespace monitor_widget {
 
 class SequenceView;
 
-class MonitorWidget : public QDockWidget {
+class MonitorWidget : public QDockWidget, public Sig {
 
 private:
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
   IThemeService* theme_service_;
 
-  std::vector<QMetaObject::Connection> widget_connections_;
+  std::vector<sig2_conn_t> widget_connections_;
   SequenceView* sequence_view_;
 
   void handleDidChangeCurrentTimelineWidget(timelinewidget::TimelineWidget* timeline_widget);

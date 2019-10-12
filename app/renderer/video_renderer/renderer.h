@@ -11,6 +11,7 @@
 #include <QWaitCondition>
 #include <QOffscreenSurface>
 
+#include "renderer/video_renderer/render_sharing_context.h"
 #include "renderer/video_renderer/renderer_context.h"
 #include "renderer/video_renderer/command_buffer.h"
 
@@ -37,6 +38,7 @@ private:
   // QSharedPointer<QOpenGLContext> gl_;
   QOpenGLContext* gl_;
   QOffscreenSurface* surface_;
+  QSharedPointer<RenderSharingContext> sharing_ctx_;
   QSharedPointer<RendererContext> renderer_ctx_;
 
   QSharedPointer<CommandBuffer> current_command_buffer_;

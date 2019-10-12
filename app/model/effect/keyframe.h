@@ -25,6 +25,10 @@ public:
 
   }
 
+  void setValue(T& value) {
+    value_ = value;
+  }
+
   int64_t time() const {
     return time_;
   }

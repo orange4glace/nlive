@@ -59,6 +59,8 @@ public:
   void setCurrentTime(int64_t value);
   void setDuration(int64_t value);
 
+  int64_t getClipBTimecodeOffset(QSharedPointer<Clip> clip) const;
+
   void renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
 
   void invalidate();

@@ -30,10 +30,11 @@ EffectControlWidget::EffectControlWidget(
   timeline_widget_service_(timeline_widget_service),
   target_timeline_widget_(nullptr),
   sequence_view_(nullptr) {
-  connect(timeline_widget_service_.get(), &ITimelineWidgetService::onDidChangeCurrentWidget, this, [this](timelinewidget::TimelineWidget* widget) {
-    this->setTargetTimelineWidget(widget);
-  });
-  qDebug() << "Vi " << isVisible() << "\n";
+  timeline_widget_service_->onDidChangeCurrentWidget.connect(
+    sig2_t<void (timelinewidget::TimelineWidget*)>::slot_type(
+    [this](timelinewidget::TimelineWidget* widget) {
+      this->setTargetTimelineWidget(widget);
+    }).track(__sig_scope_));
 }
 
 void EffectControlWidget::setTargetTimelineWidget(timelinewidget::TimelineWidget* timeline_widget) {
@@ -47,11 +48,12 @@ void EffectControlWidget::setTargetTimelineWidget(timelinewidget::TimelineWidget
   }
   target_timeline_widget_ = timeline_widget;
   setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
-  disconnect(timeline_widget_connection_);
-  timeline_widget_connection_ = connect(timeline_widget, &timelinewidget::TimelineWidget::onDidChangeSequence,
-    this, [this, timeline_widget](QSharedPointer<Sequence> sequence) {
-    this->setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
-  });
+  timeline_widget_connection_.disconnect();
+  timeline_widget_connection_ = timeline_widget->onDidChangeSequence.connect(
+    sig2_t<void (QSharedPointer<Sequence> sequence)>::slot_type(
+      [this, timeline_widget](QSharedPointer<Sequence> sequence) {
+      this->setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
+    }));
 }
 
 void EffectControlWidget::setTargetTimelineWidgetSequenceView(timelinewidget::SequenceView* sequence_view) {
@@ -60,8 +62,9 @@ void EffectControlWidget::setTargetTimelineWidgetSequenceView(timelinewidget::Se
     delete sequence_view_;
   }
   if (sequence_view == nullptr) return;
+  qDebug() << "[EffectControlWidget] Create a SequenceView\n";
   sequence_view_ = new SequenceView(this, layout_params_, sequence_view, theme_service_);
-  sequence_view_->setGeometry(geometry());
+  sequence_view_->resize(size());
   sequence_view_->show();
 }
 
@@ -73,7 +76,7 @@ void EffectControlWidget::paintEvent(QPaintEvent* event) {
 void EffectControlWidget::resizeEvent(QResizeEvent* event) {
   QDockWidget::resizeEvent(event);
   if (sequence_view_ != nullptr)
-    sequence_view_->setGeometry(geometry());
+    sequence_view_->resize(size());
 }
 
 }

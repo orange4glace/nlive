@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 
 #define sig2_t boost::signals2::signal
+#define sig2_conn_t boost::signals2::connection
 
 namespace nlive {
 

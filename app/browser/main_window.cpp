@@ -110,10 +110,10 @@ MainWindow::MainWindow() {
   auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service.get());
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
 
-  // effect_control::EffectControlWidget::Initialize();
-  // auto effect_control_widget = new effect_control::EffectControlWidget(
-  //   this, theme_service, timeline_widget_service);
-  // addDockWidget(Qt::TopDockWidgetArea, effect_control_widget);
+  effect_control::EffectControlWidget::Initialize();
+  auto effect_control_widget = new effect_control::EffectControlWidget(
+    this, theme_service, timeline_widget_service);
+  addDockWidget(Qt::RightDockWidgetArea, effect_control_widget);
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {

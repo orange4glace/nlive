@@ -1,6 +1,8 @@
 #include "model/sequence/video_clip.h"
 
+#include <QSharedPointer>
 #include "renderer/video_renderer/video_render_command.h"
+#include "renderer/video_renderer/video_clip_render_command.h"
 #include "renderer/video_renderer/simple_render_command.h"
 #include "renderer/video_renderer/command_buffer.h"
 
@@ -15,12 +17,12 @@ VideoClip::VideoClip(QUndoStack* undo_stack, QSharedPointer<VideoResource> video
 
 void VideoClip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timecode) {
   int64_t pts = Rational::rescale(timecode, time_base_, resource_->time_base());
-  qDebug() << "Rescale " << timecode << " " << pts << " " << 
-    time_base_.den() << " " << time_base_.num() << " " <<
-    resource_->time_base().den() << " " << resource_->time_base().num() << "\n";
-  video_renderer::VideoRenderCommand* cmd = 
-    new video_renderer::VideoRenderCommand(resource_, decoder_, pts);
-  command_buffer->addCommand(cmd);
+  auto pre = QSharedPointer<video_renderer::VideoClipPreRenderCommand>(
+      new video_renderer::VideoClipPreRenderCommand(resource_, decoder_, pts));
+  auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(
+      new video_renderer::VideoClipPostRenderCommand(resource_));
+  command_buffer->addCommand(pre);
+  command_buffer->addCommand(post);
 }
 
 }

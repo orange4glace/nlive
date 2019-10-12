@@ -2,6 +2,9 @@ set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   browser/widgets/effect_control/property/property_view.h
   browser/widgets/effect_control/property/property_view.cpp
+  browser/widgets/effect_control/property/property_form_view.h
+  browser/widgets/effect_control/property/property_form_view.cpp
+  browser/widgets/effect_control/property/property_timeline_view.h
   browser/widgets/effect_control/property/number_input_box.h
   browser/widgets/effect_control/property/number_input_box.cpp
   browser/widgets/effect_control/property/vector2_property_view.h

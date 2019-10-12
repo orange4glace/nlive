@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include <QSharedPointer>
 #include <QMetaObject>
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -22,14 +23,14 @@ namespace effect_control {
 class EffectControlLayout;
 class SequenceView;
 
-class EffectControlWidget : public QDockWidget {
+class EffectControlWidget : public QDockWidget, public Sig {
   Q_OBJECT
 
 private:
   QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
   timelinewidget::TimelineWidget* target_timeline_widget_;
-  QMetaObject::Connection timeline_widget_connection_;
+  sig2_conn_t timeline_widget_connection_;
   effect_control::SequenceView* sequence_view_;
 
   QSharedPointer<EffectControlLayout> layout_params_;

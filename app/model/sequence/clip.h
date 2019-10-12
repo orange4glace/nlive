@@ -8,6 +8,7 @@
 #include <QUndoStack>
 
 #include "model/common/rational.h"
+#include "model/effect/transform_effect.h"
 
 namespace nlive {
 
@@ -39,6 +40,8 @@ protected:
   int64_t b_time_;
 
   std::vector<QSharedPointer<effect::Effect>> effects_;
+  // Every clip has EXACTLY 1 TransformEffect
+  QSharedPointer<effect::TransformEffect> transform_effect_;
 
 public:
   Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
@@ -48,6 +51,8 @@ public:
   void addEffect(QSharedPointer<effect::Effect> effect);
 
   virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
+
+  QSharedPointer<effect::TransformEffect> transform();
 
   int64_t start_time() const;
   int64_t end_time() const;

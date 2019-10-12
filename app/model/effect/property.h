@@ -24,6 +24,27 @@ private:
   bool animatable_;
   bool animated_;
 
+  void doUpsertKeyframe(int64_t time, T& value) {
+    auto match_it = keyframes_.find(time);
+    if (match_it == keyframes_.end()) return doCreateKeyframe(time, value);
+    else return doUpdateKeyframe(time, value);
+  }
+  
+  void doCreateKeyframe(int64_t time, T& value) {
+    auto match_it = keyframes_.find(time);
+    Q_ASSERT(match_it == keyframes_.end());
+    keyframes_.insert(make_pair(time, Keyframe<T>(time, value)));
+    onDidUpdate();
+  }
+
+  void doUpdateKeyframe(int64_t time, T& value) {
+    auto match_it = keyframes_.find(time);
+    Q_ASSERT(match_it != keyframes_.end());
+    Keyframe<T>& kf = match_it->second;
+    kf.setValue(value);
+    onDidUpdate();
+  }
+
 public:
   Property(T default_value, bool animatable = true) :
     default_value_(default_value), animatable_(animatable),
@@ -33,6 +54,11 @@ public:
 
   void setDefaultValue(T value) {
     default_value = value;
+    onDidUpdate();
+  }
+
+  void upsertKeyframe(int64_t time, T& value) {
+    doUpsertKeyframe(time, value);
   }
 
   T getInterpolatedValue(int64_t time) {
@@ -56,7 +82,8 @@ public:
 
   void setAnimatable(bool value) {
     animatable_ = value;
-    emit onDidChangeAnimatable(value);
+    onDidChangeAnimatable(value);
+    onDidUpdate();
   }
 
   const std::string& type() const {
@@ -77,6 +104,7 @@ public:
 
   sig2_t<void (bool)> onDidChangeAnimated;
   sig2_t<void (bool)> onDidChangeAnimatable;
+  sig2_t<void (void)> onDidUpdate;
 
 };
 

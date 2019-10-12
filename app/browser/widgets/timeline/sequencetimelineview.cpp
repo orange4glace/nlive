@@ -48,14 +48,14 @@ void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int in
 
   for (auto clip_view : view->focused_clip_views())
     focused_clip_views_.insert(clip_view);
-  emit onDidChangeFocusedClips();
+  onDidChangeFocusedClips();
   connect(view, &TrackTimelineView::onDidFocusClip, this, [this](ClipView* clip_view) {
     focused_clip_views_.insert(clip_view);
-    emit onDidChangeFocusedClips();
+    onDidChangeFocusedClips();
   });
   connect(view, &TrackTimelineView::onDidBlurClip, this, [this](ClipView* clip_view) {
     focused_clip_views_.erase(clip_view);
-    emit onDidChangeFocusedClips();
+    onDidChangeFocusedClips();
   });
 }
 

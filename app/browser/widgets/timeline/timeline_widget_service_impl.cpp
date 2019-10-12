@@ -15,8 +15,9 @@ TimelineWidgetService::TimelineWidgetService() :
 }
 
 void TimelineWidgetService::setCurrentWidget(timelinewidget::TimelineWidget* widget) {
+  if (current_widget_ == widget) return;
   current_widget_ = widget;
-  emit onDidChangeCurrentWidget(widget);
+  onDidChangeCurrentWidget(widget);
 }
 
 timelinewidget::TimelineWidget* TimelineWidgetService::current_widget() {

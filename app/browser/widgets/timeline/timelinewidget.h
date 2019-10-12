@@ -6,6 +6,7 @@
 #include <QLayout>
 
 #include "base/layout/fillparentview.h"
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -17,7 +18,7 @@ namespace timelinewidget {
 
 class SequenceView;
 
-class TimelineWidget : public QDockWidget {
+class TimelineWidget : public QDockWidget, public Sig {
   Q_OBJECT;
 
 private:
@@ -45,9 +46,7 @@ public:
   QSharedPointer<Sequence> sequence();
   SequenceView* sequence_view();
   
-
-signals:
-  void onDidChangeSequence(QSharedPointer<Sequence> sequence);
+  sig2_t<void (QSharedPointer<Sequence> sequence)> onDidChangeSequence;
 
 };
 

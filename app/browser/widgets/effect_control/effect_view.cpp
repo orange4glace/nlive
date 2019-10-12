@@ -17,8 +17,8 @@ EffectView::EffectView(
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     QSharedPointer<IThemeService> theme_service) :
-  theme_service_(theme_service),
   QWidget(parent),
+  theme_service_(theme_service),
   layout_(layout), clip_(clip) {
 
 }

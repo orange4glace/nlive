@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 #include <vector>
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -21,7 +22,7 @@ namespace effect_control {
 class EffectControlLayout;
 class ClipView;
 
-class SequenceView : public QWidget {
+class SequenceView : public QWidget, public Sig {
   Q_OBJECT
 
 private:

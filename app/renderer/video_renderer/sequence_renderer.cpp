@@ -99,7 +99,7 @@ void SequenceRenderer::paint() {
   }
   auto gf = target_gl_->functions();
   auto front_render_texture = renderer_->context()->getFrontRenderTexture();
-  gf->glClearColor(1.0f, 1.0f, 0, 1.0f);
+  gf->glClearColor(0, 0, 0, 1.0f);
   gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gf->glUseProgram(program_);
   gf->glActiveTexture(GL_TEXTURE0);
@@ -109,11 +109,11 @@ void SequenceRenderer::paint() {
   gf->glUniform1i(image_loc_, 0);
   gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
   float position[12] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 1.0f,
-    0.0f, 1.0f,
-    1.0f, 0.0f,
+    -1.0f, -1.0f,
+    1.0f, -1.0f,
+    -1.0f, 1.0f,
+    -1.0f, 1.0f,
+    1.0f, -1.0f,
     1.0f, 1.0f
   };
   gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)position, GL_DYNAMIC_DRAW);

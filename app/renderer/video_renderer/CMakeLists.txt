@@ -1,11 +1,17 @@
+add_subdirectory(shader)
+
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
+  renderer/video_renderer/shader_program.h
   renderer/video_renderer/renderer.h
   renderer/video_renderer/renderer.cpp
+  renderer/video_renderer/render_sharing_context.h
+  renderer/video_renderer/render_sharing_context.cpp
   renderer/video_renderer/renderer_context.h
   renderer/video_renderer/renderer_context.cpp
   renderer/video_renderer/render_command.h
   renderer/video_renderer/simple_render_command.h
+  renderer/video_renderer/video_clip_render_command.h
   renderer/video_renderer/video_render_command.h
   renderer/video_renderer/command_buffer.h
   renderer/video_renderer/command_buffer.cpp

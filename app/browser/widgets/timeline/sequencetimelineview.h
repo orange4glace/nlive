@@ -6,6 +6,7 @@
 #include <set>
 #include <vector>
 
+#include "base/common/sig.h"
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
 #include "browser/widgets/timeline/ghost_sequence_view.h"
 
@@ -33,7 +34,7 @@ enum ManipulateState {
 
 }
 
-class SequenceTimelineView : public QWidget {
+class SequenceTimelineView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
@@ -111,8 +112,7 @@ public:
 
   const std::set<ClipView*>& focused_clip_views();
 
-signals:
-  void onDidChangeFocusedClips();
+  sig2_t<void (void)> onDidChangeFocusedClips;
 
 };
 

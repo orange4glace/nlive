@@ -21,14 +21,14 @@ MonitorWidget::MonitorWidget(QWidget* parent,
 
   qDebug() << "MONITOR WIDGET CREATED\n";
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
-  connect(timeline_widget_service_.get(), &ITimelineWidgetService::onDidChangeCurrentWidget, 
-    this, &MonitorWidget::handleDidChangeCurrentTimelineWidget);
-
+  timeline_widget_service_->onDidChangeCurrentWidget.connect(
+    sig2_t<void (timelinewidget::TimelineWidget*)>::slot_type(
+    &MonitorWidget::handleDidChangeCurrentTimelineWidget, this, _1).track(__sig_scope_));
 }
 
 void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::TimelineWidget* timeline_widget) {
   for (auto& connection : widget_connections_)
-    disconnect(connection);
+    connection.disconnect();
   widget_connections_.clear();
   if (sequence_view_) {
     // TODO
@@ -37,9 +37,9 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::Timelin
   sequence_view_ = nullptr;
   if (timeline_widget != nullptr) {
     handleDidChangeSequence(timeline_widget->sequence());
-    widget_connections_.push_back(
-      connect(timeline_widget, &timelinewidget::TimelineWidget::onDidChangeSequence,
-        this, &MonitorWidget::handleDidChangeSequence));
+    auto conn = timeline_widget->onDidChangeSequence.connect(
+      boost::bind(&MonitorWidget::handleDidChangeSequence, this, _1));
+    widget_connections_.push_back(conn);
   }
 }
 

@@ -3,6 +3,7 @@
 #include "model/effect/effect.h"
 
 #include "renderer/video_renderer/simple_render_command.h"
+#include "renderer/video_renderer/video_clip_render_command.h"
 #include "renderer/video_renderer/command_buffer.h"
 
 namespace nlive {
@@ -13,7 +14,10 @@ namespace {
 
 Clip::Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
   undo_stack_(undo_stack), time_base_(time_base), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
-
+  QSharedPointer<effect::TransformEffect> transform_effect = 
+    QSharedPointer<effect::TransformEffect>(new effect::TransformEffect());
+  addEffect(transform_effect);
+  transform_effect_ = transform_effect;
 }
 
 Clip::Clip(const Clip& clip) :
@@ -36,10 +40,20 @@ void Clip::addEffect(QSharedPointer<effect::Effect> effect) {
   emit onDidAddEffect(effect);
 }
 
+QSharedPointer<effect::TransformEffect> Clip::transform() {
+  return transform_effect_;
+}
+
 void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
-  video_renderer::SimpleRenderCommand* cmd = 
-    new video_renderer::SimpleRenderCommand(0, 0, 0, -0.5f, -0.5f);
-  command_buffer->addCommand(cmd);
+  // auto pre = QSharedPointer<video_renderer::VideoClipPreRenderCommand>(
+  //     new video_renderer::VideoClipPreRenderCommand(nullptr));
+  // auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(
+  //     new video_renderer::VideoClipPostRenderCommand(nullptr));
+  // command_buffer->addCommand(pre);
+  // command_buffer->addCommand(post);
+  // video_renderer::SimpleRenderCommand* cmd = 
+  //   new video_renderer::SimpleRenderCommand(0, 0, 0, -0.5f, -0.5f);
+  // command_buffer->addCommand(cmd);
 }
 
 int64_t Clip::start_time() const { return start_time_; }

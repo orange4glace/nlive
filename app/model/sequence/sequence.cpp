@@ -13,7 +13,7 @@ namespace nlive {
 Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
   undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
   invalidated_(false),
-  width_(1080), height_(720) {
+  width_(1920), height_(1080) {
 
   invalidateTimer_ = new QTimer();
   connect(invalidateTimer_, &QTimer::timeout, this, [this]() {
@@ -22,7 +22,7 @@ Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
       doMakeDirty();
     }
   });
-  invalidateTimer_->setInterval(1000);
+  invalidateTimer_->setInterval(60);
   invalidateTimer_->start();
 }
 
@@ -32,7 +32,6 @@ void Sequence::doMakeDirty() {
   for (auto track : tracks_) {
     track->render(command_buffer, current_time_);
   }
-  qDebug() << "Dirty!\n";
   emit onDirty(command_buffer);
 }
 
@@ -114,6 +113,10 @@ void Sequence::setCurrentTime(int64_t value) {
 void Sequence::setDuration(int64_t value) {
   doSetDuration(value);
 } 
+
+int64_t Sequence::getClipBTimecodeOffset(QSharedPointer<Clip> clip) const {
+  return current_time_ - clip->start_time() + clip->b_time();
+}
 
 void Sequence::renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer) {
   

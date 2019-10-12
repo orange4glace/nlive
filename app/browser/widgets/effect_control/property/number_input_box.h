@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLineEdit>
+#include <QResizeEvent>
 #include "base/common/sig.h"
 
 namespace nlive {
@@ -16,10 +17,15 @@ private:
   class EditView : public QLineEdit {
   
   private:
+    NumberInputBox* number_input_box_;
     double value_;
 
+  protected:
+    void focusOutEvent(QFocusEvent *e) override;
+
   public:
-    EditView(QWidget* parent, double value);
+    EditView(NumberInputBox* parent, double value);
+    void setValue(double value);
 
 
   };
@@ -27,6 +33,7 @@ private:
   class SlideView : public QWidget, protected Sig {
 
   private:
+    NumberInputBox* number_input_box_;
     double value_;
     QPoint last_mouse_pos_;
     bool press_and_moved_;
@@ -38,7 +45,7 @@ private:
     void mouseReleaseEvent(QMouseEvent* event) override;
 
   public:
-    SlideView(QWidget* parent, double value);
+    SlideView(NumberInputBox* parent, double value);
     void setValue(double value);
 
     sig2_t<void (double)> onDidChangeValue;
@@ -52,18 +59,22 @@ private:
   NumberInputBox::EditView* edit_view_;
   NumberInputBox::SlideView* slide_view_;
 
-  void switchToSlideView();
-  void switchToEditView();
-
   void doSetValue(double value);
   void doChangeValue(double value);
+
+protected:
+  void resizeEvent(QResizeEvent* e) override;
 
 public:
   NumberInputBox(QWidget* parent, double value);
   void setValue(double value);
 
-signals:
-  void onDidChangeValue(double value);
+  void switchToSlideView();
+  void switchToEditView();
+
+  double value() const;
+
+  sig2_t<void (double)> onDidChangeValue;
 
 };
 

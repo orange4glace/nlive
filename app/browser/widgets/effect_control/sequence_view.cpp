@@ -25,10 +25,11 @@ SequenceView::SequenceView(
   clip_(nullptr),
   clip_view_(nullptr) {
   this->handleDidChangeFocusedClips();
-  connect(timeline_widget_sequence_view_->timeline_view(), &timelinewidget::SequenceTimelineView::onDidChangeFocusedClips, this, [this]() {
-    this->handleDidChangeFocusedClips();
-  });
-
+  timeline_widget_sequence_view_->timeline_view()->onDidChangeFocusedClips.connect(
+    sig2_t<void ()>::slot_type([this]() {
+      this->handleDidChangeFocusedClips();
+    }).track(__sig_scope_));
+  show();
 }
 
 void SequenceView::handleDidChangeFocusedClips() {
@@ -41,8 +42,10 @@ void SequenceView::handleDidChangeFocusedClips() {
 void SequenceView::createClipView(QSharedPointer<Clip> clip) {
   clearClipView();
   clip_ = clip;
+  qDebug() << "[SequenceView] createClipView " << clip << ", # of effects = " << clip->effects().size() << "\n";
   auto sequence = timeline_widget_sequence_view_->sequence();
   clip_view_ = new ClipView(this, layout_, sequence, clip, theme_service_);
+  clip_view_->resize(width(), clip_view_->sizeHint().height());
   clip_view_->show();
 }
 
@@ -53,7 +56,7 @@ void SequenceView::clearClipView() {
 
 void SequenceView::paintEvent(QPaintEvent* event) {
   QPainter p(this);
-  p.fillRect(rect(), Qt::darkGreen);
+  p.fillRect(rect(), Qt::darkMagenta);
 }
 
 void SequenceView::resizeEvent(QResizeEvent* event) {
