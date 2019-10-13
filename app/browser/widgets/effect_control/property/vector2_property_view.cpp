@@ -35,6 +35,13 @@ Vector2PropertyView::Vector2PropertyView(
       auto v = property_->getInterpolatedValue(timecode_offset);
       property->upsertKeyframe(timecode_offset, effect::value::Vector2(value, v.y()));
     }).track(__sig_scope_));
+  y_input_box_->onDidChangeValue.connect(
+    sig2_t<void (double)>::slot_type
+    ([this, sequence, clip, property](double value) {
+      int64_t timecode_offset = sequence->getClipBTimecodeOffset(clip);
+      auto v = property_->getInterpolatedValue(timecode_offset);
+      property->upsertKeyframe(timecode_offset, effect::value::Vector2(v.x(), value));
+    }).track(__sig_scope_));
 }
 
 void Vector2PropertyView::updateValue() {

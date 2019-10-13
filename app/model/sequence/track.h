@@ -8,6 +8,8 @@
 #include <QUndoStack>
 #include <QMetaObject>
 #include <QSharedPointer>
+
+#include "base/common/sig.h"
 #include "model/sequence/clip.h"
 
 namespace nlive {
@@ -47,7 +49,7 @@ struct ClipEndCompare {
     return lhs < rhs; }
 };
 
-class Track : public QObject {
+class Track : public QObject, public Sig {
   Q_OBJECT
 
 private:
@@ -56,7 +58,7 @@ private:
   std::set<QSharedPointer<Clip>, ClipStartCompare> clip_start_ordered_set_;
   std::set<QSharedPointer<Clip>, ClipEndCompare> clip_end_ordered_set_;
   std::set<QSharedPointer<Clip>, ClipCompare> detached_clips_;
-  std::map<QSharedPointer<Clip>, std::vector<QMetaObject::Connection>, ClipCompare> clip_connections_;
+  std::map<QSharedPointer<Clip>, std::vector<sig2_conn_t>, ClipCompare> clip_connections_;
   
   void doAddClip(QSharedPointer<Clip> clip);
   void doRemoveClip(QSharedPointer<Clip> clip);
@@ -89,11 +91,13 @@ public:
 
   QUndoStack* undo_stack();
 
+  sig2_t<void (QSharedPointer<Clip>)> onDidAddClip;
+  sig2_t<void (QSharedPointer<Clip>)> onWillRemoveClip;
+  sig2_t<void (QSharedPointer<Clip>,
+    int /*old_start_time*/, int /*old_end_time*/, int /*old_b_time*/)> onDidChangeClipTime;
+  sig2_t<void (void)> onInvalidate;
+
 signals:
-  void onDidAddClip(QSharedPointer<Clip> clip);
-  void onWillRemoveClip(QSharedPointer<Clip> clip);
-  void onDidChangeClipTime(QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time);
-  void onInvalidate();
 
 };
 

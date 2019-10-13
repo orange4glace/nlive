@@ -23,6 +23,8 @@ void RendererContext::initialize() {
   for (int i = 0; i < 2; i ++) {
     RenderTexture rt;
     rt.id = next_render_texture_id ++;
+    rt.width = width_;
+    rt.height = height_;
     auto glf = gl_->functions();
     glf->glGenFramebuffers(1, &rt.framebuffer);
     glf->glGenTextures(1, &rt.texture);
@@ -50,6 +52,8 @@ RenderTexture RendererContext::createTemporaryRenderTexture(
   RenderTexture rt;
   rt.id = next_render_texture_id ++;
   rt.name = name;
+  rt.width = width;
+  rt.height = height;
   auto glf = gl_->functions();
   glf->glGenFramebuffers(1, &rt.framebuffer);
   glf->glGenTextures(1, &rt.texture);

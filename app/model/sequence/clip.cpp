@@ -37,7 +37,11 @@ void Clip::setTime(int64_t start_time, int64_t end_time, int64_t b_time) {
 
 void Clip::addEffect(QSharedPointer<effect::Effect> effect) {
   effects_.push_back(effect);
+  auto conn = effect->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
+    [this] { onDidUpdate(); }));
+  effect_conn_.insert(std::make_pair(effect, conn));
   emit onDidAddEffect(effect);
+  onDidUpdate();
 }
 
 QSharedPointer<effect::TransformEffect> Clip::transform() {

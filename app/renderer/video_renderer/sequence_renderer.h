@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <QOffscreenSurface>
 
+#include "base/common/sig.h"
 #include "renderer/video_renderer/renderer.h"
 #include "model/sequence/sequence.h"
 
@@ -14,7 +15,7 @@ namespace video_renderer {
 
 class CommandBuffer;
 
-class SequenceRenderer : public QObject {
+class SequenceRenderer : public QObject, public Sig {
   Q_OBJECT
 
 private:

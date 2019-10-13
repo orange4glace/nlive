@@ -56,18 +56,15 @@ void ClipView::doLayout() {
     effect_view.second->resize(width(), effect_view.second->sizeHint().height());
     height_ += effect_view.second->sizeHint().height();
   }
-  qDebug() << "[ClipView] Layout " << height_ << " " << isVisible() << "\n";
 }
 
 bool ClipView::event(QEvent* event) {
   switch(event->type()) {
   case QEvent::LayoutRequest:
   case QEvent::Resize:
-    qDebug() << " RESZZZ " << isVisible() << " " << rect() << "\n";
     doLayout();
     return true;
   case QEvent::Paint:
-    qDebug() << " PAINTTTT " << isVisible() << " " << rect() << "\n";
     QPainter p(this);
     p.fillRect(rect(), Qt::green);
     return true;

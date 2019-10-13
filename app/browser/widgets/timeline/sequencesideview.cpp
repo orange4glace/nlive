@@ -20,12 +20,15 @@ SequenceSideView::SequenceSideView(
 
   auto& tracks = sequence->tracks();
   for (int i = 0; i < tracks.size(); i ++) addTrackView(tracks[i], i);
-  QObject::connect(sequence.get(), &Sequence::onDidAddTrack, this, [this](QSharedPointer<Track> track, int index) {
-    this->addTrackView(track, index);
-  });
-  QObject::connect(sequence.get(), &Sequence::onWillRemoveTrack, this, [this](QSharedPointer<Track> track, int index) {
-    this->removeTrackView(track, index);
-  });
+  
+  sequence->onDidAddTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+    [this](QSharedPointer<Track> track, int index) {
+      this->addTrackView(track, index);
+    }).track(__sig_scope_));
+  sequence->onWillRemoveTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+    [this](QSharedPointer<Track> track, int index) {
+      this->removeTrackView(track, index);
+    }).track(__sig_scope_));
 
 }
 

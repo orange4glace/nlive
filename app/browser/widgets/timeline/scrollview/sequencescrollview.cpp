@@ -42,12 +42,14 @@ SequenceScrollView::SequenceScrollView(
   QObject::connect(&scrollbar_, &SequenceScrollViewScrollbar::onDidUpdate, this, [this]() {
     doUpdate();
   });
-  QObject::connect(sequence_.get(), &Sequence::onDidChangeDuration, this, [this]() {
-    doUpdate();
-  });
-  QObject::connect(sequence_.get(), &Sequence::onDidChangeCurrentTime, this, [this]() {
-    doUpdate();
-  });
+  sequence->onDidChangeDuration.connect(sig2_t<void (int64_t)>::slot_type(
+    [this](int64_t old_duration) {
+      doUpdate();
+    }).track(__sig_scope_));
+  sequence->onDidChangeCurrentTime.connect(sig2_t<void (int64_t)>::slot_type(
+    [this](int64_t old_current_time) {
+      doUpdate();
+    }).track(__sig_scope_));
 }
 
 void SequenceScrollView::setContentWidget(QWidget* widget) {

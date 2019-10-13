@@ -25,6 +25,7 @@ private:
   bool animated_;
 
   void doUpsertKeyframe(int64_t time, T& value) {
+    if (!animated_) return doSetDefaultValue(value);
     auto match_it = keyframes_.find(time);
     if (match_it == keyframes_.end()) return doCreateKeyframe(time, value);
     else return doUpdateKeyframe(time, value);
@@ -45,6 +46,11 @@ private:
     onDidUpdate();
   }
 
+  void doSetDefaultValue(T& value) {
+    default_value_ = value;
+    onDidUpdate();
+  }
+
 public:
   Property(T default_value, bool animatable = true) :
     default_value_(default_value), animatable_(animatable),
@@ -62,7 +68,7 @@ public:
   }
 
   T getInterpolatedValue(int64_t time) {
-    if (keyframes_.size() == 0) return default_value_;
+    if (!animated_ || keyframes_.size() == 0) return default_value_;
     auto next = keyframes_.lower_bound(time);
     if (next == keyframes_.end()) {
       Keyframe<T> const& kf = (*(keyframes_.begin())).second;

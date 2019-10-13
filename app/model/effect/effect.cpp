@@ -1,18 +1,18 @@
-#include "model/effect/effect.h"
+// #include "model/effect/effect.h"
 
-namespace nlive {
+// namespace nlive {
 
-namespace effect {
+// namespace effect {
 
-Effect::Effect(std::string type) :
-  type_(type) {
+// Effect::Effect(std::string type) :
+//   type_(type) {
 
-}
+// }
 
-const std::string& Effect::type() const {
-  return type_;
-}
+// const std::string& Effect::type() const {
+//   return type_;
+// }
 
-}
+// }
 
-}
+// }

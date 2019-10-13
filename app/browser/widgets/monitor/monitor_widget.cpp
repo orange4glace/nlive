@@ -51,6 +51,8 @@ void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
   sequence_view_ = nullptr;
   if (sequence) {
     sequence_view_ = new SequenceView(this, sequence);
+    sequence_view_->show();
+    sequence_view_->resize(size());
   }
 }
 

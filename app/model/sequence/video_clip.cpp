@@ -3,6 +3,7 @@
 #include <QSharedPointer>
 #include "renderer/video_renderer/video_render_command.h"
 #include "renderer/video_renderer/video_clip_render_command.h"
+#include "renderer/video_renderer/command/transform_blit_render_command.h"
 #include "renderer/video_renderer/simple_render_command.h"
 #include "renderer/video_renderer/command_buffer.h"
 
@@ -17,11 +18,15 @@ VideoClip::VideoClip(QUndoStack* undo_stack, QSharedPointer<VideoResource> video
 
 void VideoClip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timecode) {
   int64_t pts = Rational::rescale(timecode, time_base_, resource_->time_base());
+  auto position = transform_effect_->position()->getInterpolatedValue(timecode);
   auto pre = QSharedPointer<video_renderer::VideoClipPreRenderCommand>(
       new video_renderer::VideoClipPreRenderCommand(resource_, decoder_, pts));
+  auto blit = QSharedPointer<video_renderer::TransformBlitRenderCommand>(
+      new video_renderer::TransformBlitRenderCommand(position.x(), position.y()));
   auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(
       new video_renderer::VideoClipPostRenderCommand(resource_));
   command_buffer->addCommand(pre);
+  command_buffer->addCommand(blit);
   command_buffer->addCommand(post);
 }
 

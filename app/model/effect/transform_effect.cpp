@@ -14,6 +14,9 @@ TransformEffect::TransformEffect() :
     new Property<value::Vector2>(value::Vector2(0, 0)));
   scale_ = QSharedPointer<Property<value::Vector2>>(
     new Property<value::Vector2>(value::Vector2(0, 0)));
+
+  connectProperty(position_);
+  connectProperty(scale_);
 }
 
 QSharedPointer<Property<value::Vector2>> TransformEffect::position() {

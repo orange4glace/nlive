@@ -111,11 +111,11 @@ void NumberInputBox::doSetValue(double value) {
   if (edit_view_) edit_view_->setValue(value);
   if (slide_view_) slide_view_->setValue(value);
   update();
+  onDidChangeValue(value_);
 }
 
 void NumberInputBox::doChangeValue(double value) {
-  doSetValue(value);
-  onDidChangeValue(value_);
+  // doSetValue(value);
 }
 
 void NumberInputBox::setValue(double value) {

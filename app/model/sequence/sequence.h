@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 
+#include "base/common/sig.h"
 #include "model/common/rational.h"
 #include "model/sequence/track.h"
 
@@ -36,7 +37,7 @@ private:
   int height_;
 
   std::vector<QSharedPointer<Track>> tracks_;
-  std::map<QSharedPointer<Track>, std::vector<QMetaObject::Connection>, TrackCompare> track_connections_;
+  std::map<QSharedPointer<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
 
   QSharedPointer<Track> doAddTrack();
   void doRemoveTrackAt(int index);
@@ -76,15 +77,14 @@ public:
   int track_size() const;
   QUndoStack* undo_stack();
 
+  sig2_t<void (QSharedPointer<Track> track, int /*index*/)> onDidAddTrack;
+  sig2_t<void (QSharedPointer<Track>, int /*index*/)> onWillRemoveTrack;
+  sig2_t<void (int64_t /*old_current_time*/)> onDidChangeCurrentTime;
+  sig2_t<void (int64_t /*old_duration*/)> onDidChangeDuration;
+  sig2_t<void (QSharedPointer<video_renderer::CommandBuffer> /*command_buffer*/)> onDirty;
+
 public slots:
   void renderVideo(QSharedPointer<video_renderer::Renderer> renderer, int64_t timecode);
-
-signals:
-  void onDidAddTrack(QSharedPointer<Track> track, int index);
-  void onWillRemoveTrack(QSharedPointer<Track> track, int index);
-  void onDidChangeCurrentTime(int64_t old_current_time);
-  void onDidChangeDuration(int64_t old_duration);
-  void onDirty(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
 
 };
 

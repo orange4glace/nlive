@@ -26,7 +26,8 @@ SequenceRenderer::SequenceRenderer(
   target_gl_(target_gl) {
   renderer_ = QSharedPointer<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
   
-  connect(sequence_.get(), &Sequence::onDirty, this, &SequenceRenderer::render);
+  sequence->onDirty.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<CommandBuffer>)>::slot_type(
+    boost::bind(&SequenceRenderer::render, this, _1))));
   connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
     emit onDidReadyData();
   });

@@ -34,12 +34,14 @@ GhostSequenceView::GhostSequenceView(
   for (auto track : sequence->tracks()) {
     addTrackListener(track);
   }
-  connect(sequence.get(), &Sequence::onDidAddTrack, this, [this](QSharedPointer<Track> track) {
+  sequence->onDidAddTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+    [this](QSharedPointer<Track> track, int index) {
     addTrackListener(track);
-  });
-  connect(sequence.get(), &Sequence::onWillRemoveTrack, this, [this](QSharedPointer<Track> track) {
+  }).track(__sig_scope_));
+  sequence->onWillRemoveTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+    [this](QSharedPointer<Track> track, int index) {
     removeTrackListener(track);
-  });
+  }).track(__sig_scope_));
 
 }
 
@@ -88,22 +90,27 @@ void GhostSequenceView::addTrackListener(QSharedPointer<Track> track) {
     addMagnetTime(clip->start_time());
     addMagnetTime(clip->end_time());
   }
-  std::vector<QMetaObject::Connection> connections;
-  connections.emplace_back(connect(track.get(), &Track::onDidAddClip, this, [this](QSharedPointer<Clip> clip) {
-    addMagnetTime(clip->start_time());
-    addMagnetTime(clip->end_time());
-  }));
-  connections.emplace_back(connect(track.get(), &Track::onWillRemoveClip, this, [this](QSharedPointer<Clip> clip) {
-    deleteMagnetTime(clip->start_time());
-    deleteMagnetTime(clip->end_time());
-  }));
-  connections.emplace_back(connect(track.get(), &Track::onDidChangeClipTime, this,
-    [this](QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time) {
-    deleteMagnetTime(old_start_time);
-    deleteMagnetTime(old_end_time);
-    addMagnetTime(clip->start_time());
-    addMagnetTime(clip->end_time());
-  }));
+  std::vector<sig2_conn_t> connections;
+  connections.push_back(track->onDidAddClip.connect(
+    sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+      [this](QSharedPointer<Clip> clip) {
+      addMagnetTime(clip->start_time());
+      addMagnetTime(clip->end_time());
+    }).track(__sig_scope_)));
+  connections.push_back(track->onWillRemoveClip.connect(
+    sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+      [this](QSharedPointer<Clip> clip) {
+      deleteMagnetTime(clip->start_time());
+      deleteMagnetTime(clip->end_time());
+    }).track(__sig_scope_)));
+  connections.push_back(track->onDidChangeClipTime.connect(
+    sig2_t<void (QSharedPointer<Clip>, int, int, int)>::slot_type(
+      [this](QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time) {
+      deleteMagnetTime(old_start_time);
+      deleteMagnetTime(old_end_time);
+      addMagnetTime(clip->start_time());
+      addMagnetTime(clip->end_time());
+    }).track(__sig_scope_)));
   track_connections_.insert({ track, connections });
 }
 
@@ -113,7 +120,7 @@ void GhostSequenceView::removeTrackListener(QSharedPointer<Track> track) {
     deleteMagnetTime(clip->end_time());
   }
   auto connections = track_connections_.find(track);
-  for (auto& connection : connections->second) disconnect(connection);
+  for (auto& connection : connections->second) connection.disconnect();
   track_connections_.erase(connections);
 }
 

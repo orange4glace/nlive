@@ -7,6 +7,7 @@
 #include <map>
 #include <iostream>
 
+#include "base/common/sig.h"
 #include "model/sequence/clip.h"
 #include "browser/widgets/timeline/clipview.h"
 
@@ -19,7 +20,7 @@ class IThemeService;
 
 namespace timelinewidget {
 
-class TrackTimelineView : public QWidget {
+class TrackTimelineView : public QWidget, public Sig {
   Q_OBJECT
 
 private:

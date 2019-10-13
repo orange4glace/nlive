@@ -3,19 +3,35 @@
 
 #include <QSharedPointer>
 #include <string>
+#include "base/common/sig.h"
 
 namespace nlive {
 
 namespace effect {
 
-class Effect {
+class Effect : public Sig {
 
 private:
   std::string type_;
 
 public:
-  Effect(std::string type);
-  const std::string& type() const;
+  Effect(std::string type) : type_(type) {
+
+  }
+
+  const std::string& type() const {
+    return type_;
+  }
+
+  template <class T>
+  void connectProperty(QSharedPointer<T> property) {
+    property->onDidUpdate.connect(
+      sig2_t<void (void)>::slot_type([this] {
+      onDidUpdate();
+    }));
+  }
+
+  sig2_t<void (void)> onDidUpdate;
 
 };
 

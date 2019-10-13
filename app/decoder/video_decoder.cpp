@@ -80,10 +80,8 @@ int VideoDecoder::doSeek(int64_t pts) {
 }
 
 QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts) {
-  qDebug() << "[VideoDecoder] decode " << pts << "\n";
   std::lock_guard<std::mutex> lock(mutex_);
   QSharedPointer<VideoFrame> frame = nullptr;
-
   if (last_pts_ == AV_NOPTS_VALUE
    || last_pts_ >= pts
    || last_pts_ + 50000 < pts) {

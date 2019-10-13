@@ -16,12 +16,17 @@ void Track::addClip(QSharedPointer<Clip> clip) {
 void Track::doAddClip(QSharedPointer<Clip> clip) {
   if (hasClip(clip)) return;
   doClearTime(clip->start_time(), clip->end_time());
-  std::vector<QMetaObject::Connection> connections;
-  auto c1 = connect(clip.get(), &Clip::onDidChangeTime, this, [this, clip](int old_start_time, int old_end_time, int old_b_time) {
+  std::vector<sig2_conn_t> connections;
+  auto c1 = clip->onDidChangeTime.connect(sig2_t<void (int64_t, int64_t, int64_t)>::slot_type(
+    [this, clip](int64_t old_start_time, int64_t old_end_time, int64_t old_b_time) {
     handleOnDidChangeClipTime(clip, old_start_time, old_end_time, old_b_time);
-    emit onDidChangeClipTime(clip, old_start_time, old_end_time, old_b_time);
-  });
+  }));
+  auto c2 = clip->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
+    [this]() {
+    doInvalidate();
+  }));
   connections.push_back(c1);
+  connections.push_back(c2);
   clip_connections_.insert({ clip, connections });
   clips_.insert(clip);
   clip_start_ordered_set_.insert(clip);
@@ -33,10 +38,12 @@ void Track::handleOnDidChangeClipTime(QSharedPointer<Clip> clip, int old_start_t
   detachClip(clip);
   doClearTime(clip->start_time(), clip->end_time());
   attachClip(clip);
+  onDidChangeClipTime(clip, old_start_time, old_end_time, old_b_time); 
+  doInvalidate();
 }
 
 void Track::doInvalidate() {
-  emit onInvalidate();
+  onInvalidate();
 }
 
 void Track::removeClip(QSharedPointer<Clip> clip) {
@@ -47,7 +54,7 @@ void Track::doRemoveClip(QSharedPointer<Clip> clip) {
   if (!hasClip(clip)) return;
   auto connections = clip_connections_.find(clip);
   Q_ASSERT(connections != clip_connections_.end());
-  for (auto& connection : connections->second) disconnect(connection);
+  for (auto& connection : connections->second) connection.disconnect();
   clip_connections_.erase(connections);
   auto sptr = *clips_.find(clip);
   onWillRemoveClip(sptr);

@@ -1,4 +1,5 @@
 add_subdirectory(shader)
+add_subdirectory(command)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}

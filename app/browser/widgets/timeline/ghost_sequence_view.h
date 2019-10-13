@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include <QMetaObject>
 #include <QTimer>
+#include "base/common/sig.h"
 #include "model/sequence/track.h"
 
 namespace nlive {
@@ -18,7 +19,7 @@ namespace timelinewidget {
 class GhostTrackView;
 class GhostClipView;
 
-class GhostSequenceView : public QWidget {
+class GhostSequenceView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
@@ -28,7 +29,7 @@ private:
   SequenceScrollView* scroll_view_;
 
   std::map<int, int> magnet_times_;
-  std::map<QSharedPointer<Track>, std::vector<QMetaObject::Connection>, TrackCompare> track_connections_;
+  std::map<QSharedPointer<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
 
   bool magnet_start_;
   bool magnet_end_;

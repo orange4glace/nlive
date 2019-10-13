@@ -10,6 +10,10 @@
 
 namespace nlive {
 
+namespace {
+  int z = 0;
+}
+
 Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
   undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
   invalidated_(false),
@@ -22,7 +26,7 @@ Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
       doMakeDirty();
     }
   });
-  invalidateTimer_->setInterval(60);
+  invalidateTimer_->setInterval(33);
   invalidateTimer_->start();
 }
 
@@ -32,7 +36,7 @@ void Sequence::doMakeDirty() {
   for (auto track : tracks_) {
     track->render(command_buffer, current_time_);
   }
-  emit onDirty(command_buffer);
+  onDirty(command_buffer);
 }
 
 void Sequence::doInvalidate() {
@@ -46,15 +50,17 @@ QSharedPointer<Track> Sequence::addTrack() {
 QSharedPointer<Track> Sequence::doAddTrack() {
   QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_));
   tracks_.push_back(track);
-  std::vector<QMetaObject::Connection> connections;
-  connections.push_back(connect(track.get(), &Track::onDidAddClip, this, [this, track](QSharedPointer<Clip> clip) {
+  std::vector<sig2_conn_t> connections;
+  connections.push_back(track->onDidAddClip.connect(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+    [this, track] (QSharedPointer<Clip> clip) {
     handleDidAddClip(track, clip);
-  }));
-  connections.push_back(connect(track.get(), &Track::onInvalidate, this, [this]() {
+  })));
+  connections.push_back(track->onInvalidate.connect(sig2_t<void (void)>::slot_type(
+    [this] () {
     doInvalidate();
-  }));
+  })));
   track_connections_.insert({track, connections});
-  emit onDidAddTrack(track, tracks_.size() - 1);
+  onDidAddTrack(track, tracks_.size() - 1);
   return track;
 }
 
@@ -69,16 +75,17 @@ void Sequence::removeTrackAt(int index) {
 }
 
 void Sequence::doRemoveTrackAt(int index) {
-  if (index < 0 || tracks_.size() >= index) {
-    spdlog::get(LOGGER_DEFAULT)->warn(
-      "[Sequence] Failed to doRemoveTrackAt. Track ID = {}, index = {}", id_, index);
-    return;
-  }
+  Q_ASSERT(!(index < 0 || tracks_.size() >= index));
+  // if (index < 0 || tracks_.size() >= index) {
+  //   spdlog::get(LOGGER_DEFAULT)->warn(
+  //     "[Sequence] Failed to doRemoveTrackAt. Track ID = {}, index = {}", id_, index);
+  //   return;
+  // }
   QSharedPointer<Track> track = tracks_[index];
-  emit onWillRemoveTrack(track, index);
+  onWillRemoveTrack(track, index);
   auto connections = track_connections_.find(track);
   Q_ASSERT(connections != track_connections_.end());
-  for (auto& connection : connections->second) disconnect(connection);
+  for (auto& connection : connections->second) connection.disconnect();
   track_connections_.erase(connections);
   tracks_.erase(tracks_.begin() + index);
 }
@@ -87,14 +94,14 @@ void Sequence::doSetCurrentTime(int64_t value) {
   int64_t old = current_time_;
   current_time_ = value;
   doInvalidate();
-  emit onDidChangeCurrentTime(old);
+  onDidChangeCurrentTime(old);
 }
 
 void Sequence::doSetDuration(int64_t value) {
   int64_t old = duration_;
   duration_ = value;
   doInvalidate();
-  emit onDidChangeDuration(old);
+  onDidChangeDuration(old);
 }
 
 QSharedPointer<Track> Sequence::getTrackAt(int index) {

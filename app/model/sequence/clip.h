@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 #include <QUndoStack>
 
+#include "base/common/sig.h"
 #include "model/common/rational.h"
 #include "model/effect/transform_effect.h"
 
@@ -24,7 +25,7 @@ class Effect;
 
 }
 
-class Clip : public QObject {
+class Clip : public QObject, public Sig {
   Q_OBJECT
 
 private:
@@ -40,6 +41,7 @@ protected:
   int64_t b_time_;
 
   std::vector<QSharedPointer<effect::Effect>> effects_;
+  std::map<QSharedPointer<effect::Effect>, sig2_conn_t> effect_conn_;
   // Every clip has EXACTLY 1 TransformEffect
   QSharedPointer<effect::TransformEffect> transform_effect_;
 
@@ -68,8 +70,11 @@ public:
 
   bool operator<(const Clip& rhs) const;
 
+  sig2_t<void (int64_t /*old_start_time*/, int64_t /*old_end_time*/,
+    int64_t /*old_b_time*/)> onDidChangeTime;
+  sig2_t<void (void)> onDidUpdate;
+
 signals:
-  void onDidChangeTime(int64_t old_start_time, int64_t old_end_time, int64_t old_b_time);
   void onDidAddEffect(QSharedPointer<effect::Effect> effect);
 
 

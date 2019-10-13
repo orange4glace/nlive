@@ -8,7 +8,7 @@
 #include <QOffscreenSurface>
 #include <QThread>
 
-#include "renderer/video_renderer/sequence_renderer.h"
+#include "browser/widgets/monitor/sequence_renderer_view.h"
 
 namespace nlive {
 
@@ -16,22 +16,18 @@ class Sequence;
 
 namespace monitor_widget {
 
-class SequenceView : public QOpenGLWidget, protected QOpenGLFunctions {
+class SequenceView : public QWidget {
 
 private:
   QSharedPointer<Sequence> sequence_;
-  video_renderer::SequenceRenderer* sequence_renderer_;
-
-  void scheduleRender();
+  SequenceRendererView* renderer_view_;
 
 protected:
-  void initializeGL() override;
-  void resizeGL(int w, int h) override;
-  void paintGL() override;
+  void resizeEvent(QResizeEvent* e);
+  void paintEvent(QPaintEvent* e);
 
 public:
   SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence);
-  ~SequenceView();
 
 };
 

@@ -38,7 +38,9 @@ SequenceTimelineView::SequenceTimelineView(
 
   auto tracks = sequence->tracks();
   for (int i = 0; i < tracks.size(); i ++) handleDidAddTrack(tracks[i], i);
-  QObject::connect(sequence.get(), &Sequence::onDidAddTrack, this, &SequenceTimelineView::handleDidAddTrack);
+  sequence->onDidAddTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+    boost::bind(&SequenceTimelineView::handleDidAddTrack, this, _1, _2)
+  ).track(__sig_scope_));
 }
 
 void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int index) {

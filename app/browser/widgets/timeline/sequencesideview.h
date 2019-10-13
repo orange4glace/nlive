@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 #include <QVBoxLayout>
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -15,7 +16,7 @@ namespace timelinewidget {
 
 class TrackSideView;
 
-class SequenceSideView : public QWidget {
+class SequenceSideView : public QWidget, public Sig {
 
 private:
   IThemeService* theme_service_;

@@ -29,9 +29,10 @@ ClipView::ClipView(
   right_handle_inner_(this), right_handle_outer_(this) {
 
   updateView();
-  QObject::connect(clip.get(), &Clip::onDidChangeTime, this, [this](int oldStart, int oldEnd) {
-    updateView();
-  });
+  clip->onDidChangeTime.connect(sig2_t<void (int64_t, int64_t, int64_t)>::slot_type(
+    [this](int64_t old_start_time, int64_t old_end_time, int64_t old_b_time) {
+      updateView();
+    }).track(__sig_scope_));
   QObject::connect(scrollView, &SequenceScrollView::onDidUpdate, this, [this]() {
     updateView();
   });

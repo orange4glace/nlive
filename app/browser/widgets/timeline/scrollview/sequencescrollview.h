@@ -2,6 +2,7 @@
 #define _NLIVE_SEQUENCE_SCROLL_VIEW_H_
 
 #include <QWidget>
+#include "base/common/sig.h"
 #include "browser/widgets/timeline/scrollview/scrollbar.h"
 
 namespace nlive {
@@ -9,7 +10,7 @@ namespace nlive {
 class Sequence;
 class IThemeService;
 
-class SequenceScrollView : public QWidget {
+class SequenceScrollView : public QWidget, public Sig {
   Q_OBJECT
 
 private:

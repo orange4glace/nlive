@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QEvent>
 #include <QSharedPointer>
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -27,7 +28,7 @@ class ClipViewHandleMouseEvent : public QEvent {
 
 };
 
-class ClipView : public QWidget {
+class ClipView : public QWidget, public Sig {
   Q_OBJECT
 
 private:

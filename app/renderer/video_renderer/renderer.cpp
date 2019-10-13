@@ -79,10 +79,8 @@ void Renderer::run() {
   while (true) {
     command_buffer_mutex_.lock();
     if (current_command_buffer_ == nullptr) {
-      qDebug() << "Wait for commands.. " << this << " " << thread() << "\n";
       command_buffer_wait_.wait(&command_buffer_mutex_);
     }
-    qDebug() << "Got commands.. " << current_command_buffer_->commands().size() << "\n";
     // Got a CommandBuffer that can be rendered into surface
     QSharedPointer<CommandBuffer> command_buffer = current_command_buffer_;
     current_command_buffer_ = nullptr;
@@ -90,7 +88,6 @@ void Renderer::run() {
 
     gl_->makeCurrent(surface_);
     for (auto command : command_buffer->commands()) {
-      qDebug() << "Command " << command << "\n";
       command->render(renderer_ctx_);
     }
     gl_->doneCurrent();

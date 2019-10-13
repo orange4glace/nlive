@@ -15,6 +15,7 @@ namespace video_renderer {
 struct RenderTexture {
   int id;
   std::string name;
+  int width, height;
   GLuint framebuffer;
   GLuint texture;
 };

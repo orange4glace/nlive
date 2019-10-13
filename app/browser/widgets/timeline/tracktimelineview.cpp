@@ -23,8 +23,10 @@ TrackTimelineView::TrackTimelineView(
 
   auto& clips = track->clips();
   for (auto& clip : clips) handleDidAddClip(clip);
-  QObject::connect(track.get(), &Track::onDidAddClip, this, &TrackTimelineView::handleDidAddClip);
-  QObject::connect(track.get(), &Track::onWillRemoveClip, this, &TrackTimelineView::handleWillRemoveClip);
+  track->onDidAddClip.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+    boost::bind(&TrackTimelineView::handleDidAddClip, this, _1))));
+  track->onWillRemoveClip.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+    boost::bind(&TrackTimelineView::handleWillRemoveClip, this, _1))));
 }
 
 void TrackTimelineView::handleDidAddClip(QSharedPointer<Clip> clip) {

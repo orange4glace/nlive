@@ -7,6 +7,8 @@
 #define sig2_t boost::signals2::signal
 #define sig2_conn_t boost::signals2::connection
 
+#define SIG2_TRACK(a) (a).track(__sig_scope_)
+
 namespace nlive {
 
 namespace {
