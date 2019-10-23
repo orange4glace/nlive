@@ -7,6 +7,7 @@
 #include <QOpenGLContext>
 #include <QSharedPointer>
 #include "renderer/video_renderer/render_sharing_context.h"
+#include "renderer/video_renderer/decoder_manager.h"
 
 namespace nlive {
 
@@ -33,6 +34,8 @@ private:
 
   QSharedPointer<RenderSharingContext> sharing_context_;
 
+  QSharedPointer<DecoderManager> decoder_manager_;
+
   bool initialized_;
 
 public:
@@ -58,6 +61,7 @@ public:
   int width() const;
   int height() const;
   QSharedPointer<RenderSharingContext> sharing_context();
+  QSharedPointer<DecoderManager> decoder_manager();
   bool initialized() const;
   
   QOpenGLContext* gl();

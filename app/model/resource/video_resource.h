@@ -1,10 +1,13 @@
 #ifndef _NLIVE_VIDEO_RESOUCE_H_
 #define _NLIVE_VIDEO_RESOUCE_H_
 
+#include <QSharedPointer>
 #include <string>
+#include <mutex>
 
 #include "model/resource/resource.h"
 #include "model/common/rational.h"
+#include "decoder/video_decoder.h"
 
 namespace nlive {
 

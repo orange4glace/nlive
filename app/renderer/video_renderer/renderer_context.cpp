@@ -16,6 +16,7 @@ RendererContext::RendererContext(QOpenGLContext* gl,
     QSharedPointer<RenderSharingContext> sharing_context) :
   gl_(gl), width_(width), height_(height), sharing_context_(sharing_context),
   front_buffer_index_(0), initialized_(false) {
+  decoder_manager_ = QSharedPointer<DecoderManager>(new DecoderManager());
 }
   
 void RendererContext::initialize() { 
@@ -125,6 +126,10 @@ int RendererContext::height() const {
 
 QSharedPointer<RenderSharingContext> RendererContext::sharing_context() {
   return sharing_context_;
+}
+
+QSharedPointer<DecoderManager> RendererContext::decoder_manager() {
+  return decoder_manager_;
 }
 
 bool RendererContext::initialized() const {

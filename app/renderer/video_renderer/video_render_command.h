@@ -108,43 +108,6 @@ public:
     gf->glBindTexture(GL_TEXTURE_2D, rt.texture);
     gf->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resource_->width(), resource_->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
     gf->glBindTexture(GL_TEXTURE_2D, 0);
-    // gf->glBindFramebuffer(rt.framebuffer);
-    // gf->glClearColor(1.0f, 1.0f, 0, 1.0f);
-    // gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // gf->glUseProgram(program_);
-    // gf->glActiveTexture(GL_TEXTURE0);
-    // gf->glBindTexture(GL_TEXTURE_2D, front_render_texture.texture);
-    // gf->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    // gf->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // gf->glUniform1i(image_loc_, 0);
-    // gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
-    // float position[12] = {
-    //   0.0f, 0.0f,
-    //   1.0f, 0.0f,
-    //   0.0f, 1.0f,
-    //   0.0f, 1.0f,
-    //   1.0f, 0.0f,
-    //   1.0f, 1.0f
-    // };
-    // gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)position, GL_DYNAMIC_DRAW);
-    // gf->glEnableVertexAttribArray(position_loc_);
-    // gf->glVertexAttribPointer(position_loc_, 2, GL_FLOAT, false, 0, (void*)0);
-    // gf->glBindBuffer(GL_ARRAY_BUFFER, texCoord_buffer_);
-    // float texCoord[12] = {
-    //   0.0f, 0.0f,
-    //   1.0f, 0.0f,
-    //   0.0f, 1.0f,
-    //   0.0f, 1.0f,
-    //   1.0f, 0.0f,
-    //   1.0f, 1.0f
-    // };
-    // gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)texCoord, GL_DYNAMIC_DRAW);
-    // gf->glEnableVertexAttribArray(texCoord_loc_);
-    // gf->glVertexAttribPointer(texCoord_loc_, 2, GL_FLOAT, false, 0, (void*)0);
-    // gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
-    // gf->glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    // ctx->releaseTemporaryRenderTexture(rt);
 
     delete buf;
   }

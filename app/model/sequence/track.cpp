@@ -147,10 +147,15 @@ QSharedPointer<Clip> Track::getPrevClip(QSharedPointer<Clip> clip) {
   return *std::prev(it);
 }
 
+int64_t Track::getClipBTimecodeOffset(int64_t timecode, QSharedPointer<Clip> clip) const {
+  return timecode - clip->start_time() + clip->b_time();
+}
+
 void Track::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
   auto clip = getClipAt(time);
   if (clip == nullptr) return;
-  clip->render(command_buffer, time);
+  int64_t clip_timecode = getClipBTimecodeOffset(time, clip);
+  clip->render(command_buffer, clip_timecode);
 }
 
 void Track::invalidate() {

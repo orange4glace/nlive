@@ -1,3 +1,4 @@
+add_subdirectory(common)
 add_subdirectory(layout)
 
 set(NLIVE_SOURCES

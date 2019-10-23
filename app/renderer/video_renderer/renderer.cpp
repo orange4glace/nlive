@@ -1,5 +1,6 @@
 #include "renderer/video_renderer/renderer.h"
 
+#include <chrono>
 #include <QDebug>
 #include <QOpenGLFunctions>
 
@@ -86,12 +87,20 @@ void Renderer::run() {
     current_command_buffer_ = nullptr;
     command_buffer_mutex_.unlock();
 
+    // std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
     gl_->makeCurrent(surface_);
+    auto back_rt = renderer_ctx_->getBackRenderTexture();
+    gf->glBindFramebuffer(GL_FRAMEBUFFER, back_rt.framebuffer);
+    gf->glViewport(0, 0, back_rt.width, back_rt.height);
+    gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    gf->glBindFramebuffer(GL_FRAMEBUFFER, 0);
     for (auto command : command_buffer->commands()) {
       command->render(renderer_ctx_);
     }
     gl_->doneCurrent();
-    
+    // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+    // qDebug() << "dt = " <<  sec.count();  
+  
     buffer_swap_mutex_.lock();
     renderer_ctx_->swapRenderTextures();
     buffer_swap_mutex_.unlock();

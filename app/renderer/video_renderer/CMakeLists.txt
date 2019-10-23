@@ -8,6 +8,8 @@ set(NLIVE_SOURCES
   renderer/video_renderer/renderer.cpp
   renderer/video_renderer/render_sharing_context.h
   renderer/video_renderer/render_sharing_context.cpp
+  renderer/video_renderer/decoder_manager.h
+  renderer/video_renderer/decoder_manager.cpp
   renderer/video_renderer/renderer_context.h
   renderer/video_renderer/renderer_context.cpp
   renderer/video_renderer/render_command.h

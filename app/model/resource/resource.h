@@ -12,7 +12,7 @@ using ResourceIdentifier = QString;
 class Resource : public QObject {
   Q_OBJECT
 
-private:
+protected:
   ResourceIdentifier id_;
   std::string type_;
   std::string path_;

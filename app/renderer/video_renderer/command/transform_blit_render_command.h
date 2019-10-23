@@ -35,8 +35,6 @@ public:
 
     gf->glBindFramebuffer(GL_FRAMEBUFFER, back_rt.framebuffer);
     gf->glViewport(0, 0, ctx->width(), ctx->height());
-    gf->glClearColor(0, 0, 0, 1.0f);
-    gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gf->glUseProgram(texture_shader->id());
     gf->glActiveTexture(GL_TEXTURE0);
     gf->glBindTexture(GL_TEXTURE_2D, rt.texture);

@@ -16,19 +16,28 @@ namespace nlive {
 
 namespace video_renderer {
 
+namespace {
+struct Sharing {
+  QSharedPointer<VideoDecoderRef> decoder_ref;
+};
+}
+
 class VideoClipPreRenderCommand : public RenderCommand {
 
 private:
+  int clip_id_;
   QSharedPointer<VideoResource> resource_;
-  QSharedPointer<VideoDecoder> decoder_;
   int64_t timestamp_;
 
 public:
+  QSharedPointer<Sharing> sharing;
+
   inline VideoClipPreRenderCommand(
+    int clip_id,
     QSharedPointer<VideoResource> resource,
-    QSharedPointer<VideoDecoder> decoder,
     int64_t timestamp) :
-    resource_(resource), decoder_(decoder), timestamp_(timestamp) {
+    clip_id_(clip_id), resource_(resource), timestamp_(timestamp) {
+    sharing = QSharedPointer<Sharing>(new Sharing());
   }
 
   inline void render(QSharedPointer<RendererContext> ctx) {
@@ -36,7 +45,9 @@ public:
     int height = resource_->height();
     auto rt = ctx->createTemporaryRenderTexture("clip", width, height);
     auto rtt = ctx->createTemporaryRenderTexture("clip_temp", width, height);
-    QSharedPointer<VideoFrame> video_frame = decoder_->decode(timestamp_);
+    auto decoder_ref = ctx->decoder_manager()->acquireDecoder(resource_, clip_id_);
+    sharing->decoder_ref = decoder_ref;
+    QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_);
     if (!video_frame) return;
     uint8_t* buf = new uint8_t[width * height * 4];
     video_frame->scale((void*)buf);
@@ -56,12 +67,16 @@ private:
   int64_t timestamp_;
 
 public:
+  QSharedPointer<Sharing> sharing;
+
   inline VideoClipPostRenderCommand(
+    QSharedPointer<Sharing> sharing,
     QSharedPointer<VideoResource> resource) :
-    resource_(resource) {
+    sharing(sharing), resource_(resource) {
   }
 
   inline void render(QSharedPointer<RendererContext> ctx) {
+    ctx->decoder_manager()->releaseDecoder(sharing->decoder_ref);
     ctx->releaseTemporaryRenderTexture("clip");
     ctx->releaseTemporaryRenderTexture("clip_temp");
   }

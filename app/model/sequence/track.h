@@ -83,6 +83,8 @@ public:
   QSharedPointer<Clip> getNextClip(QSharedPointer<Clip> clip);
   QSharedPointer<Clip> getPrevClip(QSharedPointer<Clip> clip);
 
+  int64_t getClipBTimecodeOffset(int64_t timecode, QSharedPointer<Clip> clip) const;
+
   void invalidate();
 
   void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);

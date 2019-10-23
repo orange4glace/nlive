@@ -13,7 +13,6 @@ class VideoClip : public Clip {
 
 private:
   QSharedPointer<VideoResource> resource_;
-  QSharedPointer<VideoDecoder> decoder_;
 
 public:
   VideoClip(QUndoStack* undo_stack, QSharedPointer<VideoResource> video_resource,
