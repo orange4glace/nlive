@@ -12,6 +12,7 @@ Nlive is succeed to [Olive](https://github.com/orange4glace/olive), which is als
   * Nlive uses CMake for meta build system.
 * Qt5
   * Nlive is based on Qt5
+* Boost
 * OpenGL
   * Nlive uses OpenGL for rendering
 * FFmpeg >= 3.4
@@ -20,16 +21,20 @@ Nlive is succeed to [Olive](https://github.com/orange4glace/olive), which is als
   * Nlive uses spdlog for logging
 
 
-2. Make sure [CMake can find packages](https://cmake.org/cmake/help/v3.8/command/find_package.html) *Qt5*, *OpenGL*, *FFmpeg*, *spdlog*. The easist way is setting `CMAKE_PREFIX_PATH` environment variable as include paths and library paths of those. You need to add 4 paths which are
+2. Make sure [CMake can find packages](https://cmake.org/cmake/help/v3.8/command/find_package.html) *Qt5*, *Boost*, *OpenGL*, *FFmpeg*, *spdlog*. The easist way is setting `CMAKE_PREFIX_PATH` environment variable as include paths and library paths of those. You need to add 4 paths which are
 
 * `QT5_BASE_PATH/QT5_VERSION/QT5_COMPILER/lib/cmake/Qt5`
 * `FFMPEG_BASE_PATH/lib`
 * `FFMPEG_BASE_PATH/include`
 * `SPDLOG_BASE_PATH/include`
 
-For me, on Windows 10 with MSVC 2017,
+And one last additional environment variable to find *Boost*
+
+As for me, on Windows 10 with MSVC 2017,
 
 `%CMAKE_PREFIX_PATH% = Q:\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5;D:\cpplib\ffmpeg-3.4\lib;D:\cpplib\ffmpeg-3.4\include;D:\cpplib\spdlog\include;`
+
+`%BOOST% = D:\cpplib\boost_1_70_0%;`
 
 3. Get sources from git
 
@@ -49,4 +54,6 @@ For me, on Windows 10 with MSVC 2017,
 
    > ninja
 
-6. Run your program.
+6. Copy and paste necessary dynanmic libs. (*\*.dll* or *\*.a*)
+
+7. Run your program.
