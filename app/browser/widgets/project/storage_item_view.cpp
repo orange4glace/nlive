@@ -14,9 +14,48 @@ namespace nlive {
 
 namespace project_widget {
 
-StorageItemView::StorageItemView(QWidget* parent, StorageItem* item, QSharedPointer<IThemeService> theme_service) :
-  theme_service_(theme_service), QWidget(parent), storage_item_(item) {
+ScrubBar::ScrubBar(QWidget* parent, QSharedPointer<IThemeService> theme_service) : QWidget(parent), theme_service_(theme_service) {
+  value_ = 0;
+}
 
+void ScrubBar::paintEvent(QPaintEvent* e) {
+  QPainter p(this);
+  p.fillRect(rect(), theme_service_->getTheme().primaryColor());
+  p.fillRect(width() * value_ - 3, 0, 6, height(), theme_service_->getTheme().surfaceColor());
+}
+
+void ScrubBar::setValue(double x) {
+  value_ = x;
+  update();
+}
+
+StorageItemView::StorageItemView(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) :
+  theme_service_(theme_service), QWidget(parent), storage_item_(item) {
+  scrub_bar_ = new ScrubBar(this, theme_service);
+  scrub_bar_->hide();
+}
+
+void StorageItemView::_onScrubStart() {
+  onScrubStart();
+  scrub_bar_->show();
+}
+
+void StorageItemView::_onScrub(double x) {
+  scrub_bar_->setValue(x);
+  onScrub(x);
+}
+
+void StorageItemView::_onScrubEnd() {
+  scrub_bar_->hide();
+  onScrubEnd();
+}
+
+void StorageItemView::onScrubStart() {}
+void StorageItemView::onScrub(double x) {}
+void StorageItemView::onScrubEnd() {}
+
+void StorageItemView::resizeEvent(QResizeEvent* event) {
+  scrub_bar_->setGeometry(0, height() - 3, width(), 3);
 }
 
 void StorageItemView::mousePressEvent(QMouseEvent* event) {
@@ -31,7 +70,24 @@ void StorageItemView::mousePressEvent(QMouseEvent* event) {
   }
 }
 
-StorageItem* StorageItemView::storage_item() {
+void StorageItemView::enterEvent(QEvent* event) {
+  scrubbing_ = true;
+  setMouseTracking(true);
+  _onScrubStart();
+}
+
+void StorageItemView::mouseMoveEvent(QMouseEvent* event) {
+  double x = event->localPos().x() / (double)width();
+  _onScrub(x);
+}
+
+void StorageItemView::leaveEvent(QEvent* event) {
+  scrubbing_ = false;
+  setMouseTracking(false);
+  _onScrubEnd();
+}
+
+QSharedPointer<StorageItem> StorageItemView::storage_item() {
   return storage_item_;
 }
 

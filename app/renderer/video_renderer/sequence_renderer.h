@@ -28,6 +28,7 @@ public:
   SequenceRenderer(
     QSharedPointer<Sequence> sequence,
     QOpenGLContext* target_gl);
+  ~SequenceRenderer();
 
   // std::unique_ptr<RenderTexture> getRenderData();
   void initialize();

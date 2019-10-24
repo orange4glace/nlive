@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <mutex>
+#include <vector>
 extern "C" {
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>

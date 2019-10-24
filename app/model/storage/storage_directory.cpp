@@ -9,20 +9,20 @@ StorageDirectory::StorageDirectory(
   StorageItem("DIRECTORY", name, parent, uuid) {
 }
 
-void StorageDirectory::addItem(StorageItem* item) {
+void StorageDirectory::addItem(QSharedPointer<StorageItem> item) {
   if (hasItem(item)) return;
   items_.push_back(item);
   emit onDidAddItem(item, items_.size() - 1);
 }
 
-void StorageDirectory::removeItem(StorageItem* item) {
+void StorageDirectory::removeItem(QSharedPointer<StorageItem> item) {
   int index = getItemIndex(item);
   if (index == -1) return;
   emit onWillRemoveItem(item, index);
   items_.erase(items_.begin() + index);
 }
 
-int StorageDirectory::getItemIndex(StorageItem* item) const {
+int StorageDirectory::getItemIndex(QSharedPointer<StorageItem> item) const {
   // TODO : logN query
   int i = 0;
   for (auto it : items_) {
@@ -32,7 +32,7 @@ int StorageDirectory::getItemIndex(StorageItem* item) const {
   return -1;
 }
 
-bool StorageDirectory::hasItem(StorageItem* item) const {
+bool StorageDirectory::hasItem(QSharedPointer<StorageItem> item) const {
   return getItemIndex(item) != -1;
 }
 
@@ -40,7 +40,7 @@ QSharedPointer<Clip> StorageDirectory::cliperize(Rational time_base) {
   return nullptr;
 }
 
-const std::vector<StorageItem*>& StorageDirectory::items() {
+const std::vector<QSharedPointer<StorageItem>>& StorageDirectory::items() {
   return items_;
 }
 

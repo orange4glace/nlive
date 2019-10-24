@@ -13,7 +13,7 @@ Renderer::Renderer(
   int width, int height,
   size_t texture_pool_size) :
   target_gl_(target_gl), current_command_buffer_(nullptr),
-  width_(width), height_(height) {
+  width_(width), height_(height), closed_(false) {
   surface_ = new QOffscreenSurface();
   surface_->create();
 
@@ -79,15 +79,21 @@ void Renderer::run() {
 
   while (true) {
     command_buffer_mutex_.lock();
-    if (current_command_buffer_ == nullptr) {
+    if (!closed_ && current_command_buffer_ == nullptr) {
       command_buffer_wait_.wait(&command_buffer_mutex_);
     }
+
+    if (closed_) {
+      command_buffer_mutex_.unlock();
+      return;
+    }
+
     // Got a CommandBuffer that can be rendered into surface
     QSharedPointer<CommandBuffer> command_buffer = current_command_buffer_;
     current_command_buffer_ = nullptr;
     command_buffer_mutex_.unlock();
 
-    // std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
     gl_->makeCurrent(surface_);
     auto back_rt = renderer_ctx_->getBackRenderTexture();
     gf->glBindFramebuffer(GL_FRAMEBUFFER, back_rt.framebuffer);
@@ -98,8 +104,8 @@ void Renderer::run() {
       command->render(renderer_ctx_);
     }
     gl_->doneCurrent();
-    // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
-    // qDebug() << "dt = " <<  sec.count();  
+    std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+    qDebug() << "dt = " <<  sec.count();  
   
     buffer_swap_mutex_.lock();
     renderer_ctx_->swapRenderTextures();
@@ -111,7 +117,19 @@ void Renderer::run() {
 
 void Renderer::render(QSharedPointer<CommandBuffer> command_buffer) {
   command_buffer_mutex_.lock();
+  if (closed_) {
+    command_buffer_mutex_.unlock();
+    return;
+  }
   current_command_buffer_ = command_buffer;
+  command_buffer_wait_.notify_all();
+  command_buffer_mutex_.unlock();
+}
+
+void Renderer::close() {
+  command_buffer_mutex_.lock();
+  closed_ = true;
+  qDebug() << "[Renderer] close!";
   command_buffer_wait_.notify_all();
   command_buffer_mutex_.unlock();
 }

@@ -35,15 +35,15 @@ DirectoryView::DirectoryView(
   int i = 0;
   for (auto item : storage_directory->items())
     addStorageItemView(item, i ++);
-  QObject::connect(storage_directory.get(), &StorageDirectory::onDidAddItem, this, [this](StorageItem* item, int index) {
+  QObject::connect(storage_directory.get(), &StorageDirectory::onDidAddItem, this, [this](QSharedPointer<StorageItem> item, int index) {
     addStorageItemView(item, index);
   });
-  QObject::connect(storage_directory.get(), &StorageDirectory::onWillRemoveItem, this, [this](StorageItem* item, int index) {
+  QObject::connect(storage_directory.get(), &StorageDirectory::onWillRemoveItem, this, [this](QSharedPointer<StorageItem> item, int index) {
     removeStorageItemView(item);
   });
 }
 
-void DirectoryView::addStorageItemView(StorageItem* storage_item, int index) {
+void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item, int index) {
   auto factory = StorageItemViewFactoryRegistry::getFactory(storage_item->type());
   if (!factory) {
     spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] StorageItemViewFactory not found! expected factory type = {}", storage_item->type());
@@ -59,7 +59,7 @@ void DirectoryView::addStorageItemView(StorageItem* storage_item, int index) {
   grid_layout_.addWidget(view);
 }
 
-void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
+void DirectoryView::removeStorageItemView(QSharedPointer<StorageItem> storage_item) {
   int i = 0;
   for (auto it : view_items_) {
     if (it.first == storage_item) break;
@@ -75,7 +75,7 @@ void DirectoryView::removeStorageItemView(StorageItem* storage_item) {
   delete view;
 }
 
-StorageItemView* DirectoryView::getStorageItemView(StorageItem* storage_item) {
+StorageItemView* DirectoryView::getStorageItemView(QSharedPointer<StorageItem> storage_item) {
   for (auto it : view_items_)
     if (it.first == storage_item) return it.second;
   spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] getStorageItemView is null! item type = {}", storage_item->type());

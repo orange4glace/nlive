@@ -1,6 +1,7 @@
 #ifndef _NLIVE_STORAGE_DIRECTORY_H_
 #define _NLIVE_STORAGE_DIRECTORY_H_
 
+#include <QSharedPointer>
 #include <vector>
 #include "model/storage/storage_item.h"
 
@@ -10,7 +11,7 @@ class StorageDirectory : public StorageItem {
   Q_OBJECT
 
 private:
-  std::vector<StorageItem*> items_;
+  std::vector<QSharedPointer<StorageItem>> items_;
 
 public:
   StorageDirectory(
@@ -18,19 +19,19 @@ public:
     QSharedPointer<StorageItem> parent = nullptr,
     std::string uuid = std::string());
   
-  void addItem(StorageItem* item);
-  void removeItem(StorageItem* item);
-  int getItemIndex(StorageItem* item) const;
-  bool hasItem(StorageItem* item) const;
+  void addItem(QSharedPointer<StorageItem> item);
+  void removeItem(QSharedPointer<StorageItem> item);
+  int getItemIndex(QSharedPointer<StorageItem> item) const;
+  bool hasItem(QSharedPointer<StorageItem> item) const;
 
   QSharedPointer<Clip> cliperize(Rational time_base) override;
 
-  const std::vector<StorageItem*>& items();
+  const std::vector<QSharedPointer<StorageItem>>& items();
   bool is_directory() const override;
 
 signals:
-  void onDidAddItem(StorageItem* item, int index);
-  void onWillRemoveItem(StorageItem* item, int index);
+  void onDidAddItem(QSharedPointer<StorageItem> item, int index);
+  void onWillRemoveItem(QSharedPointer<StorageItem> item, int index);
 
 };
 

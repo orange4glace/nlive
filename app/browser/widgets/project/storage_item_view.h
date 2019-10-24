@@ -11,22 +11,57 @@ class StorageItem;
 
 namespace project_widget {
 
+namespace {
+
+class ScrubBar : public QWidget {
+
+private:
+  QSharedPointer<IThemeService> theme_service_;
+  
+  double value_;
+
+protected:
+  void paintEvent(QPaintEvent* e) override;
+
+public:
+  ScrubBar(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+  void setValue(double x);
+
+};
+
+}
+
 class StorageItemView : public QWidget {
 
 private:
   QColor col_;
 
+  ScrubBar* scrub_bar_;
+  bool scrubbing_;
+
+  void _onScrubStart();
+  void _onScrub(double x);
+  void _onScrubEnd();
+
 protected:
   QSharedPointer<IThemeService> theme_service_;
 
-  StorageItem* storage_item_;
+  QSharedPointer<StorageItem> storage_item_;
 
+  virtual void onScrubStart();
+  virtual void onScrub(double x);
+  virtual void onScrubEnd();
+
+  void resizeEvent(QResizeEvent* event) override;
   void mousePressEvent(QMouseEvent* event) override;
+  void enterEvent(QEvent* event) override;
+  void mouseMoveEvent(QMouseEvent* event) override;
+  void leaveEvent(QEvent* event) override;
 
 public:
-  StorageItemView(QWidget* parent, StorageItem* storage_item, QSharedPointer<IThemeService> theme_service);
+  StorageItemView(QWidget* parent, QSharedPointer<StorageItem>, QSharedPointer<IThemeService> theme_service);
 
-  StorageItem* storage_item();
+  QSharedPointer<StorageItem> storage_item();
   
 };
 

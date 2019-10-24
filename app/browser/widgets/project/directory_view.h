@@ -26,13 +26,13 @@ private:
   QSharedPointer<IImportService> import_service_;
   QSharedPointer<StorageDirectory> storage_directory_;
 
-  std::vector<std::pair<StorageItem*, StorageItemView*>> view_items_;
+  std::vector<std::pair<QSharedPointer<StorageItem>, StorageItemView*>> view_items_;
   
   GridLayout grid_layout_;
 
-  void addStorageItemView(StorageItem* storage_item, int index);
-  void removeStorageItemView(StorageItem* storage_item);
-  StorageItemView* getStorageItemView(StorageItem* storage_item);
+  void addStorageItemView(QSharedPointer<StorageItem> storage_item, int index);
+  void removeStorageItemView(QSharedPointer<StorageItem> storage_item);
+  StorageItemView* getStorageItemView(QSharedPointer<StorageItem> storage_item);
 
 protected:
   void resizeEvent(QResizeEvent* event) override;

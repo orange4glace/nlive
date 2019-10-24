@@ -57,6 +57,8 @@ private:
   GLuint position_buffer_;
   GLuint texCoord_buffer_;
   GLuint tex_;
+  
+  bool closed_;
 
 protected:
   void run() override;
@@ -71,6 +73,7 @@ public:
 
   void render(QSharedPointer<CommandBuffer> command_buffer);
   // std::unique_ptr<RenderTexture> getRenderData();
+  void close();
 
   inline QSharedPointer<RendererContext> context() {
     return renderer_ctx_;

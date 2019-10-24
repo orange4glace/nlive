@@ -1,5 +1,5 @@
-#ifndef _NLIVE_VIDEO_TRANFORM_BLIT_RENDER_COMMAND_H_
-#define _NLIVE_VIDEO_TRANFORM_BLIT_RENDER_COMMAND_H_
+#ifndef _NLIVE_VIDEO_MIRROR_RENDER_COMMAND_H_
+#define _NLIVE_VIDEO_MIRROR_RENDER_COMMAND_H_
 
 #include <QSharedPointer>
 #include <QOpenGLFunctions>
@@ -14,14 +14,12 @@ namespace nlive {
 
 namespace video_renderer {
 
-class TransformBlitRenderCommand : public RenderCommand {
+class MirrorRenderCommand : public RenderCommand {
 
 private:
-  float x_, y_;
 
 public:
-  inline TransformBlitRenderCommand(float x, float y) :
-    x_(x), y_(y) {
+  inline MirrorRenderCommand() {
 
   }
 
@@ -54,10 +52,10 @@ public:
     gf->glEnableVertexAttribArray(texture_shader->texCoord());
     gf->glVertexAttribPointer(texture_shader->texCoord(), 2, GL_FLOAT, false, 0, (void*)0);
     gf->glBindBuffer(GL_ARRAY_BUFFER, texture_shader->position_buffer());
-    float x1 = (x_ / ctx->width()) * 2 - 1;
-    float y1 = (y_ / ctx->height()) * 2 - 1;
-    float x2 = ((float)rt.width / ctx->width() + x_ / ctx->width()) * 2 - 1;
-    float y2 = ((float)rt.height / ctx->height() + y_ / ctx->height()) * 2 - 1;
+    float x1 = (x_ / ctx->width()) * 2;
+    float y1 = (y_ / ctx->height()) * 2;
+    float x2 = ((float)rt.width / ctx->width() + x_ / ctx->width()) * 2;
+    float y2 = ((float)rt.height / ctx->height() + y_ / ctx->height()) * 2;
     // qDebug() << "Tblit " << x1 << " " << y1 << " " << x2 << " " << y2 << "\n";
     float position[12] = {
       x1, y1,

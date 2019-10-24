@@ -14,7 +14,6 @@ GridLayoutItem::GridLayoutItem(GridLayout* grid_layout, QWidget* content) :
 
 void GridLayoutItem::resizeEvent(QResizeEvent* event) {
   content_->setGeometry(rect());
-  qDebug() << "resiz " << content_ << " " << content_->isVisible() << " " << rect() << "\n";
   QWidget::resizeEvent(event);
 }
 

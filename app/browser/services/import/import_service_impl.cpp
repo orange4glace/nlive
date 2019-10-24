@@ -27,14 +27,14 @@ void ImportService::import(QList<QFileInfo> urls, QSharedPointer<StorageDirector
 
   for (auto& url : urls) {
     resource_service_->loadResource(url.absoluteFilePath(), [directory, progress_dialog, url](QSharedPointer<Resource> resource) {
-      ResourceStorageItem* item = nullptr;
+      QSharedPointer<ResourceStorageItem> item = nullptr;
       if (resource == nullptr) {
         spdlog::get(LOGGER_DEFAULT)->warn("[ImportService] Resource is null. file path = {}", url.absoluteFilePath().toStdString());
       }
       else {
         if (resource->type() == VideoResource::TYPE) {
           auto video_resource = qSharedPointerCast<VideoResource>(resource);
-          item = new VideoResourceStorageItem(directory, video_resource);
+          item = QSharedPointer<ResourceStorageItem>(new VideoResourceStorageItem(directory, video_resource));
         }
         spdlog::get(LOGGER_DEFAULT)->warn("[ImportService] No supported type found. type = {}", resource->type());
       }

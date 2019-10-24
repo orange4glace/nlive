@@ -1,4 +1,4 @@
-#include "renderer/video_renderer/sequence_renderer.h"
+#include "renderer/video_renderer/renderer_view.h"
 
 #include <QDebug>
 #include <QOpenGLFunctions>
@@ -7,44 +7,27 @@ namespace nlive {
 
 namespace video_renderer {
 
-namespace {
-  GLuint vert_shader_;
-  GLuint frag_shader_;
-  GLuint program_;
-  GLuint position_loc_;
-  GLuint texCoord_loc_;
-  GLuint image_loc_;
-  GLuint position_buffer_;
-  GLuint texCoord_buffer_;
-  GLuint tex_;
+RendererView::RendererView(QWidget* parent, int width, int height) :
+  QOpenGLWidget(parent), width_(width), height_(height), initialized_(false) {
+  renderer_ = nullptr;
 }
 
-SequenceRenderer::SequenceRenderer(
-  QSharedPointer<Sequence> sequence,
-  QOpenGLContext* target_gl) :
-  sequence_(sequence),
-  target_gl_(target_gl) {
-  renderer_ = QSharedPointer<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
-  
-  sequence->onDirty.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<CommandBuffer>)>::slot_type(
-    boost::bind(&SequenceRenderer::render, this, _1))));
-  connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
-    emit onDidReadyData();
-  });
-
-  renderer_->start();
+RendererView::~RendererView() {
+  if (renderer_ != nullptr) {
+    renderer_->close();
+    renderer_->wait();
+  }
 }
 
-SequenceRenderer::~SequenceRenderer() {
-  renderer_->wait();
+void RendererView::render(QSharedPointer<CommandBuffer> command_buffer) {
+  if (!initialized_) return;
+  renderer_->render(command_buffer);
 }
 
-// std::unique_ptr<RenderTexture> SequenceRenderer::getRenderData() {
-//   return std::move(renderer_->getRenderData());
-// }
+void RendererView::initializeGL() {
+  context()->functions()->initializeOpenGLFunctions();
 
-void SequenceRenderer::initialize() {
-  auto gf = target_gl_->functions();
+  auto gf = context()->functions();
   gf->initializeOpenGLFunctions();
   gf->glClearColor(0,1,0,1);
   vert_shader_ = gf->glCreateShader(GL_VERTEX_SHADER);
@@ -87,13 +70,22 @@ void SequenceRenderer::initialize() {
   gf->glGenBuffers(1, &texCoord_buffer_);
 
   gf->glGenTextures(1, &tex_);
+
+  renderer_ = QSharedPointer<Renderer>(new Renderer(context(), width_, height_));
+  connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
+    update();
+  });
+
+  renderer_->start();
+
+  initialized_ = true;
 }
 
-void SequenceRenderer::render(QSharedPointer<CommandBuffer> command_buffer) {
-  renderer_->render(command_buffer);
+void RendererView::resizeGL(int w, int h) {
+  glViewport(0,0,w,h);
 }
 
-void SequenceRenderer::paint() {
+void RendererView::paintGL() {
   renderer_->buffer_swap_mutex()->lock();
   if (!renderer_->context()->initialized()) {
     // No need to lock to check if intialized since
@@ -102,7 +94,7 @@ void SequenceRenderer::paint() {
     renderer_->buffer_swap_mutex()->unlock();
     return;
   }
-  auto gf = target_gl_->functions();
+  auto gf = context()->functions();
   auto front_render_texture = renderer_->context()->getFrontRenderTexture();
   gf->glClearColor(0, 0, 0, 1.0f);
   gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -1,5 +1,6 @@
 #include "decoder/video_decoder.h"
 
+#include <chrono>
 #include <QDebug>
 
 namespace nlive {

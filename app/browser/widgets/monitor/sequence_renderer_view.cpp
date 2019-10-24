@@ -16,6 +16,8 @@ SequenceRendererView::SequenceRendererView(QWidget* widget, QSharedPointer<Seque
 SequenceRendererView::~SequenceRendererView() {
   // TODO
   qDebug() << "#########################\n";
+  sequence_renderer_ = nullptr;
+  QOpenGLWidget::~QOpenGLWidget();
 }
 
 void SequenceRendererView::scheduleRender() {
@@ -37,10 +39,6 @@ void SequenceRendererView::initializeGL() {
 void SequenceRendererView::resizeGL(int w, int h) {
   glViewport(0,0,w,h);
   // doneCurrent();
-}
-
-namespace {
-  int z = 0;
 }
 
 void SequenceRendererView::paintGL() {
