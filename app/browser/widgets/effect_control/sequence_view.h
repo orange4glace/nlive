@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include "base/common/sig.h"
+#include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
 
@@ -29,6 +30,7 @@ private:
   QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<EffectControlLayout> layout_;
   timelinewidget::SequenceView* timeline_widget_sequence_view_;
+  SequenceScrollView* sequence_scroll_view_;
 
   QSharedPointer<Clip> clip_;
   ClipView* clip_view_;
@@ -46,6 +48,7 @@ public:
     QWidget* parent,
     QSharedPointer<EffectControlLayout> layout,
     timelinewidget::SequenceView* timeline_widget_sequence_view,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
 };

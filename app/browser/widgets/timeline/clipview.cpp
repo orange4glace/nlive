@@ -22,7 +22,7 @@ ClipView::ClipView(
   QSharedPointer<Track> track,
   QSharedPointer<Clip> clip,
   SequenceScrollView* const scrollView,
-  IThemeService* const theme_service) : 
+  QSharedPointer<IThemeService> const theme_service) : 
   theme_service_(theme_service),
   QWidget(parent), track_(track), clip_(clip), focused_(false), scrollView_(scrollView),
   left_handle_inner_(this), left_handle_outer_(this),
@@ -33,9 +33,8 @@ ClipView::ClipView(
     [this](int64_t old_start_time, int64_t old_end_time, int64_t old_b_time) {
       updateView();
     }).track(__sig_scope_));
-  QObject::connect(scrollView, &SequenceScrollView::onDidUpdate, this, [this]() {
-    updateView();
-  });
+  scrollView->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+    boost::bind(&ClipView::updateView, this))));
 }
 
 void ClipView::initializeHandles() {

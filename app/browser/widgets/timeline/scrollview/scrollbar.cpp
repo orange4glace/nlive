@@ -12,7 +12,7 @@ namespace nlive {
 /*#region HandleBar*/
 SequenceScrollViewScrollbar::HandleBar::HandleBar(
   SequenceScrollViewScrollbar* scrollbar,
-  IThemeService* theme_service) :
+  QSharedPointer<IThemeService> theme_service) :
   QPushButton(scrollbar),
   scrollbar_(scrollbar),
   theme_service_(theme_service) {
@@ -48,7 +48,7 @@ SequenceScrollViewScrollbar::HandleButton::HandleButton(
   HandleBar* handlebar,
   SequenceScrollViewScrollbar* scrollbar,
   bool left,
-  IThemeService* theme_service) :
+  QSharedPointer<IThemeService> theme_service) :
   QPushButton(scrollbar),
   scrollbar_(scrollbar),
   left_(left),
@@ -88,7 +88,7 @@ SequenceScrollViewScrollbar::SequenceScrollViewScrollbar(
   QWidget* parent,
   qreal start,
   qreal end,
-  IThemeService* theme_service) :
+  QSharedPointer<IThemeService> theme_service) :
   QWidget(parent),
   theme_service_(theme_service),
   bar_handle_(this, theme_service),

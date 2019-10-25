@@ -6,6 +6,8 @@
 #include <QMetaObject>
 #include "base/common/sig.h"
 
+#include "browser/widgets/timeline/scrollview/sequencescrollview.h"
+
 namespace nlive {
 
 class IThemeService;
@@ -28,6 +30,9 @@ class EffectControlWidget : public QDockWidget, public Sig {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
+
+  SequenceScrollView* sequence_scroll_view_;
+
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
   timelinewidget::TimelineWidget* target_timeline_widget_;
   sig2_conn_t timeline_widget_connection_;

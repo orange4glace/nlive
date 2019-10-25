@@ -38,7 +38,7 @@ class SequenceTimelineView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Sequence> sequence_;
   nlive::SequenceScrollView scroll_view_;
@@ -102,7 +102,7 @@ public:
   SequenceTimelineView(
     QWidget* parent,
     QSharedPointer<Sequence> const sequence,
-    IThemeService* const themeService);
+    QSharedPointer<IThemeService> const themeService);
 
   void blurAllClips();
 

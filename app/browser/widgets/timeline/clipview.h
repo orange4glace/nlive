@@ -44,7 +44,7 @@ private:
 
   bool focused_;
 
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   void initializeHandles();
   void updateView();
@@ -59,7 +59,7 @@ public:
     QSharedPointer<Track> track,
     QSharedPointer<Clip> clip,
     SequenceScrollView* const scrollView,
-    IThemeService* const themeService);
+    QSharedPointer<IThemeService> const themeService);
 
   ClipViewHandle testHandle(QPoint&& point) const;
 

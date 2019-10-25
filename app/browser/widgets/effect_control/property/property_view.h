@@ -13,6 +13,7 @@
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/effect_control/property/property_form_view.h"
 #include "browser/widgets/effect_control/property/property_timeline_view.h"
+#include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
 
@@ -40,6 +41,8 @@ protected:
   PropertyFormView<effect::Property<T>>* form_view_;
   PropertyTimelineView<T>* timeline_view_;
 
+  SequenceScrollView* sequence_scroll_view_;
+
   virtual void updateValue() = 0;
 
 public:
@@ -50,14 +53,22 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Property<T>> property,
     QString label,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service) :
   QWidget(widget), theme_service_(theme_service),
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
-  property_(property) {
+  property_(property), sequence_scroll_view_(sequence_scroll_view) {
+
   form_view_ = new PropertyFormView<effect::Property<T>>(
     this, layout_params, sequence, clip, property, label, theme_service);
+
   timeline_view_ = new PropertyTimelineView<T>(
-    this, layout_params, sequence, clip, property);
+    this, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
+
+  property->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
+    &PropertyView<T>::updateValue, this).track(__sig_scope_));
+  sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+    &PropertyView<T>::updateValue, this)));
   }
 
   bool event(QEvent* event) override {

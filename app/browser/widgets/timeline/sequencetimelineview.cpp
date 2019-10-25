@@ -26,7 +26,7 @@ namespace timelinewidget {
 SequenceTimelineView::SequenceTimelineView(
   QWidget* parent,
   QSharedPointer<Sequence> sequence,
-  IThemeService* const theme_service) :
+  QSharedPointer<IThemeService> const theme_service) :
   QWidget(),
   sequence_(sequence),
   scroll_view_(parent, this, sequence, theme_service),

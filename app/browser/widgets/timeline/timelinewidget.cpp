@@ -18,7 +18,7 @@ namespace timelinewidget {
 
 TimelineWidget::TimelineWidget(
   QWidget* parent,
-  IThemeService* theme_service,
+  QSharedPointer<IThemeService> theme_service,
   QSharedPointer<ITimelineWidgetService> timeline_widget_service) :
   QDockWidget(parent),
   theme_service_(theme_service),

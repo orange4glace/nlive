@@ -43,7 +43,7 @@ private:
   int64_t last_pts_;
 
   int doSeek(int64_t pts);
-  QSharedPointer<VideoFrame> doDecode(int64_t timestamp);
+  QSharedPointer<VideoFrame> doDecode(int64_t timestamp, bool iframe);
 
   void initialize();
 
@@ -53,7 +53,7 @@ public:
   void open();
   void close();
 
-  QSharedPointer<VideoFrame> decode(int64_t timestamp);
+  QSharedPointer<VideoFrame> decode(int64_t timestamp, bool iframe = false);
 
 };
 

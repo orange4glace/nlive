@@ -34,6 +34,7 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Property<effect::value::Vector2>> property,
     QString label,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
 };

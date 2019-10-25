@@ -17,11 +17,13 @@ SequenceView::SequenceView(
   QWidget* parent,
   QSharedPointer<EffectControlLayout> layout,
   timelinewidget::SequenceView* timeline_widget_sequence_view,
+  SequenceScrollView* sequence_scroll_view,
   QSharedPointer<IThemeService> theme_service) :
   QWidget(parent),
   theme_service_(theme_service),
   layout_(layout),
   timeline_widget_sequence_view_(timeline_widget_sequence_view),
+  sequence_scroll_view_(sequence_scroll_view),
   clip_(nullptr),
   clip_view_(nullptr) {
   this->handleDidChangeFocusedClips();
@@ -44,9 +46,11 @@ void SequenceView::createClipView(QSharedPointer<Clip> clip) {
   clip_ = clip;
   qDebug() << "[SequenceView] createClipView " << clip << ", # of effects = " << clip->effects().size() << "\n";
   auto sequence = timeline_widget_sequence_view_->sequence();
-  clip_view_ = new ClipView(this, layout_, sequence, clip, theme_service_);
+  clip_view_ = new ClipView(this, layout_, sequence, clip, sequence_scroll_view_, theme_service_);
   clip_view_->resize(width(), clip_view_->sizeHint().height());
   clip_view_->show();
+  sequence_scroll_view_->setMinStartTime(clip->start_time());
+  sequence_scroll_view_->setMaxEndTime(clip->end_time());
 }
 
 void SequenceView::clearClipView() {

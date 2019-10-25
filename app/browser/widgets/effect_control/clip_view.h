@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include <map>
+#include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
 
@@ -58,6 +59,7 @@ private:
   QSharedPointer<Clip> clip_;
   ClipSideView* side_view_;
   ClipTimelineView* timeline_view_;
+  SequenceScrollView* sequence_scroll_view_;
 
   int height_;
 
@@ -77,6 +79,7 @@ public:
     QSharedPointer<EffectControlLayout> layout,
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
   QSize sizeHint() const;

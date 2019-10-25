@@ -68,10 +68,12 @@ public:
   }
 
   T getInterpolatedValue(int64_t time) {
-    if (!animated_ || keyframes_.size() == 0) return default_value_;
+    if (!animated_ || keyframes_.size() == 0) {
+      return default_value_;
+    }
     auto next = keyframes_.lower_bound(time);
     if (next == keyframes_.end()) {
-      Keyframe<T> const& kf = (*(keyframes_.begin())).second;
+      Keyframe<T> const& kf = (*(keyframes_.rbegin())).second;
       return kf.value();
     }
     if (next == keyframes_.begin()) {
@@ -81,15 +83,25 @@ public:
     auto& prev_value = (*prev).second.value();
     auto prev_time = (*prev).first;
     auto& next_value = (*next).second.value();
-    auto next_time = (*prev).first;
+    auto next_time = (*next).first;
     double t = (double)(time - prev_time) / (next_time - prev_time);
     return T::interpolate(prev_value, next_value, t);
+  }
+
+  void setAnimated(bool value) {
+    animated_ = value;
+    onDidChangeAnimated(value);
+    onDidUpdate();
   }
 
   void setAnimatable(bool value) {
     animatable_ = value;
     onDidChangeAnimatable(value);
     onDidUpdate();
+  }
+
+  std::map<int64_t, Keyframe<T>> const& keyframes() {
+    return keyframes_;
   }
 
   const std::string& type() const {

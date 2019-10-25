@@ -33,7 +33,7 @@ class EffectControlLayout;
 class NumberInputBox;
 
 template <class T>
-class PropertyAnimateToggleButton : public QPushButton {
+class PropertyAnimateToggleButton : public QPushButton, public Sig {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -42,10 +42,10 @@ private:
   QSharedPointer<T> property_;
 
   void handleClick() {
-    property_->setAnimatable(!property_->animatable());
+    property_->setAnimated(!property_->animated());
   }
 
-  void handleDidChangeAnimatable(bool value) {
+  void handleDidChangeAnimated(bool value) {
     animated_ = value;
     update();
   }
@@ -73,9 +73,15 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<T> property,
     QSharedPointer<IThemeService> theme_service) :
-  theme_service_(theme_service),
-  QPushButton(parent) {
+  QPushButton(parent), theme_service_(theme_service), property_(property) {
     animated_ = property->animated();
+
+    connect(this, &PropertyAnimateToggleButton::clicked, [this](bool checked) {
+      handleClick();
+    });
+    property->onDidChangeAnimated.connect(
+      sig2_t<void (bool)>::slot_type
+      (&PropertyAnimateToggleButton<T>::handleDidChangeAnimated, this, _1).track(__sig_scope_));
   }
 
 };

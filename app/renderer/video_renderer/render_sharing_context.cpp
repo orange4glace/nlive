@@ -2,6 +2,7 @@
 
 #include "renderer/video_renderer/shader/solid_shader.h"
 #include "renderer/video_renderer/shader/texture_shader.h"
+#include "renderer/video_renderer/shader/mirror_shader.h"
 
 namespace nlive {
 
@@ -16,8 +17,11 @@ void RenderSharingContext::initialize() {
     QSharedPointer<TextureShaderProgram>(new TextureShaderProgram(gl_));
   QSharedPointer<SolidShaderProgram> solid_shader =
     QSharedPointer<SolidShaderProgram>(new SolidShaderProgram(gl_));
+  QSharedPointer<MirrorShaderProgram> mirror_shader =
+    QSharedPointer<MirrorShaderProgram>(new MirrorShaderProgram(gl_));
   registerShaderProgram("texture_shader", texture_shader);
   registerShaderProgram("solid_shader", solid_shader);
+  registerShaderProgram("mirror_shader", mirror_shader);
 }
 
 void RenderSharingContext::registerShaderProgram(

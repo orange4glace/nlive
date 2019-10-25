@@ -50,7 +50,7 @@ void VideoResourceStorageItemView::onScrub(double x) {
   int64_t time = resource->duration() * x;
   
   auto pre = QSharedPointer<video_renderer::VideoClipPreRenderCommand>(
-      new video_renderer::VideoClipPreRenderCommand(0, resource, time));
+      new video_renderer::VideoClipPreRenderCommand(0, resource, time, true));
   auto blit = QSharedPointer<video_renderer::TransformBlitRenderCommand>(
       new video_renderer::TransformBlitRenderCommand(0, 0));
   auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(

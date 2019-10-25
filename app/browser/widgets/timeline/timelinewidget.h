@@ -22,7 +22,7 @@ class TimelineWidget : public QDockWidget, public Sig {
   Q_OBJECT;
 
 private:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
 
   QSharedPointer<Sequence> sequence_;
@@ -38,7 +38,7 @@ protected:
 public:
   TimelineWidget(
     QWidget* parent,
-    IThemeService* themeService,
+    QSharedPointer<IThemeService> themeService,
     QSharedPointer<ITimelineWidgetService> timeline_widget_service);
 
   void setSequence(QSharedPointer<Sequence> sequence);

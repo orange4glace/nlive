@@ -16,7 +16,7 @@ namespace timelinewidget {
 class TrackSideView : public QWidget {
 
 private:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Track> track_;
 
@@ -25,7 +25,7 @@ protected:
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  TrackSideView(QWidget* parent, QSharedPointer<Track> track, IThemeService* theme_service);
+  TrackSideView(QWidget* parent, QSharedPointer<Track> track, QSharedPointer<IThemeService> theme_service);
   
 
 };

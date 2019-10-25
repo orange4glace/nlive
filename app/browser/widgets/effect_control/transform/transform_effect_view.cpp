@@ -18,11 +18,17 @@ TransformEffectView::TransformEffectView(
   QSharedPointer<Sequence> sequence,
   QSharedPointer<Clip> clip,
   QSharedPointer<effect::TransformEffect> effect,
+  SequenceScrollView* sequence_scroll_view,
   QSharedPointer<IThemeService> theme_service) :
-  EffectView(parent, layout_params, sequence, clip, effect, theme_service) {
+  EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service) {
   position_property_view_ =
-      new Vector2PropertyView(this, layout_params, sequence, clip, effect->position(), QString("Position"), theme_service);
+      new Vector2PropertyView(this, layout_params, sequence, clip, effect->position(),
+          QString("Position"), sequence_scroll_view,theme_service);
+  scale_property_view_ =
+      new Vector2PropertyView(this, layout_params, sequence, clip, effect->scale(),
+        QString("Scale"), sequence_scroll_view, theme_service);
   insertPropertyView(position_property_view_, 0);
+  insertPropertyView(scale_property_view_, 1);
 }
 
 TransformEffectViewFactory::TransformEffectViewFactory() {}
@@ -32,6 +38,7 @@ TransformEffectView* TransformEffectViewFactory::create(
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service) {
   if (effect->type() != effect::TransformEffect::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
@@ -40,7 +47,7 @@ TransformEffectView* TransformEffectViewFactory::create(
   }
   QSharedPointer<effect::TransformEffect> transform_effect = effect.staticCast<effect::TransformEffect>();
   return new TransformEffectView(parent, layout_params, sequence,
-    clip, transform_effect, theme_service);
+    clip, transform_effect, sequence_scroll_view, theme_service);
 }
 
 

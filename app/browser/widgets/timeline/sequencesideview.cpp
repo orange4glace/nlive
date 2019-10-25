@@ -15,7 +15,7 @@ namespace timelinewidget {
 SequenceSideView::SequenceSideView(
   QWidget* parent,
   QSharedPointer<Sequence> sequence,
-  IThemeService* theme_service) : 
+  QSharedPointer<IThemeService> theme_service) : 
   QWidget(parent), sequence_(sequence), theme_service_(theme_service) {
 
   auto& tracks = sequence->tracks();

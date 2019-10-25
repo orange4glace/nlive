@@ -36,6 +36,7 @@ class TransformEffectView : public EffectView {
 
 private:
   Vector2PropertyView* position_property_view_;
+  Vector2PropertyView* scale_property_view_;
 
 public:
   TransformEffectView(
@@ -44,6 +45,7 @@ public:
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::TransformEffect> effect,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
 };
@@ -58,6 +60,7 @@ public:
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service) override;
 
 };

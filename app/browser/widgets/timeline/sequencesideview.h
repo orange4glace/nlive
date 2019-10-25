@@ -19,7 +19,7 @@ class TrackSideView;
 class SequenceSideView : public QWidget, public Sig {
 
 private:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Sequence> sequence_;
 
@@ -34,7 +34,7 @@ protected:
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  SequenceSideView(QWidget* parent, QSharedPointer<Sequence> sequence, IThemeService* theme_service);
+  SequenceSideView(QWidget* parent, QSharedPointer<Sequence> sequence, QSharedPointer<IThemeService> theme_service);
 
 };
 

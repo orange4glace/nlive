@@ -36,7 +36,7 @@ public:
         "in vec2 v_texCoord;\n"
         "out vec4 outColor;\n"
         "void main() {\n"
-          "vec2 in_v_texCoord = vec2(0, 1.0) - v_texCoord;\n"
+          "vec2 in_v_texCoord = vec2(1.0, 1.0) - v_texCoord;\n"
           "if (in_v_texCoord.x > 0.5)\n"
             "in_v_texCoord.x = -in_v_texCoord.x + 1.0;\n"
           "outColor = texture(u_image, in_v_texCoord).bgra;\n"

@@ -13,7 +13,7 @@ namespace monitor_widget {
 
 MonitorWidget::MonitorWidget(QWidget* parent,
   QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-  IThemeService* theme_service) :
+  QSharedPointer<IThemeService> theme_service) :
   QDockWidget(parent),
   timeline_widget_service_(timeline_widget_service),
   theme_service_(theme_service),

@@ -1,6 +1,7 @@
 #include "browser/widgets/effect_control/effect_view.h"
 
 #include <QEvent>
+#include <QPainter>
 #include "model/sequence/sequence.h"
 #include "model/sequence/clip.h"
 #include "model/effect/effect.h"
@@ -16,10 +17,10 @@ EffectView::EffectView(
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent),
-  theme_service_(theme_service),
-  layout_(layout), clip_(clip) {
+  QWidget(parent), theme_service_(theme_service),
+  layout_(layout), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
 
 }
 
@@ -40,13 +41,19 @@ void EffectView::doLayout() {
   }
 }
 
+void EffectView::doPaint() {
+  QPainter p(this);
+}
+
 bool EffectView::event(QEvent* event) {
   switch (event->type()) {
   case QEvent::LayoutRequest:
   case QEvent::Resize:
     doLayout();
     return true;
-  break;
+  case QEvent::Paint:
+    doPaint();
+    return true;
   }
   return false;
 }

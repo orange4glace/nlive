@@ -1,6 +1,7 @@
 #ifndef NILVE_EFFECT_VALUE_VECTOR2_H_
 #define NILVE_EFFECT_VALUE_VECTOR2_H_
 
+#include <QDebug>
 #include <string>
 
 namespace nlive {
@@ -18,7 +19,6 @@ private:
 public:
   inline Vector2(double x = 0.0, double y = 0.0) :
     x_(x), y_(y) {
-
   }
 
   inline Vector2(const Vector2& v) : Vector2(v.x_, v.y_) {}

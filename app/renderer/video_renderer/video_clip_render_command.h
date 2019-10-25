@@ -28,6 +28,7 @@ private:
   int clip_id_;
   QSharedPointer<VideoResource> resource_;
   int64_t timestamp_;
+  bool iframe_;
 
 public:
   QSharedPointer<Sharing> sharing;
@@ -35,8 +36,9 @@ public:
   inline VideoClipPreRenderCommand(
     int clip_id,
     QSharedPointer<VideoResource> resource,
-    int64_t timestamp) :
-    clip_id_(clip_id), resource_(resource), timestamp_(timestamp) {
+    int64_t timestamp,
+    bool iframe = false) :
+    clip_id_(clip_id), resource_(resource), timestamp_(timestamp), iframe_(iframe) {
     sharing = QSharedPointer<Sharing>(new Sharing());
   }
 
@@ -47,7 +49,7 @@ public:
     auto rtt = ctx->createTemporaryRenderTexture("clip_temp", width, height);
     auto decoder_ref = ctx->decoder_manager()->acquireDecoder(resource_, clip_id_);
     sharing->decoder_ref = decoder_ref;
-    QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_);
+    QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_, iframe_);
     if (!video_frame) return;
     uint8_t* buf = new uint8_t[width * height * 4];
     video_frame->scale((void*)buf);

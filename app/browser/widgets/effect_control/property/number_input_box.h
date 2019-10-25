@@ -59,7 +59,7 @@ private:
   NumberInputBox::EditView* edit_view_;
   NumberInputBox::SlideView* slide_view_;
 
-  void doSetValue(double value);
+  void doSetValue(double value, bool doUpdate);
   void doChangeValue(double value);
 
 protected:
@@ -67,7 +67,7 @@ protected:
 
 public:
   NumberInputBox(QWidget* parent, double value);
-  void setValue(double value);
+  void setValue(double value, bool doUpdate = true);
 
   void switchToSlideView();
   void switchToEditView();

@@ -25,7 +25,7 @@ class TrackTimelineView : public QWidget, public Sig {
 
 private:
   SequenceScrollView* scrollView_;
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Track> track_;
 
@@ -48,7 +48,7 @@ public:
     QWidget* const parent,
     QSharedPointer<Track> const track,
     SequenceScrollView* const scrollView,
-    IThemeService* const themeService);
+    QSharedPointer<IThemeService> const themeService);
 
   ClipView* const getClipView(const Clip* const clip);
   void blurAllClips();

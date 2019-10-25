@@ -12,7 +12,7 @@
 namespace nlive {
 
 /*#region Indicator*/
-SequenceScrollView::Indicator::Indicator(QWidget* parent, IThemeService* theme_service) :
+SequenceScrollView::Indicator::Indicator(QWidget* parent, QSharedPointer<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service) {
   setAttribute(Qt::WA_TransparentForMouseEvents);
 }
@@ -29,13 +29,15 @@ SequenceScrollView::SequenceScrollView(
   QWidget* const parent,
   QWidget* const content_widget,
   QSharedPointer<Sequence> sequence,
-  IThemeService* theme_service) :
+  QSharedPointer<IThemeService> theme_service) :
   QWidget(parent),
   theme_service_(theme_service),
   sequence_(sequence),
   content_widget_(nullptr),
   scrollbar_(this, 0.0f, 1.0f, theme_service),
   indicator_(this, theme_service) {
+  min_start_time_ = 0;
+  max_end_time_ = 2000000000;
   setContentWidget(content_widget);
   doUpdate();
 
@@ -92,6 +94,8 @@ void SequenceScrollView::doResize() {
 void SequenceScrollView::doUpdate() {
   int start_time = qFloor(sequence_->duration() * scrollbar_.start());
   int end_time = qCeil(sequence_->duration() * scrollbar_.end());
+  start_time = max(min_start_time_, start_time);
+  end_time = min(max_end_time_, end_time);
   // Initial value
   unit_frame_time_ = 30;
   unit_width_ = width() / ((end_time - start_time) / unit_frame_time_);
@@ -128,7 +132,7 @@ void SequenceScrollView::doUpdate() {
 
   QWidget::update();
   
-  emit onDidUpdate();
+  onDidUpdate();
 }
 
 void SequenceScrollView::mouseMoveEvent(QMouseEvent* event) {
@@ -215,6 +219,16 @@ int SequenceScrollView::getPositionRelativeToView(int time) const {
 
 int SequenceScrollView::getPixelAmountRelativeToView(int time) const {
   return roundf(time * px_per_frame_);
+}
+
+void SequenceScrollView::setMinStartTime(int value) {
+  min_start_time_ = value;
+  doUpdate();
+}
+
+void SequenceScrollView::setMaxEndTime(int value) {
+  max_end_time_ = value;
+  doUpdate();
 }
 
 }

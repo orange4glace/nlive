@@ -50,6 +50,7 @@ void VideoDecoder::initialize() {
     return;
   }
   dec_ctx_ = avcodec_alloc_context3(dec_);
+  dec_ctx_->thread_count = 0;
   result = avcodec_parameters_to_context(dec_ctx_, stream_->codecpar);
   if (result < 0) {
     qDebug() << "avcodec_parameters_to_context " << result << "\n";
@@ -80,10 +81,11 @@ int VideoDecoder::doSeek(int64_t pts) {
   return 0;
 }
 
-QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts) {
+QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
+    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
   std::lock_guard<std::mutex> lock(mutex_);
   QSharedPointer<VideoFrame> frame = nullptr;
-  if (last_pts_ == AV_NOPTS_VALUE
+  if (iframe || last_pts_ == AV_NOPTS_VALUE
    || last_pts_ >= pts
    || last_pts_ + 50000 < pts) {
     doSeek(pts);
@@ -101,10 +103,12 @@ QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts) {
 
       ret = avcodec_receive_frame(dec_ctx_, frame_);
       if (ret >= 0) {
-        if (pts <= frame_->pts) {
+        if (iframe || pts <= frame_->pts) {
           frame = QSharedPointer<VideoFrame>(new VideoFrame(frame_, width_, height_, pix_fmt_));
           last_pts_ = pts;
           av_free_packet(pkt_);
+    std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+    qDebug() << "d dt = " <<  sec.count();  
           return frame;
         }
       }
@@ -130,8 +134,8 @@ void VideoDecoder::close() {
   }
 }
 
-QSharedPointer<VideoFrame> VideoDecoder::decode(int64_t timestamp) {
-  return doDecode(timestamp);
+QSharedPointer<VideoFrame> VideoDecoder::decode(int64_t timestamp, bool iframe) {
+  return doDecode(timestamp, iframe);
 }
 
 }

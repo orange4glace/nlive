@@ -12,14 +12,14 @@ class SequenceScrollViewScrollbar : public QWidget {
   Q_OBJECT
 
 private:
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   qreal start_;
   qreal end_;
 
   class HandleBar : public QPushButton {
   private:
-    IThemeService* theme_service_;
+    QSharedPointer<IThemeService> theme_service_;
     SequenceScrollViewScrollbar* scrollbar_;
     QPoint last_mouse_pos_;
   protected:
@@ -27,11 +27,11 @@ private:
     void mouseMoveEvent(QMouseEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
   public:
-    HandleBar(SequenceScrollViewScrollbar* scrollbar, IThemeService* theme_service);
+    HandleBar(SequenceScrollViewScrollbar* scrollbar, QSharedPointer<IThemeService> theme_service);
   };
   class HandleButton : public QPushButton {
   private:
-    IThemeService* theme_service_;
+    QSharedPointer<IThemeService> theme_service_;
     SequenceScrollViewScrollbar* scrollbar_;
     bool left_;
     QPoint last_mouse_pos_;
@@ -40,7 +40,7 @@ private:
     void mouseMoveEvent(QMouseEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
   public:
-    HandleButton(HandleBar* handlebar, SequenceScrollViewScrollbar* scrollbar, bool left, IThemeService* theme_service);
+    HandleButton(HandleBar* handlebar, SequenceScrollViewScrollbar* scrollbar, bool left, QSharedPointer<IThemeService> theme_service);
   };
 
   HandleBar bar_handle_;
@@ -53,7 +53,7 @@ protected:
   void resizeEvent(QResizeEvent* event) override;
   void paintEvent(QPaintEvent* event) override;
 public:
-  SequenceScrollViewScrollbar(QWidget* parent, qreal start, qreal end, IThemeService* theme_service);
+  SequenceScrollViewScrollbar(QWidget* parent, qreal start, qreal end, QSharedPointer<IThemeService> theme_service);
 
   void setStart(qreal value, bool from_internal = false);
   void setEnd(qreal value, bool from_internal = false);

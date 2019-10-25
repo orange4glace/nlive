@@ -18,7 +18,7 @@ TrackTimelineView::TrackTimelineView(
   QWidget* const parent,
   QSharedPointer<Track> const track,
   SequenceScrollView* const scrollView,
-  IThemeService* const theme_service) : 
+  QSharedPointer<IThemeService> const theme_service) : 
   QWidget(parent), track_(track), scrollView_(scrollView), theme_service_(theme_service) {
 
   auto& clips = track->clips();

@@ -10,7 +10,7 @@ namespace nlive {
 
 namespace timelinewidget {
 
-TrackSideView::TrackSideView(QWidget* parent, QSharedPointer<Track> track, IThemeService* theme_service) :
+TrackSideView::TrackSideView(QWidget* parent, QSharedPointer<Track> track, QSharedPointer<IThemeService> theme_service) :
   QWidget(parent), track_(track), theme_service_(theme_service) {
 
 }

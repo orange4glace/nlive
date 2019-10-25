@@ -16,14 +16,14 @@ class SequenceScrollView : public QWidget, public Sig {
 private:
   class Indicator : public QWidget {
     private:
-      IThemeService* theme_service_;
+      QSharedPointer<IThemeService> theme_service_;
     protected:
       void paintEvent(QPaintEvent* event) override;
     public:
-      Indicator(QWidget* parent, IThemeService* theme_service);
+      Indicator(QWidget* parent, QSharedPointer<IThemeService> theme_service);
   };
 
-  IThemeService* theme_service_;
+  QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Sequence> sequence_;
 
@@ -32,6 +32,8 @@ private:
 
   Indicator indicator_;
 
+  int min_start_time_;
+  int max_end_time_;
   int start_time_;
   int end_time_;
   qreal px_per_frame_;
@@ -52,7 +54,7 @@ public:
     QWidget* const parent,
     QWidget* content_widget,
     QSharedPointer<Sequence> sequence,
-    IThemeService* theme_service);
+    QSharedPointer<IThemeService> theme_service);
 
   void setContentWidget(QWidget* widget);
 
@@ -63,15 +65,17 @@ public:
   int getPositionRelativeToView(int time) const;
   int getPixelAmountRelativeToView(int time) const;
 
-  QWidget* content_widget() const;
-  int start_time() const;
-  int end_time() const;
-  qreal px_per_frame() const;
-  qreal unit_frame_time() const;
-  qreal unit_width() const;
+  void setMinStartTime(int value);
+  void setMaxEndTime(int value);
 
-signals:
-  void onDidUpdate();
+  inline QWidget* content_widget() const { return content_widget_; }
+  inline int start_time() const { return start_time_; }
+  inline int end_time() const { return end_time_; }
+  inline qreal px_per_frame() const { return px_per_frame_; }
+  inline qreal unit_frame_time() const { return unit_frame_time_; }
+  inline qreal unit_width() const { return unit_width_; }
+
+  sig2_t<void ()> onDidUpdate;
 
 };
 

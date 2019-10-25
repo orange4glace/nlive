@@ -21,7 +21,7 @@ private:
   SequenceTimelineView timeline_view_;
 
 public:
-  SequenceView(QSharedPointer<Sequence> sequence, IThemeService* theme_service);
+  SequenceView(QSharedPointer<Sequence> sequence, QSharedPointer<IThemeService> theme_service);
 
   SequenceSideView* side_view();
   SequenceTimelineView* timeline_view();

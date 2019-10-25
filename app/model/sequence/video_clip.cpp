@@ -4,7 +4,7 @@
 #include "renderer/video_renderer/video_render_command.h"
 #include "renderer/video_renderer/video_clip_render_command.h"
 #include "renderer/video_renderer/command/transform_blit_render_command.h"
-#include "renderer/video_renderer/simple_render_command.h"
+#include "renderer/video_renderer/command/mirror_render_command.h"
 #include "renderer/video_renderer/command_buffer.h"
 
 namespace nlive {

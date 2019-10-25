@@ -97,7 +97,7 @@ MainWindow::MainWindow() {
   QSharedPointer<effect::TransformEffect> transform_effect = QSharedPointer<effect::TransformEffect>(new effect::TransformEffect());
   clip1->addEffect(transform_effect);
 
-  auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service.get(), timeline_widget_service);
+  auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service, timeline_widget_service);
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
 
@@ -107,7 +107,7 @@ MainWindow::MainWindow() {
 
   project_widget->setDirectory(project->root_storage_directory());
 
-  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service.get());
+  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service);
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
 
   effect_control::EffectControlWidget::Initialize();

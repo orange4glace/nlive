@@ -18,9 +18,10 @@ Vector2PropertyView::Vector2PropertyView(
   QSharedPointer<Clip> clip,
   QSharedPointer<effect::Property<effect::value::Vector2>> property,
   QString label,
+  SequenceScrollView* sequence_scroll_view,
   QSharedPointer<IThemeService> theme_service) :
   PropertyView<effect::value::Vector2>(
-    parent, layout_params, sequence, clip, property, label, theme_service) {
+    parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();
   x_input_box_ = new NumberInputBox(nullptr, 0);
   y_input_box_ = new NumberInputBox(nullptr, 0);
@@ -45,10 +46,10 @@ Vector2PropertyView::Vector2PropertyView(
 }
 
 void Vector2PropertyView::updateValue() {
-  int64_t offset_time = sequence_->current_time();
-  auto value = property_->getInterpolatedValue(offset_time);
-  x_input_box_->setValue(value.x());
-  y_input_box_->setValue(value.y());
+  int64_t timecode_offset = sequence_->getClipBTimecodeOffset(clip_);
+  auto value = property_->getInterpolatedValue(timecode_offset);
+  x_input_box_->setValue(value.x(), false);
+  y_input_box_->setValue(value.y(), false);
 }
 
 }

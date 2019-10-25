@@ -7,6 +7,7 @@
 
 #include "platform/theme/themeservice.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
+#include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
 
@@ -28,11 +29,13 @@ private:
   std::vector<QWidget*> property_views_;
 
   void doLayout();
+  void doPaint();
 
 protected:
   QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<EffectControlLayout> layout_;
   QSharedPointer<Clip> clip_;
+  SequenceScrollView* sequence_scroll_view_;
 
   bool event(QEvent* event) override;
 
@@ -43,6 +46,7 @@ public:
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
+    SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
   void insertPropertyView(QWidget* view, int index);
