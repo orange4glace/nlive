@@ -26,7 +26,7 @@ private:
 protected:
   void paintEvent(QPaintEvent* e) override {
     QPainter p(this);
-        p.fillRect(rect(), Qt::lightGray);
+    p.fillRect(rect(), Qt::lightGray);
     int64_t timeoffset = sequence_->getClipBTimecodeOffset(clip_);
     auto keyframes = property_->keyframes();
     int st = sequence_scroll_view_->start_time();

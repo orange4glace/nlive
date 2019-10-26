@@ -3,6 +3,13 @@ set(NLIVE_SOURCES
   main.cpp
 )
 
+set(NLIVE_RESOURCES
+  ${NLIVE_RESOURCES}
+  browser/widgets/timeline/images/images.qrc
+  browser/widgets/effect_control/images/images.qrc
+)
+
+add_subdirectory(ext)
 add_subdirectory(base)
 add_subdirectory(model)
 add_subdirectory(platform)
@@ -12,6 +19,7 @@ add_subdirectory(decoder)
 
 add_executable(nlive
   ${NLIVE_SOURCES}
+  ${NLIVE_RESOURCES}
 )
 
 target_include_directories(${CMAKE_PROJECT_NAME} BEFORE

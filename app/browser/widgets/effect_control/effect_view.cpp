@@ -2,6 +2,7 @@
 
 #include <QEvent>
 #include <QPainter>
+#include "base/common/perf.h"
 #include "model/sequence/sequence.h"
 #include "model/sequence/clip.h"
 #include "model/effect/effect.h"
@@ -10,6 +11,27 @@
 namespace nlive {
 
 namespace effect_control {
+
+EffectViewHeader::EffectViewHeader(
+    QWidget* parent,
+    QSharedPointer<EffectControlLayout> layout,
+    QSharedPointer<Sequence> sequence,
+    QSharedPointer<Clip> clip,
+    QSharedPointer<effect::Effect> effect,
+    QSharedPointer<IThemeService> theme_service) :
+  QWidget(parent), theme_service_(theme_service),
+  layout_(layout), clip_(clip), effect_(effect),
+  down_arrow_(":/widget/effect_control/down-arrow.svg", 20, 20) {
+
+}
+
+void EffectViewHeader::paintEvent(QPaintEvent* e) {
+  QPainter p(this);
+  p.drawText(rect(), Qt::AlignVCenter | Qt::AlignLeft,
+    QString::fromStdString(effect_->type()));
+  p.drawImage(QPoint(0, 0), down_arrow_.image());
+
+}
 
 EffectView::EffectView(
     QWidget* parent,
@@ -21,7 +43,8 @@ EffectView::EffectView(
     QSharedPointer<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service),
   layout_(layout), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
-
+  header_ = new EffectViewHeader(this, layout, sequence, clip, effect, theme_service);
+  header_->show();
 }
 
 void EffectView::insertPropertyView(QWidget* view, int index) {
@@ -33,6 +56,8 @@ void EffectView::insertPropertyView(QWidget* view, int index) {
 
 void EffectView::doLayout() {
   int y = 0;
+  header_->setGeometry(0, 0, width(), 20);
+  y += 20;
   for (auto property_view : property_views_) {
     property_view->move(0, y);
     QSize size_hint = property_view->sizeHint();

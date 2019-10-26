@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/widget/effect_control">
+    <file>down-arrow.svg</file>
+  </qresource>
+</RCC>
