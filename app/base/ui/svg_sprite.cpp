@@ -64,15 +64,15 @@ _XMLCacheStorage XMLCacheStorage;
 }
 
 SvgSprite::SvgSprite(QString path, int width, int height) :
-  path_(path), width_(width), height_(height), image_(nullptr) {
+  path_(path), width_(width), height_(height), pixmap_(nullptr) {
 
-  image_ = new QImage(width, height, QImage::Format::Format_ARGB32);
+  pixmap_ = new QPixmap(width, height);
   doCreateSprite();
 
 }
 
 SvgSprite::~SvgSprite() {
-  delete image_;
+  delete pixmap_;
 }
 
 void SvgSprite::doCreateSprite() {
@@ -83,7 +83,8 @@ void SvgSprite::doCreateSprite() {
 
   QXmlStreamReader qreader(cstr);
   QSvgRenderer qrenderer(&qreader);
-  QPainter p(image_);
+  QPainter p(pixmap_);
+  p.setRenderHint(QPainter::RenderHint::Antialiasing);
   qrenderer.render(&p);
 }
 

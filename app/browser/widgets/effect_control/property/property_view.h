@@ -24,6 +24,7 @@ class PropertyView : public QWidget, public Sig {
 
 private:
   void doLayout() {
+    qDebug() << "PropertyView layout " << width() << "\n";
     form_view_->resize(width() / 2, height());
     timeline_view_->resize(width() / 2, height());
     form_view_->move(0, 0);

@@ -61,8 +61,6 @@ private:
   ClipTimelineView* timeline_view_;
   SequenceScrollView* sequence_scroll_view_;
 
-  int height_;
-
   std::vector<std::pair<QSharedPointer<effect::Effect>, EffectView*>> effect_views_;
   std::map<QSharedPointer<effect::Effect>, EffectView*> effect_view_map_;
 

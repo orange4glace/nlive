@@ -20,17 +20,30 @@ EffectViewHeader::EffectViewHeader(
     QSharedPointer<effect::Effect> effect,
     QSharedPointer<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service),
-  layout_(layout), clip_(clip), effect_(effect),
-  down_arrow_(":/widget/effect_control/down-arrow.svg", 20, 20) {
-
+  layout_(layout), clip_(clip), effect_(effect) {
+  arrow_button_ = new SvgButton(this, ":/widget/effect_control/down-arrow.svg");
+  arrow_button_->setGeometry(0, 0, 20, 20);
+  connect(arrow_button_, &QPushButton::clicked,
+    [this]() {
+      onArrowButtonClicked(opened_);
+    });
 }
 
 void EffectViewHeader::paintEvent(QPaintEvent* e) {
   QPainter p(this);
-  p.drawText(rect(), Qt::AlignVCenter | Qt::AlignLeft,
+  QRect r = rect(); r.setLeft(20);
+  p.drawText(r, Qt::AlignVCenter | Qt::AlignLeft,
     QString::fromStdString(effect_->type()));
-  p.drawImage(QPoint(0, 0), down_arrow_.image());
 
+}
+
+void EffectViewHeader::setOpened(bool value) {
+  opened_ = value;
+  update();
+}
+
+QSize EffectViewHeader::sizeHint() const {
+  return QSize(-1, 20);
 }
 
 EffectView::EffectView(
@@ -41,10 +54,16 @@ EffectView::EffectView(
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), theme_service_(theme_service),
+  QWidget(parent), theme_service_(theme_service), opened_(true),
   layout_(layout), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   header_ = new EffectViewHeader(this, layout, sequence, clip, effect, theme_service);
   header_->show();
+  header_->setOpened(opened_);
+
+  header_->onArrowButtonClicked.connect(SIG2_TRACK(sig2_t<void (bool)>::slot_type(
+    [this](bool value) {
+      setOpened(!value);
+    })));
 }
 
 void EffectView::insertPropertyView(QWidget* view, int index) {
@@ -52,17 +71,30 @@ void EffectView::insertPropertyView(QWidget* view, int index) {
   property_views_.insert(property_views_.begin() + index, view);
   view->show();
   updateGeometry();
+  doLayout();
+}
+
+namespace {
+  int k = 0;
 }
 
 void EffectView::doLayout() {
   int y = 0;
-  header_->setGeometry(0, 0, width(), 20);
-  y += 20;
-  for (auto property_view : property_views_) {
-    property_view->move(0, y);
-    QSize size_hint = property_view->sizeHint();
-    property_view->resize(width(), size_hint.height());
-    y += property_view->sizeHint().height();
+  header_->setGeometry(0, 0, width(), header_->sizeHint().height());
+  y += header_->sizeHint().height();
+  if (opened_) {
+    for (auto property_view : property_views_) {
+      property_view->show();
+      property_view->move(0, y + k);
+      QSize size_hint = property_view->sizeHint();
+      property_view->resize(width(), size_hint.height());
+      y += property_view->sizeHint().height();
+    }
+  }
+  else {
+    for (auto property_view : property_views_) {
+      property_view->hide();
+    }
   }
 }
 
@@ -83,10 +115,23 @@ bool EffectView::event(QEvent* event) {
   return false;
 }
 
+namespace {
+  int z= 0;
+}
+
+void EffectView::setOpened(bool value) {
+  opened_ = value;
+  header_->setOpened(value);
+  doLayout();
+  updateGeometry();
+}
+
 QSize EffectView::sizeHint() const {
-  int height = 0;
-  for (auto property_view : property_views_)
-    height += property_view->sizeHint().height();
+  int height = header_->sizeHint().height();
+  if (opened_) {
+    for (auto property_view : property_views_)
+      height += property_view->sizeHint().height();
+  }
   return QSize(width(), height);
 }
 

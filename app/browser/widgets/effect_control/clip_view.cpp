@@ -52,11 +52,12 @@ void ClipView::addEffectView(QSharedPointer<effect::Effect> effect, int index) {
 }
 
 void ClipView::doLayout() {
-  height_ = 0;
+  int y = 0;
   for (auto effect_view : effect_views_) {
-    effect_view.second->resize(width(), effect_view.second->sizeHint().height());
-    height_ += effect_view.second->sizeHint().height();
+    effect_view.second->setGeometry(0, y, width(), effect_view.second->sizeHint().height());
+    y += effect_view.second->sizeHint().height();
   }
+  resize(width(), y);
 }
 
 bool ClipView::event(QEvent* event) {
@@ -67,7 +68,7 @@ bool ClipView::event(QEvent* event) {
     return true;
   case QEvent::Paint:
     QPainter p(this);
-    p.fillRect(rect(), Qt::green);
+    p.fillRect(rect(), Qt::darkGreen);
     return true;
   }
   return false;

@@ -11,6 +11,7 @@ SpriteButton::SpriteButton(QWidget* parent, QPixmap pixmap, bool embossing) :
 
 void SpriteButton::paintEvent(QPaintEvent* e) {
   QPainter p(this);
+  p.setRenderHint(QPainter::RenderHint::Antialiasing);
   p.drawPixmap(rect(), pixmap_);
 }
 

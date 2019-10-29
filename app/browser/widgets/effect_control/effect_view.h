@@ -4,7 +4,8 @@
 #include <QWidget>
 #include <QSharedPointer>
 #include <vector>
-#include "base/ui/svg_sprite.h"
+#include "base/common/sig.h"
+#include "base/ui/svg_button.h"
 #include "platform/theme/themeservice.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/timeline/sequenceview.h"
@@ -24,7 +25,7 @@ namespace effect_control {
 
 namespace {
 
-class EffectViewHeader : public QWidget {
+class EffectViewHeader : public QWidget, public Sig {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -33,7 +34,9 @@ private:
   QSharedPointer<effect::Effect> effect_;
   SequenceScrollView* sequence_scroll_view_;
 
-  SvgSprite down_arrow_;
+  SvgButton* arrow_button_;
+
+  bool opened_;
 
 protected:
   void paintEvent(QPaintEvent* e) override;
@@ -47,16 +50,23 @@ public:
     QSharedPointer<effect::Effect> effect,
     QSharedPointer<IThemeService> theme_service);
 
+  void setOpened(bool value);
+
+  QSize sizeHint() const override;
+
+  sig2_t<void (bool)> onArrowButtonClicked;
+
 };
 
 }
 
-class EffectView : public QWidget {
+class EffectView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
   EffectViewHeader* header_;
   std::vector<QWidget*> property_views_;
+  bool opened_;
 
   void doLayout();
   void doPaint();
@@ -80,6 +90,8 @@ public:
     QSharedPointer<IThemeService> theme_service);
 
   void insertPropertyView(QWidget* view, int index);
+
+  void setOpened(bool value);
 
   QSize sizeHint() const override;
 
