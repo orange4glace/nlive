@@ -53,12 +53,18 @@ EffectView::EffectView(
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), theme_service_(theme_service), opened_(true),
-  layout_(layout), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service) :
+  QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
+  opened_(true), layout_(layout), clip_(clip), effect_(effect), 
+  sequence_scroll_view_(sequence_scroll_view) {
   header_ = new EffectViewHeader(this, layout, sequence, clip, effect, theme_service);
   header_->show();
-  header_->setOpened(opened_);
+
+  auto scope = memento_service_->getScope({effect_->id(), "HE"});
+  if (!scope->hasValue()) scope->setValue(true);
+  setOpened(scope->getValue<bool>());
+
 
   header_->onArrowButtonClicked.connect(SIG2_TRACK(sig2_t<void (bool)>::slot_type(
     [this](bool value) {
@@ -74,10 +80,6 @@ void EffectView::insertPropertyView(QWidget* view, int index) {
   doLayout();
 }
 
-namespace {
-  int k = 0;
-}
-
 void EffectView::doLayout() {
   int y = 0;
   header_->setGeometry(0, 0, width(), header_->sizeHint().height());
@@ -85,7 +87,7 @@ void EffectView::doLayout() {
   if (opened_) {
     for (auto property_view : property_views_) {
       property_view->show();
-      property_view->move(0, y + k);
+      property_view->move(0, y);
       QSize size_hint = property_view->sizeHint();
       property_view->resize(width(), size_hint.height());
       y += property_view->sizeHint().height();
@@ -120,6 +122,8 @@ namespace {
 }
 
 void EffectView::setOpened(bool value) {
+  auto scope = memento_service_->getScope({effect_->id(), "HE"});
+  scope->setValue(value);
   opened_ = value;
   header_->setOpened(value);
   doLayout();

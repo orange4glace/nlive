@@ -7,6 +7,7 @@
 #include "base/common/sig.h"
 
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
+#include "browser/services/memento/memento_service.h"
 
 namespace nlive {
 
@@ -30,6 +31,7 @@ class EffectControlWidget : public QDockWidget, public Sig {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IMementoService> memento_service_;
 
   SequenceScrollView* sequence_scroll_view_;
 
@@ -53,7 +55,8 @@ public:
   EffectControlWidget(
     QWidget* parent,
     QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<ITimelineWidgetService> timeline_widget_service);
+    QSharedPointer<ITimelineWidgetService> timeline_widget_service,
+    QSharedPointer<IMementoService> memento_service);
 
 };
 

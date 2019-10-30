@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QOpenGLFunctions>
+#include "base/common/perf.h"
 
 namespace nlive {
 
@@ -104,6 +105,7 @@ void SequenceRenderer::paint() {
   }
   auto gf = target_gl_->functions();
   auto front_render_texture = renderer_->context()->getFrontRenderTexture();
+// std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
   gf->glClearColor(0, 0, 0, 1.0f);
   gf->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   gf->glUseProgram(program_);
@@ -139,6 +141,8 @@ void SequenceRenderer::paint() {
   gf->glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
   gf->glDrawArrays(GL_TRIANGLES, 0, 6);
   renderer_->buffer_swap_mutex()->unlock();
+// std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Measured " << "Sequence Render" << " perf time = " << " " << sec.count();
 }
 
 }

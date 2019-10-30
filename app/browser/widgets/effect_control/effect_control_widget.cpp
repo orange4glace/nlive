@@ -25,9 +25,9 @@ void EffectControlWidget::Initialize() {
 EffectControlWidget::EffectControlWidget(
   QWidget* parent,
   QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service) :
-  QDockWidget(parent), 
-  theme_service_(theme_service),
+  QSharedPointer<ITimelineWidgetService> timeline_widget_service,
+  QSharedPointer<IMementoService> memento_service) :
+  QDockWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   timeline_widget_service_(timeline_widget_service),
   sequence_scroll_view_(nullptr),
   target_timeline_widget_(nullptr),
@@ -69,7 +69,8 @@ void EffectControlWidget::setTargetTimelineWidgetSequenceView(timelinewidget::Se
   qDebug() << "[EffectControlWidget] Create a SequenceView\n";
   sequence_scroll_view_ = new SequenceScrollView(this, nullptr, sequence_view->sequence(), theme_service_);
   sequence_scroll_view_->show();
-  sequence_view_ = new SequenceView(this, layout_params_, sequence_view, sequence_scroll_view_, theme_service_);
+  sequence_view_ = new SequenceView(this, layout_params_, sequence_view, sequence_scroll_view_,
+    theme_service_, memento_service_);
   sequence_view_->resize(size());
   sequence_view_->show();
   updateGeometry();

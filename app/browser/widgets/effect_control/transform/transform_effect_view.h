@@ -46,7 +46,8 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::TransformEffect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service);
 
 };
 
@@ -61,7 +62,8 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service) override;
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service) override;
 
 };
 

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdint.h>
 
+#include "base/common/perf.h"
 #include "renderer/video_renderer/render_command.h"
 #include "renderer/video_renderer/shader/solid_shader.h"
 #include "renderer/video_renderer/shader/texture_shader.h"

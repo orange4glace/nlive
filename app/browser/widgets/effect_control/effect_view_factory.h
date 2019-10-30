@@ -6,6 +6,7 @@
 #include <map>
 
 #include "platform/theme/themeservice.h"
+#include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 class QWidget;
@@ -37,7 +38,8 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service) = 0;
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service) = 0;
 
 };
 

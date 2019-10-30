@@ -18,6 +18,7 @@
 #include "browser/widgets/monitor/monitor_widget.h"
 #include "browser/widgets/effect_control/effect_control_widget.h"
 #include "browser/services/import/import_service_impl.h"
+#include "browser/services/memento/in_memory_memento_service.h"
 
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
@@ -75,6 +76,7 @@ MainWindow::MainWindow() {
   auto task_service = new TaskService();
   auto resource_service = new ResourceService(task_service);
   auto import_service = new ImportService(resource_service);
+  auto memento_service = new QSharedPointer<IMementoService>(new InMemoryMementoService());
 
   auto s_resource_service = new QSharedPointer<ResourceService>(resource_service);
   auto s_import_service = new QSharedPointer<ImportService>(import_service);
@@ -112,7 +114,7 @@ MainWindow::MainWindow() {
 
   effect_control::EffectControlWidget::Initialize();
   auto effect_control_widget = new effect_control::EffectControlWidget(
-    this, theme_service, timeline_widget_service);
+    this, theme_service, timeline_widget_service, *memento_service);
   addDockWidget(Qt::RightDockWidgetArea, effect_control_widget);
 }
 

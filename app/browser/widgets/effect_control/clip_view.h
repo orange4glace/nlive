@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include <map>
+#include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
@@ -54,6 +55,7 @@ class ClipView : public QWidget {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IMementoService> memento_service_;
   QSharedPointer<EffectControlLayout> layout_params_;
   QSharedPointer<Sequence> sequence_;
   QSharedPointer<Clip> clip_;
@@ -78,7 +80,8 @@ public:
     QSharedPointer<Sequence> sequence,
     QSharedPointer<Clip> clip,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service);
 
   QSize sizeHint() const;
 

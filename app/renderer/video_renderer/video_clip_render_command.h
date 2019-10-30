@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdint.h>
 
+#include "base/common/perf.h"
 #include "renderer/video_renderer/render_command.h"
 #include "decoder/video_decoder.h"
 #include "model/resource/video_resource.h"
@@ -43,6 +44,7 @@ public:
   }
 
   inline void render(QSharedPointer<RendererContext> ctx) {
+// std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
     int width = resource_->width();
     int height = resource_->height();
     auto rt = ctx->createTemporaryRenderTexture("clip", width, height);
@@ -51,12 +53,20 @@ public:
     sharing->decoder_ref = decoder_ref;
     QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_, iframe_);
     if (!video_frame) return;
+// std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Decode = " <<  sec.count();  
     uint8_t* buf = new uint8_t[width * height * 4];
+// sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Allocate = " <<  sec.count();  
     video_frame->scale((void*)buf);
+// sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Scale = " <<  sec.count();  
     auto gf = ctx->gl()->functions();
     gf->glBindTexture(GL_TEXTURE_2D, rt.texture);
     gf->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
     gf->glBindTexture(GL_TEXTURE_2D, 0);
+// sec = std::chrono::system_clock::now() - start;
+// qDebug() << "PreEnd = " <<  sec.count();  
     delete buf;
   }
 
@@ -78,9 +88,11 @@ public:
   }
 
   inline void render(QSharedPointer<RendererContext> ctx) {
+MEASURE_PERF_TIME(
     ctx->decoder_manager()->releaseDecoder(sharing->decoder_ref);
     ctx->releaseTemporaryRenderTexture("clip");
     ctx->releaseTemporaryRenderTexture("clip_temp");
+, "VideoPostRender")
   }
 
 };

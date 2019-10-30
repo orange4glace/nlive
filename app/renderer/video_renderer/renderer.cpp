@@ -93,7 +93,7 @@ void Renderer::run() {
     current_command_buffer_ = nullptr;
     command_buffer_mutex_.unlock();
 
-    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+// std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
     gl_->makeCurrent(surface_);
     auto back_rt = renderer_ctx_->getBackRenderTexture();
     gf->glBindFramebuffer(GL_FRAMEBUFFER, back_rt.framebuffer);
@@ -102,10 +102,12 @@ void Renderer::run() {
     gf->glBindFramebuffer(GL_FRAMEBUFFER, 0);
     for (auto command : command_buffer->commands()) {
       command->render(renderer_ctx_);
+// std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Command end = " <<  sec.count();  
     }
     gl_->doneCurrent();
-    std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
-    qDebug() << "dt = " <<  sec.count();  
+// std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+// qDebug() << "Render = " <<  sec.count();  
   
     buffer_swap_mutex_.lock();
     renderer_ctx_->swapRenderTextures();

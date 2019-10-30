@@ -7,6 +7,7 @@
 #include "base/common/sig.h"
 #include "base/ui/svg_button.h"
 #include "platform/theme/themeservice.h"
+#include "browser/services/memento/memento_service.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
@@ -73,8 +74,10 @@ private:
 
 protected:
   QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IMementoService> memento_service_;
   QSharedPointer<EffectControlLayout> layout_;
   QSharedPointer<Clip> clip_;
+  QSharedPointer<effect::Effect> effect_;
   SequenceScrollView* sequence_scroll_view_;
 
   bool event(QEvent* event) override;
@@ -87,7 +90,8 @@ public:
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service);
 
   void insertPropertyView(QWidget* view, int index);
 

@@ -22,8 +22,10 @@ ClipView::ClipView(
   QSharedPointer<Sequence> sequence,
   QSharedPointer<Clip> clip,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), theme_service_(theme_service), layout_params_(layout_params),
+  QSharedPointer<IThemeService> theme_service,
+  QSharedPointer<IMementoService> memento_service) :
+  QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
+  layout_params_(layout_params),
   sequence_(sequence), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   {
     auto& effects = clip->effects();
@@ -41,7 +43,7 @@ void ClipView::addEffectView(QSharedPointer<effect::Effect> effect, int index) {
     return;
   }
   auto view = factory->create(this, layout_params_, sequence_,
-    clip_, effect, sequence_scroll_view_, theme_service_);
+    clip_, effect, sequence_scroll_view_, theme_service_, memento_service_);
   if (!view) {
     spdlog::get(LOGGER_DEFAULT)->warn("[EffectControl_ClipView] View is null! item type = {}", effect->type());
     return;

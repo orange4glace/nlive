@@ -1,9 +1,11 @@
 #ifndef _NLIVE_EFFECT_H_
 #define _NLIVE_EFFECT_H_
 
-#include <QSharedPointer>
 #include <string>
+#include <QSharedPointer>
+#include <QDebug>
 #include "base/common/sig.h"
+#include "base/common/uuid.h"
 
 namespace nlive {
 
@@ -12,16 +14,17 @@ namespace effect {
 class Effect : public Sig {
 
 private:
+  std::string id_;
   std::string type_;
 
 public:
-  Effect(std::string type) : type_(type) {
-
+  inline Effect(std::string type) : type_(type) {
+    id_ = UUID::instance()->generateUUID();
+    qDebug() << QString::fromStdString(id_);
   }
 
-  const std::string& type() const {
-    return type_;
-  }
+  const std::string& id() const { return id_; }
+  const std::string& type() const { return type_; }
 
   template <class T>
   void connectProperty(QSharedPointer<T> property) {

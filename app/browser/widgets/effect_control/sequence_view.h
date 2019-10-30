@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include "base/common/sig.h"
+#include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
@@ -28,6 +29,7 @@ class SequenceView : public QWidget, public Sig {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<IMementoService> memento_service_;
   QSharedPointer<EffectControlLayout> layout_;
   timelinewidget::SequenceView* timeline_widget_sequence_view_;
   SequenceScrollView* sequence_scroll_view_;
@@ -49,7 +51,8 @@ public:
     QSharedPointer<EffectControlLayout> layout,
     timelinewidget::SequenceView* timeline_widget_sequence_view,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service);
 
 };
 

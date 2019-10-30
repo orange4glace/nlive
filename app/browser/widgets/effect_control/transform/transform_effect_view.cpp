@@ -19,8 +19,9 @@ TransformEffectView::TransformEffectView(
   QSharedPointer<Clip> clip,
   QSharedPointer<effect::TransformEffect> effect,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service) :
-  EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service) {
+  QSharedPointer<IThemeService> theme_service,
+  QSharedPointer<IMementoService> memento_service) :
+  EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service, memento_service) {
   position_property_view_ =
       new Vector2PropertyView(this, layout_params, sequence, clip, effect->position(),
           QString("Position"), sequence_scroll_view,theme_service);
@@ -39,7 +40,8 @@ TransformEffectView* TransformEffectViewFactory::create(
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service) {
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<IMementoService> memento_service) {
   if (effect->type() != effect::TransformEffect::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
       "[TransformEffectViewFactory] Effect type not match! expected = {}, got = {}", effect::TransformEffect::TYPE, effect->type());
@@ -47,7 +49,7 @@ TransformEffectView* TransformEffectViewFactory::create(
   }
   QSharedPointer<effect::TransformEffect> transform_effect = effect.staticCast<effect::TransformEffect>();
   return new TransformEffectView(parent, layout_params, sequence,
-    clip, transform_effect, sequence_scroll_view, theme_service);
+    clip, transform_effect, sequence_scroll_view, theme_service, memento_service);
 }
 
 
