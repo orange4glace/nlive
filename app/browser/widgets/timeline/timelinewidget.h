@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 #include <QLayout>
 
-#include "base/layout/fillparentview.h"
+#include "base/layout/fillparentbox.h"
 #include "base/common/sig.h"
 
 namespace nlive {
@@ -28,8 +28,8 @@ private:
   QSharedPointer<Sequence> sequence_;
   SequenceView* sequence_view_;
 
-  FillParentView split_left_view_;
-  FillParentView split_right_view_;
+  FillParentBox* split_left_view_;
+  FillParentBox* split_right_view_;
 
 protected:
   void resizeEvent(QResizeEvent* event) override;

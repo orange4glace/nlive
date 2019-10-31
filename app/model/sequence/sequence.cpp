@@ -1,6 +1,7 @@
 #include "model/sequence/sequence.h"
 
 #include "platform/logger/logger.h"
+#include "platform/undo/undo_stack.h"
 #include "renderer/video_renderer/renderer.h"
 #include "renderer/video_renderer/command_buffer.h"
 #include "renderer/video_renderer/simple_render_command.h"
@@ -14,7 +15,7 @@ namespace {
   int z = 0;
 }
 
-Sequence::Sequence(QUndoStack* undo_stack, int base_time) :
+Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time) :
   undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
   invalidated_(false),
   width_(1920), height_(1080) {
@@ -175,7 +176,7 @@ int Sequence::track_size() const {
   return tracks_.size();
 }
 
-QUndoStack* Sequence::undo_stack() {
+sptr<IUndoStack> Sequence::undo_stack() {
   return undo_stack_;
 };
 

@@ -1,7 +1,7 @@
 #include "model/sequence/clip.h"
 
 #include "model/effect/effect.h"
-
+#include "platform/undo/undo_stack.h"
 #include "renderer/video_renderer/simple_render_command.h"
 #include "renderer/video_renderer/video_clip_render_command.h"
 #include "renderer/video_renderer/command_buffer.h"
@@ -12,7 +12,7 @@ namespace {
   int __next_id = 0;
 }
 
-Clip::Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
+Clip::Clip(sptr<IUndoStack> undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
   undo_stack_(undo_stack), time_base_(time_base), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
   QSharedPointer<effect::TransformEffect> transform_effect = 
     QSharedPointer<effect::TransformEffect>(new effect::TransformEffect());
@@ -68,7 +68,7 @@ const std::vector<QSharedPointer<effect::Effect>>& Clip::effects() { return effe
 
 int Clip::id() const { return id_; }
 
-QUndoStack* Clip::undo_stack() {
+sptr<IUndoStack> Clip::undo_stack() {
   return undo_stack_;
 }
 

@@ -9,7 +9,7 @@
 
 namespace nlive {
 
-VideoClip::VideoClip(QUndoStack* undo_stack, QSharedPointer<VideoResource> video_resource,
+VideoClip::VideoClip(sptr<IUndoStack> undo_stack, QSharedPointer<VideoResource> video_resource,
     Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
   Clip(undo_stack, time_base, start_time, end_time, b_time),
   resource_(video_resource) {

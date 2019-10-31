@@ -2,8 +2,9 @@
 #define _NLIVE_PROJECT_H_
 
 #include <QObject>
-#include <QUndoStack>
 #include <QSharedPointer>
+
+#include "platform/undo/undo_stack.h"
 
 namespace nlive {
 
@@ -14,7 +15,7 @@ class Project : public QObject {
 
 private:
   QSharedPointer<StorageDirectory> root_storage_directory_;
-  QUndoStack* undo_stack_;
+  sptr<IUndoStack> undo_stack_;
 
 public:
   Project();
@@ -23,7 +24,7 @@ public:
 
   QSharedPointer<Sequence> createSequence();
 
-  QUndoStack Project::undo_stack();
+  inline sptr<IUndoStack> Project::undo_stack() { return undo_stack_; }
 
 
 

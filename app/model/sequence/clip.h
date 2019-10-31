@@ -5,9 +5,9 @@
 #include <QObject>
 #include <QDebug>
 #include <QSharedPointer>
-#include <QUndoStack>
 
 #include "base/common/sig.h"
+#include "platform/undo/undo_stack.h"
 #include "model/common/rational.h"
 #include "model/effect/transform_effect.h"
 
@@ -32,7 +32,7 @@ private:
   int id_;
 
 protected:
-  QUndoStack* undo_stack_;
+  sptr<IUndoStack> undo_stack_;
 
   Rational time_base_;
 
@@ -46,7 +46,7 @@ protected:
   QSharedPointer<effect::TransformEffect> transform_effect_;
 
 public:
-  Clip(QUndoStack* undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
+  Clip(sptr<IUndoStack> undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
   Clip(const Clip&);
 
   void setTime(int64_t start_time, int64_t end_time, int64_t b_time);
@@ -64,7 +64,7 @@ public:
 
   int id() const;
 
-  QUndoStack* undo_stack();
+  sptr<IUndoStack> undo_stack();
 
   virtual QSharedPointer<Clip> clone() const;
 

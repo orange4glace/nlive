@@ -1,4 +1,4 @@
-#include "base/layout/fillparentview.h"
+#include "base/layout/fillparentbox.h"
 
 #include <QResizeEvent>
 #include <QPainter>
@@ -6,20 +6,20 @@
 
 namespace nlive {
 
-FillParentView::FillParentView(QWidget* parent, QWidget* widget) :
-  QWidget(parent),
+FillParentBox::FillParentBox(QWidget* parent, QWidget* widget) :
+  Div(parent),
   content_(nullptr) {
   setContent(widget);
 }
 
-QWidget* FillParentView::setContent(QWidget* widget) {
+QWidget* FillParentBox::setContent(QWidget* widget) {
   QWidget* old = content_;
   content_ = widget;
   if (widget) widget->setParent(this);
   return old;
 }
 
-void FillParentView::resizeEvent(QResizeEvent* event) {
+void FillParentBox::resizeEvent(QResizeEvent* event) {
   if (content_) content_->resize(width(), height());
   QWidget::resizeEvent(event);
 }

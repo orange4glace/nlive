@@ -19,7 +19,6 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   theme_service_(theme_service),
   sequence_view_(nullptr) {
 
-  qDebug() << "MONITOR WIDGET CREATED\n";
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
     sig2_t<void (timelinewidget::TimelineWidget*)>::slot_type(

@@ -3,13 +3,13 @@
 
 #include <QObject>
 #include <QMetaObject>
-#include <QUndoStack>
 #include <QSharedPointer>
 #include <QTimer>
 #include <map>
 #include <vector>
 
 #include "base/common/sig.h"
+#include "platform/undo/undo_stack.h"
 #include "model/common/rational.h"
 #include "model/sequence/track.h"
 
@@ -25,7 +25,7 @@ class Sequence : public QObject {
 
 private:
   std::string id_;
-  QUndoStack* undo_stack_;
+  sptr<IUndoStack> undo_stack_;
   Rational time_base_;
   int64_t current_time_;
   int64_t duration_;
@@ -50,7 +50,7 @@ private:
   void doInvalidate();
 
 public:
-  Sequence(QUndoStack* undo_stack, int base_time);
+  Sequence(sptr<IUndoStack> undo_stack, int base_time);
 
   QSharedPointer<Track> addTrack();
   void removeTrackAt(int index);
@@ -75,7 +75,7 @@ public:
   int height() const;
   const std::vector<QSharedPointer<Track>>& tracks();
   int track_size() const;
-  QUndoStack* undo_stack();
+  sptr<IUndoStack> undo_stack();
 
   sig2_t<void (QSharedPointer<Track> track, int /*index*/)> onDidAddTrack;
   sig2_t<void (QSharedPointer<Track>, int /*index*/)> onWillRemoveTrack;

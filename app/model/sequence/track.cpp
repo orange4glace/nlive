@@ -4,7 +4,7 @@
 
 namespace nlive {
 
-Track::Track(QUndoStack* undo_stack) :
+Track::Track(sptr<IUndoStack> undo_stack) :
   undo_stack_(undo_stack) {
 
 }
@@ -56,11 +56,11 @@ void Track::doRemoveClip(QSharedPointer<Clip> clip) {
   Q_ASSERT(connections != clip_connections_.end());
   for (auto& connection : connections->second) connection.disconnect();
   clip_connections_.erase(connections);
-  auto sptr = *clips_.find(clip);
-  onWillRemoveClip(sptr);
-  clips_.erase(sptr);
-  clip_start_ordered_set_.erase(sptr);
-  clip_end_ordered_set_.erase(sptr);
+  auto sp = *clips_.find(clip);
+  onWillRemoveClip(sp);
+  clips_.erase(sp);
+  clip_start_ordered_set_.erase(sp);
+  clip_end_ordered_set_.erase(sp);
 }
 
 void Track::doClearTime(int start_time, int end_time) {
@@ -166,7 +166,7 @@ const std::set<QSharedPointer<Clip>, ClipCompare>& Track::clips() {
   return clips_;
 }
 
-QUndoStack* Track::undo_stack() {
+sptr<IUndoStack> Track::undo_stack() {
   return undo_stack_;
 }
 

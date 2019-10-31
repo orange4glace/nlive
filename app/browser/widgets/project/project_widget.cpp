@@ -1,5 +1,8 @@
 #include "browser/widgets/project/project_widget.h"
 
+#include "base/layout/flex_layout.h"
+#include "base/layout/fillparentbox.h"
+#include "base/ui/solid_box.h"
 #include "platform/theme/themeservice.h"
 #include "model/storage/storage_directory.h"
 #include "browser/widgets/project/directory_view.h"
@@ -29,6 +32,16 @@ ProjectWidget::ProjectWidget(QWidget* parent,
   import_service_(import_service),
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());
+
+  FlexLayout* header = new FlexLayout(this);
+  SolidBox* btn1 = new SolidBox(header);
+  SolidBox* btn2 = new SolidBox(header, Qt::darkBlue);
+  btn1->setFlex(2);
+  btn2->setFlex(1);
+  header->addChild(btn1);
+  header->addChild(btn2);
+  header->resize(width(), 30);
+  header->raise();
 }
 
 void ProjectWidget::setDirectory(QSharedPointer<StorageDirectory> directory) {

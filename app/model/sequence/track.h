@@ -5,11 +5,11 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QDebug>
-#include <QUndoStack>
 #include <QMetaObject>
 #include <QSharedPointer>
 
 #include "base/common/sig.h"
+#include "platform/undo/undo_stack.h"
 #include "model/sequence/clip.h"
 
 namespace nlive {
@@ -53,7 +53,7 @@ class Track : public QObject, public Sig {
   Q_OBJECT
 
 private:
-  QUndoStack* undo_stack_;
+  sptr<IUndoStack> undo_stack_;
   std::set<QSharedPointer<Clip>, ClipCompare> clips_;
   std::set<QSharedPointer<Clip>, ClipStartCompare> clip_start_ordered_set_;
   std::set<QSharedPointer<Clip>, ClipEndCompare> clip_end_ordered_set_;
@@ -71,7 +71,7 @@ private:
   void doInvalidate();
 
 public:
-  Track(QUndoStack* undo_stack);
+  Track(sptr<IUndoStack> undo_stack);
 
   void addClip(QSharedPointer<Clip> clip);
   void removeClip(QSharedPointer<Clip> clip);
@@ -91,7 +91,7 @@ public:
 
   const std::set<QSharedPointer<Clip>, ClipCompare>& clips();
 
-  QUndoStack* undo_stack();
+  sptr<IUndoStack> undo_stack();
 
   sig2_t<void (QSharedPointer<Clip>)> onDidAddClip;
   sig2_t<void (QSharedPointer<Clip>)> onWillRemoveClip;
