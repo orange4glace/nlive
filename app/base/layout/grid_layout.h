@@ -1,22 +1,22 @@
 #ifndef _NLIVE_GRID_LAYOUT_H_
 #define _NLIVE_GRID_LAYOUT_H_
 
-#include <QWidget>
 #include <vector>
+#include "base/layout/div.h"
 
 namespace nlive {
 
 class GridLayout;
 class GridLayoutItem;
 
-class GridLayoutItem : public QWidget {
+class GridLayoutItem : public Div {
 
 private:
   GridLayout* grid_layout_;
   QWidget* content_;
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
 
 public:
   GridLayoutItem(GridLayout* grid_layout, QWidget* content);
@@ -24,7 +24,7 @@ public:
 
 };
 
-class GridLayout : public QWidget {
+class GridLayout : public Div {
 
 private:
   std::vector<GridLayoutItem*> items_;
@@ -35,7 +35,7 @@ private:
   void doLayout();
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
 
 public:
   GridLayout(QWidget* parent = nullptr);

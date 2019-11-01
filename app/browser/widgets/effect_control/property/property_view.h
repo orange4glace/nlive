@@ -24,11 +24,10 @@ class PropertyView : public QWidget, public Sig {
 
 private:
   void doLayout() {
-    qDebug() << "PropertyView layout " << width() << "\n";
-    form_view_->resize(width() / 2, height());
-    timeline_view_->resize(width() / 2, height());
-    form_view_->move(0, 0);
-    timeline_view_->move(width() / 2, 0);
+    int timeline_width = layout_params_->timeline_width();
+    int form_width = width() - timeline_width;
+    form_view_->setGeometry(0, 0, form_width, height());
+    timeline_view_->setGeometry(form_width, 0, timeline_width, height());
   }
 
 protected:
@@ -60,16 +59,20 @@ public:
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
   property_(property), sequence_scroll_view_(sequence_scroll_view) {
 
-  form_view_ = new PropertyFormView<effect::Property<T>>(
-    this, layout_params, sequence, clip, property, label, theme_service);
+    form_view_ = new PropertyFormView<effect::Property<T>>(
+      this, layout_params, sequence, clip, property, label, theme_service);
 
-  timeline_view_ = new PropertyTimelineView<T>(
-    this, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
+    timeline_view_ = new PropertyTimelineView<T>(
+      this, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
 
-  property->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
-    &PropertyView<T>::updateValue, this).track(__sig_scope_));
-  sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
-    &PropertyView<T>::updateValue, this)));
+    property->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
+      &PropertyView<T>::updateValue, this).track(__sig_scope_));
+    sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+      &PropertyView<T>::updateValue, this)));
+
+    layout_params_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
+      [this](){ doLayout(); }
+    )));
   }
 
   bool event(QEvent* event) override {
@@ -80,14 +83,13 @@ public:
       return true;
     case QEvent::Paint:
       QPainter p(this);
-      p.fillRect(rect(), Qt::darkRed);
       return true;
     }
     return false;
   }
 
   QSize sizeHint() const override {
-    return QSize(-1, 50);
+    return QSize(-1, 20);
   }
 
   QSharedPointer<effect::Property<T>>* property() {

@@ -29,8 +29,10 @@ DirectoryView::DirectoryView(
   QSharedPointer<IImportService> import_service) :
   theme_service_(theme_service),
   import_service_(import_service),
-  QWidget(parent), storage_directory_(storage_directory), grid_layout_(this) {
+  Div(parent), storage_directory_(storage_directory) {
   setAcceptDrops(true);
+  grid_layout_ = new GridLayout(this);
+  grid_layout_->setBorder(Div::ALL, 1, theme_service_->getTheme().surfaceBrightColor());
 
   int i = 0;
   for (auto item : storage_directory->items())
@@ -56,7 +58,7 @@ void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item,
   }
   auto pair = make_pair(storage_item, view);
   view_items_.insert(view_items_.begin() + index, pair);
-  grid_layout_.addWidget(view);
+  grid_layout_->addWidget(view);
 }
 
 void DirectoryView::removeStorageItemView(QSharedPointer<StorageItem> storage_item) {
@@ -71,7 +73,7 @@ void DirectoryView::removeStorageItemView(QSharedPointer<StorageItem> storage_it
   }
   auto view = view_items_[i].second;
   view_items_.erase(view_items_.begin() + i);
-  grid_layout_.removeWidget(view);
+  grid_layout_->removeWidget(view);
   delete view;
 }
 
@@ -82,12 +84,11 @@ StorageItemView* DirectoryView::getStorageItemView(QSharedPointer<StorageItem> s
   return nullptr;
 }
 
-void DirectoryView::resizeEvent(QResizeEvent* event) {
-  grid_layout_.setGeometry(rect());
+void DirectoryView::contentRectUpdated() {
+  grid_layout_->setGeometry(rect());
 }
 
 void DirectoryView::paintEvent(QPaintEvent* event) {
-  QPainter p(this);
 }
 
 void DirectoryView::dragEnterEvent(QDragEnterEvent* event) {

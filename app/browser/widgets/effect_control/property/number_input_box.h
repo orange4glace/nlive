@@ -38,6 +38,8 @@ private:
     QPoint last_mouse_pos_;
     bool press_and_moved_;
 
+    QColor text_color_;
+
   protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
@@ -47,6 +49,11 @@ private:
   public:
     SlideView(NumberInputBox* parent, double value);
     void setValue(double value);
+
+    inline void setTextColor(QColor color) {
+      text_color_ = color;
+      update();
+    }
 
     sig2_t<void (double)> onDidChangeValue;
     sig2_t<void ()> onDidClick; 
@@ -68,6 +75,10 @@ protected:
 public:
   NumberInputBox(QWidget* parent, double value);
   void setValue(double value, bool doUpdate = true);
+
+  inline void setTextColor(QColor color) {
+    slide_view_->setTextColor(color);
+  }
 
   void switchToSlideView();
   void switchToEditView();

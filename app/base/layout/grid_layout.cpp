@@ -7,14 +7,13 @@
 namespace nlive {
 
 GridLayoutItem::GridLayoutItem(GridLayout* grid_layout, QWidget* content) :
-  QWidget(grid_layout), grid_layout_(grid_layout), content_(content) {
+  Div(grid_layout), grid_layout_(grid_layout), content_(content) {
   content->setParent(this);
   content->show();
 }
 
-void GridLayoutItem::resizeEvent(QResizeEvent* event) {
-  content_->setGeometry(rect());
-  QWidget::resizeEvent(event);
+void GridLayoutItem::contentRectUpdated() {
+  content_->setGeometry(contentRect());
 }
 
 QWidget* GridLayoutItem::content() {
@@ -22,7 +21,7 @@ QWidget* GridLayoutItem::content() {
 }
 
 GridLayout::GridLayout(QWidget* parent) :
-  QWidget(parent) {
+  Div(parent) {
 
 }
 
@@ -45,18 +44,20 @@ int GridLayout::doRemoveWidget(QWidget* widget) {
 }
 
 void GridLayout::doLayout() {
+  const QRect& crect = content_rect();
+  qDebug() << crect.width() << crect.height();
   int max_width = 200;
-  int column_size = qCeil(width() / (qreal)max_width);
+  int column_size = qCeil(crect.width() / (qreal)max_width);
   int row_size = items_.size() / column_size + (items_.size() % column_size != 0);
-  qreal item_width = width() / (qreal)column_size;
+  qreal item_width = crect.width() / (qreal)column_size;
   qreal item_height = item_width * 0.856;
   for (int r = 0; r < row_size; r ++) {
-    int y = item_height * r;
+    int y = item_height * r + crect.y();
     for (int c = 0; c < column_size; c ++) {
       int i = r * column_size + c;
       if (i >= items_.size()) break;
       auto item = items_[i];
-      int x = item_width * c;
+      int x = item_width * c + crect.x();
       item->setGeometry(QRect(x, y, item_width, item_height));
     }
   }
@@ -93,7 +94,7 @@ bool GridLayout::hasWidget(QWidget* widget) const {
   return getWidgetIndex(widget) != -1;
 }
 
-void GridLayout::resizeEvent(QResizeEvent* event) {
+void GridLayout::contentRectUpdated() {
   doLayout();
 }
 

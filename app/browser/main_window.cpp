@@ -102,12 +102,11 @@ MainWindow::MainWindow() {
   project_widget::ProjectWidget::Initialize();
   auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service);
   addDockWidget(Qt::BottomDockWidgetArea, project_widget);
+  project_widget->setDirectory(project->root_storage_directory());
 
   auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service, timeline_widget_service);
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
-
-  project_widget->setDirectory(project->root_storage_directory());
 
   effect_control::EffectControlWidget::Initialize();
   auto effect_control_widget = new effect_control::EffectControlWidget(

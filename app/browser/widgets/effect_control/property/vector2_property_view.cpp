@@ -25,6 +25,12 @@ Vector2PropertyView::Vector2PropertyView(
   auto form_view = this->form_view();
   x_input_box_ = new NumberInputBox(nullptr, 0);
   y_input_box_ = new NumberInputBox(nullptr, 0);
+  x_input_box_->setTextColor(theme_service->getTheme().surfaceTextColor());
+  y_input_box_->setTextColor(theme_service->getTheme().surfaceTextColor());
+  theme_service->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type([this]() {
+    x_input_box_->setTextColor(theme_service_->getTheme().surfaceTextColor());
+    y_input_box_->setTextColor(theme_service_->getTheme().surfaceTextColor());
+  })));
   form_view->addInputView(x_input_box_);
   form_view->addInputView(y_input_box_);
   updateValue();

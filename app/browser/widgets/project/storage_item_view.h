@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+#include "base/layout/div.h"
 #include "platform/theme/themeservice.h"
 
 namespace nlive {
@@ -31,7 +32,7 @@ public:
 
 }
 
-class StorageItemView : public QWidget {
+class StorageItemView : public Div {
 
 private:
   QColor col_;
@@ -52,7 +53,7 @@ protected:
   virtual void onScrub(double x);
   virtual void onScrubEnd();
 
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
   void mousePressEvent(QMouseEvent* event) override;
   void enterEvent(QEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;

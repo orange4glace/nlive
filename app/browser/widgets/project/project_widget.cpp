@@ -33,31 +33,41 @@ ProjectWidget::ProjectWidget(QWidget* parent,
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());
 
+  outer_view_ = new FlexLayout(this, FlexLayout::Direction::Row);
+
   FlexLayout* header = new FlexLayout(this);
   SolidBox* btn1 = new SolidBox(header);
-  SolidBox* btn2 = new SolidBox(header, Qt::darkBlue);
-  btn1->setFlex(2);
-  btn2->setFlex(1);
+  btn1->setFlexBasis(30)->setFlexGrow(0)->setFlexShrink(0);
+  directory_path_view_ = new TextBox(header, "");
+  directory_path_view_->setFlag(directory_path_view_->flag() | Qt::AlignVCenter)->setPadding(Div::LEFT, 10);
+  directory_path_view_->setColor(theme_service_->getTheme().surfaceTextColor());
   header->addChild(btn1);
-  header->addChild(btn2);
-  header->resize(width(), 30);
-  header->raise();
+  header->addChild(directory_path_view_);
+
+  header->setFlexBasis(30)->setFlexGrow(0)->setFlexShrink(0);
+  outer_view_->addChild(header);
+
 }
 
 void ProjectWidget::setDirectory(QSharedPointer<StorageDirectory> directory) {
-  qDebug() << "Set Directory " << directory.get() << "\n";
   if (directory_ == directory) return;
   if (directory_ != nullptr) {
     // Clean up
+    outer_view_->removeChild(directory_view_);
     delete directory_view_;
   }
-  auto directory_view = new DirectoryView(this, directory, theme_service_, import_service_);
+  if (directory == nullptr) return;
+  directory_ = directory;
+  auto directory_view = new DirectoryView(outer_view_, directory, theme_service_, import_service_);
+  outer_view_->addChild(directory_view);
   directory_view_ = directory_view;
+  directory_path_view_->setText(directory_->getAbsoluteNamePath());
 }
 
 void ProjectWidget::resizeEvent(QResizeEvent* event) {
-  if (directory_view_ != nullptr)
-    directory_view_->setGeometry(rect());
+  outer_view_->setGeometry(rect());
+  // if (directory_view_ != nullptr)
+  //   directory_view_->setGeometry(rect());
 }
 
 }

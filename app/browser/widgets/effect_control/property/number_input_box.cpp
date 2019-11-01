@@ -32,12 +32,12 @@ void NumberInputBox::EditView::focusOutEvent(QFocusEvent *e) {
 
 NumberInputBox::SlideView::SlideView(NumberInputBox* parent, double value) :
   QWidget(parent), number_input_box_(parent), value_(value) {
-
+  text_color_ = Qt::black;
 }
 
 void NumberInputBox::SlideView::paintEvent(QPaintEvent* event) {
   QPainter p(this);
-  p.fillRect(rect(), Qt::darkRed);
+  p.setPen(text_color_);
   p.drawText(rect(), Qt::AlignCenter, QString::number(value_));
 }
 
@@ -72,44 +72,36 @@ NumberInputBox::NumberInputBox(QWidget* parent, double value) :
   QWidget(parent), value_(value), handling_(false),
   edit_view_(nullptr), slide_view_(nullptr) {
 
+  slide_view_ = new SlideView(this, value_);
+  edit_view_ = new EditView(this, value_);
+  edit_view_->resize(size());
+  slide_view_->resize(size());
+  slide_view_->onDidClick.connect(
+    sig2_t<void ()>::slot_type
+    ([this]() { this->switchToEditView(); }).track(__sig_scope_));
   switchToSlideView();
 }
 
 void NumberInputBox::resizeEvent(QResizeEvent* e) {
-  if (edit_view_) edit_view_->resize(size());
-  if (slide_view_) slide_view_->resize(size());
+  edit_view_->resize(size());
+  slide_view_->resize(size());
 }
 
 void NumberInputBox::switchToSlideView() {
-  if (edit_view_) {
-    delete edit_view_;
-    edit_view_ = nullptr;
-  }
-  if (slide_view_) return;
-  slide_view_ = new SlideView(this, value_);
-  slide_view_->resize(size());
   slide_view_->show();
-  slide_view_->onDidClick.connect(
-    sig2_t<void ()>::slot_type
-    ([this]() { this->switchToEditView(); }).track(__sig_scope_));
+  edit_view_->hide();
 }
 
 void NumberInputBox::switchToEditView() {
-  if (slide_view_) {
-    delete slide_view_;
-    slide_view_ = nullptr;
-  }
-  if (edit_view_) return;
-  edit_view_ = new EditView(this, value_);
-  edit_view_->resize(size());
+  slide_view_->hide();
   edit_view_->show();
   edit_view_->setFocus();
 }
 
 void NumberInputBox::doSetValue(double value, bool doUpdate) {
   value_ = value;
-  if (edit_view_) edit_view_->setValue(value);
-  if (slide_view_) slide_view_->setValue(value);
+  edit_view_->setValue(value);
+  slide_view_->setValue(value);
   update();
   if (doUpdate) onDidChangeValue(value_);
 }

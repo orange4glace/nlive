@@ -17,7 +17,7 @@ VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, QSha
   renderer_view_ = nullptr;
 }
 
-void VideoResourceStorageItemView::resize() {
+void VideoResourceStorageItemView::doResize() {
   if (renderer_view_ != nullptr) {
     auto resource = storage_item_.staticCast<VideoResourceStorageItem>()->video_resource();
     double r = (double) resource->width() / resource->height();
@@ -28,7 +28,7 @@ void VideoResourceStorageItemView::resize() {
     double rr = min(1.0, min(xx, yy));
     w = w * rr;
     h = h * rr;
-    renderer_view_->setGeometry(
+    setChildGeometry(renderer_view_,
       (width() - w) / 2 + 1,
       (height() - h) / 2 + 1,
       w - 2, h - 2);
@@ -40,7 +40,7 @@ void VideoResourceStorageItemView::onScrubStart() {
   renderer_view_ = new video_renderer::RendererView(this, resource->width(), resource->height());
   renderer_view_->setAttribute(Qt::WA_TransparentForMouseEvents);
   renderer_view_->show();
-  resize();
+  doResize();
 }
 
 void VideoResourceStorageItemView::onScrub(double x) {
@@ -67,10 +67,10 @@ void VideoResourceStorageItemView::onScrubEnd() {
   renderer_view_ = nullptr;
 }
 
-void VideoResourceStorageItemView::resizeEvent(QResizeEvent* event) {
-  StorageItemView::resizeEvent(event);
+void VideoResourceStorageItemView::contentRectUpdated() {
+  StorageItemView::contentRectUpdated();
   if (renderer_view_ != nullptr)
-    resize();
+    doResize();
 }
 
 void VideoResourceStorageItemView::paintEvent(QPaintEvent* event) {

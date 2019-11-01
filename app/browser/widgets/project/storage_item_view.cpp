@@ -30,9 +30,10 @@ void ScrubBar::setValue(double x) {
 }
 
 StorageItemView::StorageItemView(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) :
-  theme_service_(theme_service), QWidget(parent), storage_item_(item) {
+  Div(parent), theme_service_(theme_service), storage_item_(item) {
   scrub_bar_ = new ScrubBar(this, theme_service);
   scrub_bar_->hide();
+  setPadding(Div::ALL, 5);
 }
 
 void StorageItemView::_onScrubStart() {
@@ -54,8 +55,8 @@ void StorageItemView::onScrubStart() {}
 void StorageItemView::onScrub(double x) {}
 void StorageItemView::onScrubEnd() {}
 
-void StorageItemView::resizeEvent(QResizeEvent* event) {
-  scrub_bar_->setGeometry(0, height() - 3, width(), 3);
+void StorageItemView::contentRectUpdated() {
+  setChildGeometry(scrub_bar_, 0, height() - 3, width(), 3);
 }
 
 void StorageItemView::mousePressEvent(QMouseEvent* event) {

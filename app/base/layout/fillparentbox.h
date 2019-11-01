@@ -13,7 +13,7 @@ private:
   QWidget* content_;
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
 
 public:
   FillParentBox(QWidget* parent, QWidget* widget = nullptr);

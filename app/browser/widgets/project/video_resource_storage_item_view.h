@@ -19,14 +19,14 @@ class VideoResourceStorageItemView : public StorageItemView {
 private:
   video_renderer::RendererView* renderer_view_;
 
-  void resize();
+  void doResize();
 
 protected:
   void onScrubStart() override;
   void onScrub(double x) override;
   void onScrubEnd() override;
   
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
   void paintEvent(QPaintEvent* event) override;
 
 public:

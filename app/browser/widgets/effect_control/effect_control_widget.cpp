@@ -29,7 +29,6 @@ EffectControlWidget::EffectControlWidget(
   QSharedPointer<IMementoService> memento_service) :
   QDockWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   timeline_widget_service_(timeline_widget_service),
-  sequence_scroll_view_(nullptr),
   target_timeline_widget_(nullptr),
   sequence_view_(nullptr) {
   layout_params_ = QSharedPointer<EffectControlLayout>(new EffectControlLayout(0.5));
@@ -63,13 +62,9 @@ void EffectControlWidget::setTargetTimelineWidgetSequenceView(timelinewidget::Se
   qDebug() << "[EffectControlWidget] setTargetTimelineWidget " << sequence_view << "\n";
   if (sequence_view_ != nullptr)
     delete sequence_view_;
-  if (sequence_scroll_view_ != nullptr)
-    delete sequence_scroll_view_;
   if (sequence_view == nullptr) return;
   qDebug() << "[EffectControlWidget] Create a SequenceView\n";
-  sequence_scroll_view_ = new SequenceScrollView(this, nullptr, sequence_view->sequence(), theme_service_);
-  sequence_scroll_view_->show();
-  sequence_view_ = new SequenceView(this, layout_params_, sequence_view, sequence_scroll_view_,
+  sequence_view_ = new SequenceView(this, layout_params_, sequence_view,
     theme_service_, memento_service_);
   sequence_view_->resize(size());
   sequence_view_->show();
@@ -83,12 +78,7 @@ void EffectControlWidget::paintEvent(QPaintEvent* event) {
 void EffectControlWidget::resizeEvent(QResizeEvent* event) {
   QDockWidget::resizeEvent(event);
   if (sequence_view_ != nullptr) {
-    sequence_view_->setGeometry(0, 30, width(), height() - 15);
-  }
-  if (sequence_scroll_view_ != nullptr) {
-    sequence_scroll_view_->setGeometry(
-        layout_params_->side_timeline_ratio() * width(), 0,
-        (1 - layout_params_->side_timeline_ratio()) * width(), height());
+    sequence_view_->setGeometry(0, 0, width(), height() - 15);
   }
 }
 

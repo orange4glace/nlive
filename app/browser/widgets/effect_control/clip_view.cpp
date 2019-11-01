@@ -27,12 +27,19 @@ ClipView::ClipView(
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   layout_params_(layout_params),
   sequence_(sequence), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
-  {
-    auto& effects = clip->effects();
-    int idx = 0;
-    for (auto& effect : effects) {
-      addEffectView(effect, idx++);
-    }
+
+  clip->onDidChangeTime.connect(SIG2_TRACK(sig2_t<void (int64_t, int64_t, int64_t)>::slot_type(
+    [this](int64_t, int64_t, int64_t) {
+      sequence_scroll_view_->setMinStartTime(clip_->start_time());
+      sequence_scroll_view_->setMaxEndTime(clip_->end_time());
+    })));
+  sequence_scroll_view_->setMinStartTime(clip->start_time());
+  sequence_scroll_view_->setMaxEndTime(clip->end_time());
+
+  auto& effects = clip->effects();
+  int idx = 0;
+  for (auto& effect : effects) {
+    addEffectView(effect, idx++);
   }
 }
 
@@ -69,8 +76,6 @@ bool ClipView::event(QEvent* event) {
     doLayout();
     return true;
   case QEvent::Paint:
-    QPainter p(this);
-    p.fillRect(rect(), Qt::darkGreen);
     return true;
   }
   return false;

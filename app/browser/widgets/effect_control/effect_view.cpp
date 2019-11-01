@@ -3,6 +3,8 @@
 #include <QEvent>
 #include <QPainter>
 #include "base/common/perf.h"
+#include "base/layout/fillparentbox.h"
+#include "base/ui/text_box.h"
 #include "model/sequence/sequence.h"
 #include "model/sequence/clip.h"
 #include "model/effect/effect.h"
@@ -19,27 +21,34 @@ EffectViewHeader::EffectViewHeader(
     QSharedPointer<Clip> clip,
     QSharedPointer<effect::Effect> effect,
     QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), theme_service_(theme_service),
+  FlexLayout(parent), theme_service_(theme_service),
   layout_(layout), clip_(clip), effect_(effect) {
+  auto& theme = theme_service_->getTheme();
   arrow_button_ = new SvgButton(this, ":/widget/effect_control/down-arrow.svg");
-  arrow_button_->setGeometry(0, 0, 20, 20);
+  FillParentBox* button_container = new FillParentBox(this, arrow_button_);
+  button_container->setFlexBasis(20)->setFlexShrink(0)->setFlexGrow(0);
+  TextBox* label_view = new TextBox(this, QString::fromStdString(effect->type()), Qt::AlignVCenter);
+  label_view->setColor(theme.surfaceTextColor())->setPadding(Div::LEFT, 10);
+  this->addChild(button_container);
+  this->addChild(label_view);
   connect(arrow_button_, &QPushButton::clicked,
     [this]() {
       onArrowButtonClicked(opened_);
     });
 }
 
-void EffectViewHeader::paintEvent(QPaintEvent* e) {
-  QPainter p(this);
-  QRect r = rect(); r.setLeft(20);
-  p.drawText(r, Qt::AlignVCenter | Qt::AlignLeft,
-    QString::fromStdString(effect_->type()));
-
-}
-
 void EffectViewHeader::setOpened(bool value) {
   opened_ = value;
   update();
+}
+
+void EffectViewHeader::paintEvent(QPaintEvent* e) {
+  Div::paintEvent(e);
+  auto& theme = theme_service_->getTheme();
+  QPainter p(this);
+  int form_width = width() - layout_->timeline_width();
+  p.setPen(theme.surfaceColor());
+  p.drawLine(0, height() - 1, form_width, height() - 1);
 }
 
 QSize EffectViewHeader::sizeHint() const {
@@ -87,9 +96,8 @@ void EffectView::doLayout() {
   if (opened_) {
     for (auto property_view : property_views_) {
       property_view->show();
-      property_view->move(0, y);
       QSize size_hint = property_view->sizeHint();
-      property_view->resize(width(), size_hint.height());
+      property_view->setGeometry(20, y, width() - 20, size_hint.height());
       y += property_view->sizeHint().height();
     }
   }

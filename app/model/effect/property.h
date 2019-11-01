@@ -2,6 +2,7 @@
 #define NILVE_EFFECT_PROPERTY_H_
 
 #include <QObject>
+#include <QSharedPointer>
 #include <stdint.h>
 #include <map>
 #include <string>
@@ -19,7 +20,7 @@ class Property {
 private:
   std::string type_;
   T default_value_;
-  std::map<int64_t, Keyframe<T>> keyframes_;
+  std::map<int64_t, QSharedPointer<Keyframe<T>>> keyframes_;
 
   bool animatable_;
   bool animated_;
@@ -34,15 +35,17 @@ private:
   void doCreateKeyframe(int64_t time, T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it == keyframes_.end());
-    keyframes_.insert(make_pair(time, Keyframe<T>(time, value)));
+    auto kf = QSharedPointer<Keyframe<T>>(new Keyframe<T>(time, value));
+    keyframes_.insert(make_pair(time, kf));
     onDidUpdate();
+    onDidAddKeyframe(kf);
   }
 
   void doUpdateKeyframe(int64_t time, T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it != keyframes_.end());
-    Keyframe<T>& kf = match_it->second;
-    kf.setValue(value);
+    QSharedPointer<Keyframe<T>> kf = match_it->second;
+    kf->setValue(value);
     onDidUpdate();
   }
 
@@ -73,16 +76,16 @@ public:
     }
     auto next = keyframes_.lower_bound(time);
     if (next == keyframes_.end()) {
-      Keyframe<T> const& kf = (*(keyframes_.rbegin())).second;
-      return kf.value();
+      QSharedPointer<Keyframe<T>> kf = (*(keyframes_.rbegin())).second;
+      return kf->value();
     }
     if (next == keyframes_.begin()) {
-      return (*next).second.value();
+      return (*next).second->value();
     }
     auto prev = std::prev(next);
-    auto& prev_value = (*prev).second.value();
+    auto& prev_value = (*prev).second->value();
     auto prev_time = (*prev).first;
-    auto& next_value = (*next).second.value();
+    auto& next_value = (*next).second->value();
     auto next_time = (*next).first;
     double t = (double)(time - prev_time) / (next_time - prev_time);
     return T::interpolate(prev_value, next_value, t);
@@ -100,7 +103,7 @@ public:
     onDidUpdate();
   }
 
-  std::map<int64_t, Keyframe<T>> const& keyframes() {
+  std::map<int64_t, QSharedPointer<Keyframe<T>>> const& keyframes() {
     return keyframes_;
   }
 
@@ -123,6 +126,9 @@ public:
   sig2_t<void (bool)> onDidChangeAnimated;
   sig2_t<void (bool)> onDidChangeAnimatable;
   sig2_t<void (void)> onDidUpdate;
+  sig2_t<void (QSharedPointer<Keyframe<T>>)> onDidAddKeyframe;
+  sig2_t<void (QSharedPointer<Keyframe<T>>)> onWillRemoveKeyframe;
+  sig2_t<void (QSharedPointer<Keyframe<T>>)> onDidChangeKeyframeTime;
 
 };
 

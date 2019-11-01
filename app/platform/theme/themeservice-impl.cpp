@@ -25,7 +25,7 @@ ThemeService::ThemeService() :
 
 void ThemeService::setTheme(Theme const& theme) {
   theme_ = theme;
-  emit onDidChangeTheme(theme_);
+  onDidUpdate();
 }
 
 const Theme& ThemeService::getTheme() const {

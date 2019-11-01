@@ -26,6 +26,7 @@ protected:
   
 public:
   void setParent(StorageItem* item);
+  QString getAbsoluteNamePath() const;
   std::string getAbsolutePath() const;
 
   virtual QSharedPointer<Clip> cliperize(Rational time_base) = 0;

@@ -3,10 +3,12 @@
 
 #include <QDockWidget>
 #include <QSharedPointer>
+#include "base/layout/flex_layout.h"
+#include "base/ui/text_box.h"
+#include "platform/theme/themeservice.h"
 
 namespace nlive {
 
-class IThemeService;
 class IImportService;
 class StorageDirectory;
 
@@ -21,6 +23,9 @@ private:
   QSharedPointer<IImportService> import_service_;
 
   QSharedPointer<StorageDirectory> directory_;
+
+  FlexLayout* outer_view_;
+  TextBox* directory_path_view_;
   DirectoryView* directory_view_;
 
 protected:

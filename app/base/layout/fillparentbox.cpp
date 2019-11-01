@@ -19,9 +19,8 @@ QWidget* FillParentBox::setContent(QWidget* widget) {
   return old;
 }
 
-void FillParentBox::resizeEvent(QResizeEvent* event) {
+void FillParentBox::contentRectUpdated() {
   if (content_) content_->resize(width(), height());
-  QWidget::resizeEvent(event);
 }
 
 }

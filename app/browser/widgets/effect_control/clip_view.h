@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include <map>
+#include "base/common/sig.h"
 #include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
@@ -26,31 +27,7 @@ namespace effect_control {
 class EffectControlLayout;
 class EffectView;
 
-class ClipSideView {
-
-private:
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
-  
-public:
-  ClipSideView(
-    QSharedPointer<Clip> clip);
-
-};
-
-class ClipTimelineView {
-
-private:
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
-  
-public:
-  ClipTimelineView(
-    QSharedPointer<Clip> clip);
-
-};
-
-class ClipView : public QWidget {
+class ClipView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
@@ -59,8 +36,6 @@ private:
   QSharedPointer<EffectControlLayout> layout_params_;
   QSharedPointer<Sequence> sequence_;
   QSharedPointer<Clip> clip_;
-  ClipSideView* side_view_;
-  ClipTimelineView* timeline_view_;
   SequenceScrollView* sequence_scroll_view_;
 
   std::vector<std::pair<QSharedPointer<effect::Effect>, EffectView*>> effect_views_;

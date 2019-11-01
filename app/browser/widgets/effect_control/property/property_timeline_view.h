@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <map>
 #include "browser/widgets/effect_control/effect_control_layout.h"
+#include "browser/widgets/effect_control/property/keyframe_view.h"
 #include "model/sequence/sequence.h"
 #include "model/sequence/clip.h"
 #include "model/effect/property.h"
@@ -17,29 +19,35 @@ template <class T>
 class PropertyTimelineView : public QWidget, public Sig {
 
 private:
+  QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<EffectControlLayout> layout_params_;
   QSharedPointer<Sequence> sequence_;
   QSharedPointer<Clip> clip_;
   QSharedPointer<effect::Property<T>> property_;
   SequenceScrollView* sequence_scroll_view_;
+  std::map<QSharedPointer<effect::Keyframe<T>>, KeyframeView<T>> keyframe_view_map_;
 
-protected:
-  void paintEvent(QPaintEvent* e) override {
-    QPainter p(this);
-    p.fillRect(rect(), Qt::lightGray);
-    int64_t timeoffset = sequence_->getClipBTimecodeOffset(clip_);
-    auto keyframes = property_->keyframes();
+  void doCreateKeyframeView(QSharedPointer<effect::Keyframe<T>> keyframe) {
+    KeyframeView<T>* kf_view = new KeyframeView<T>(this, keyframe, theme_service_);
+    updateKeyframeViewPosition(kf_view);
+  }
+
+  void updateKeyframeViewPosition(KeyframeView<T>* keyframe_view) {
+    auto keyframe = keyframe_view->keyframe();
     int st = sequence_scroll_view_->start_time();
     int ed = sequence_scroll_view_->end_time();
-    for (auto pkf : keyframes) {
-      auto& kf = pkf.second;
-      int64_t trt = kf.time() - clip_->b_time() + clip_->start_time();
-      if (st <= trt && trt <= ed) {
-        int x = sequence_scroll_view_->getPositionRelativeToView(trt);
-        p.fillRect(x, 0, 10, 10, Qt::red);
-      }
+    int64_t trt = keyframe->time() - clip_->b_time() + clip_->start_time();
+    if (st <= trt && trt <= ed) {
+      int x = sequence_scroll_view_->getPositionRelativeToView(trt);
+      keyframe_view->setGeometry(x - 6, 0, 13, 13);
+      keyframe_view->show();
+    }
+    else {
+      keyframe_view->hide();
     }
   }
+
+protected:
 
 public:
   PropertyTimelineView(
@@ -50,13 +58,22 @@ public:
     QSharedPointer<effect::Property<T>> property,
     SequenceScrollView* sequence_scroll_view,  
     QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), layout_params_(layout_params), sequence_(sequence),
+  QWidget(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
   property_(property), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   
   property->onDidUpdate.connect(
     sig2_t<void ()>::slot_type([this]() {
       update();
     }).track(__sig_scope_));
+
+  for (auto kfp : property_->keyframes()) {
+    auto kf = kfp.second;
+    doCreateKeyframeView(kf);
+  }
+  property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<effect::Keyframe<T>>)>::slot_type(
+    [this](QSharedPointer<effect::Keyframe<T>> keyframe) {
+    doCreateKeyframeView(keyframe);
+  })));
 }  
 
 };

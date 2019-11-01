@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 
+#include "base/layout/div.h"
 #include "base/layout/grid_layout.h"
 
 namespace nlive {
@@ -19,7 +20,7 @@ namespace project_widget {
   
 class StorageItemView;
 
-class DirectoryView : public QWidget {
+class DirectoryView : public Div {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -28,14 +29,14 @@ private:
 
   std::vector<std::pair<QSharedPointer<StorageItem>, StorageItemView*>> view_items_;
   
-  GridLayout grid_layout_;
+  GridLayout* grid_layout_;
 
   void addStorageItemView(QSharedPointer<StorageItem> storage_item, int index);
   void removeStorageItemView(QSharedPointer<StorageItem> storage_item);
   StorageItemView* getStorageItemView(QSharedPointer<StorageItem> storage_item);
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
   void paintEvent(QPaintEvent* event) override;
   void dragEnterEvent(QDragEnterEvent* event) override;
 

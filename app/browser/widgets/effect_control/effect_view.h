@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <vector>
 #include "base/common/sig.h"
+#include "base/layout/flex_layout.h"
 #include "base/ui/svg_button.h"
 #include "platform/theme/themeservice.h"
 #include "browser/services/memento/memento_service.h"
@@ -26,7 +27,7 @@ namespace effect_control {
 
 namespace {
 
-class EffectViewHeader : public QWidget, public Sig {
+class EffectViewHeader : public FlexLayout {
 
 private:
   QSharedPointer<IThemeService> theme_service_;

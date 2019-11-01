@@ -18,9 +18,14 @@ protected:
   }
 
 public:
-  inline SolidBox(QWidget* parent, QColor color = Qt::blue) :
+  inline SolidBox(QWidget* parent, QColor color = Qt::black) :
     Div(parent), color_(color) {
 
+  }
+
+  inline void setColor(QColor color) {
+    color_ = color;
+    update();
   }
 
 };

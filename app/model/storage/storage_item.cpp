@@ -1,5 +1,8 @@
 #include "model/storage/storage_item.h"
 
+#include <QDebug>
+#include "base/common/uuid.h"
+
 namespace nlive {
 
 StorageItem::StorageItem(
@@ -7,12 +10,16 @@ StorageItem::StorageItem(
   QString name,
   QSharedPointer<StorageItem> parent,
   std::string uuid) :
-  type_(type), name_(name), parent_(nullptr) {
-  
+  type_(type), name_(name), parent_(nullptr), uuid_(uuid) {
 }
 
 void StorageItem::setParent(StorageItem* item) {
   parent_ = item;
+}
+
+QString StorageItem::getAbsoluteNamePath() const {
+  if (parent_ == nullptr) return name_;
+  return parent_->getAbsoluteNamePath() + "/" + name_;
 }
 
 std::string StorageItem::getAbsolutePath() const {
