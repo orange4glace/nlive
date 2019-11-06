@@ -131,7 +131,7 @@ private:
   void doPaint() {
     QPainter p(this);
     auto& theme = theme_service_->getTheme();
-    p.setPen(theme.surfaceColor());
+    p.setPen(theme.surfaceBrightColor());
     p.drawLine(0, height() - 1, width(), height() - 1);
   }
 

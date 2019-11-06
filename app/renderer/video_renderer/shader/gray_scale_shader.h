@@ -1,5 +1,5 @@
-#ifndef NLIVE_VIDEO_RENDERER_TEXTURE_SHADER_H_
-#define NLIVE_VIDEO_RENDERER_TEXTURE_SHADER_H_
+#ifndef NLIVE_GRAY_SCALE_SHADER_H_
+#define NLIVE_GRAY_SCALE_SHADER_H_
 
 #include "renderer/video_renderer/shader_program.h"
 
@@ -7,19 +7,20 @@ namespace nlive {
 
 namespace video_renderer {
 
-class TextureShaderProgram : public ShaderProgram {
+class GrayScaleShaderProgram : public ShaderProgram {
   
 private:
   GLuint id_;
   GLuint position_;
   GLuint texCoord_;
+  GLuint value_;
   GLuint image_;
   GLuint position_buffer_;
   GLuint texCoord_buffer_;
 
 public:
-  inline TextureShaderProgram(QOpenGLContext* gl) :
-    ShaderProgram(gl, "TextureShader") {
+  inline GrayScaleShaderProgram(QOpenGLContext* gl) :
+    ShaderProgram(gl, "GrayScaleShader") {
     compile(
         "#version 300 es\n"
         "in vec2 a_position;\n"
@@ -33,16 +34,20 @@ public:
         "#version 300 es\n"
         "precision mediump float;\n"
         "uniform sampler2D u_image;\n"
+        "uniform float u_value;\n"
         "in vec2 v_texCoord;\n"
         "out vec4 outColor;\n"
         "void main() {\n"
-          "vec2 in_v_texCoord = vec2(1.0, 1.0) - v_texCoord;\n"
-          "outColor = texture(u_image, in_v_texCoord).bgra;\n"
+          "outColor = texture(u_image, v_texCoord).rgba;\n"
+          "const vec3 W = vec3(0.2125, 0.7154, 0.0721);\n"
+          "vec3 intensity = vec3(dot(outColor.rgb, W));\n"
+          "outColor.rgb = mix(intensity, outColor.rgb, u_value);\n"
         "}");
 
     auto gf = gl->functions();
     position_ = gf->glGetAttribLocation(program_, "a_position");
     texCoord_ = gf->glGetAttribLocation(program_, "a_texCoord");
+    value_ = gf->glGetUniformLocation(program_, "u_value");
     image_ = gf->glGetAttribLocation(program_, "u_image");
 
     gf->glGenBuffers(1, &position_buffer_);
@@ -51,6 +56,7 @@ public:
 
   inline GLuint position() const { return position_; }
   inline GLuint texCoord() const { return texCoord_; }
+  inline GLuint value() const { return value_; }
   inline GLuint image() const { return image_; }
   inline GLuint position_buffer() const { return position_buffer_; }
   inline GLuint texCoord_buffer() const { return texCoord_buffer_; }

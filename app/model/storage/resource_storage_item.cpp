@@ -8,7 +8,7 @@ ResourceStorageItem::ResourceStorageItem(
   std::string type,
   QSharedPointer<StorageItem> parent,
   QSharedPointer<Resource> resource) :
-  StorageItem(type, "", parent),
+  StorageItem(type, resource->name(), parent),
   resource_(resource) {
 
 }

@@ -7,21 +7,16 @@
 #include "base/common/sig.h"
 #include "base/layout/flex_layout.h"
 #include "base/ui/svg_button.h"
+#include "model/sequence/sequence.h"
+#include "model/sequence/clip.h"
+#include "model/effect/effect.h"
 #include "platform/theme/themeservice.h"
+#include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/services/memento/memento_service.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
-
-class Clip;
-class Sequence;
-
-namespace effect {
-
-class Effect;
-
-}
 
 namespace effect_control {
 

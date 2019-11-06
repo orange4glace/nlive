@@ -1,5 +1,6 @@
 add_subdirectory(property)
 add_subdirectory(transform)
+add_subdirectory(effects)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}

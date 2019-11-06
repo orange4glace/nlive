@@ -76,6 +76,7 @@ bool ClipView::event(QEvent* event) {
     doLayout();
     return true;
   case QEvent::Paint:
+    QPainter p(this);
     return true;
   }
   return false;

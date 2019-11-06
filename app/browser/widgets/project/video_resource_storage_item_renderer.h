@@ -3,14 +3,31 @@
 
 #include <QOpenGLContext>
 #include <QSharedPointer>
+#include <QImage>
 #include <mutex>
 
+#include "base/layout/div.h"
 #include "renderer/video_renderer/renderer.h"
 #include "model/storage/video_resource_storage_item.h"
+#include "decoder/video_decoder.h"
 
 namespace nlive {
 
 namespace project_widget {
+
+class VideoResourceStorageItemThumbnailView : public Div {
+
+private:
+  QImage* image_;
+
+protected:
+  void paintEvent(QPaintEvent* e) override;
+
+public:
+  VideoResourceStorageItemThumbnailView(QWidget* parent, QSharedPointer<VideoResourceStorageItem> item);
+  ~VideoResourceStorageItemThumbnailView();
+
+};
 
 class VideoResourceStorageItemRenderer {
 

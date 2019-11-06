@@ -1,7 +1,8 @@
 #include "browser/widgets/timeline/ghost_sequence_view.h"
 
-#include <limits>
+#include <QDebug>
 #include <QPainter>
+#include <limits>
 
 #include "model/sequence/sequence.h"
 #include "browser/widgets/timeline/ghost_track_view.h"
@@ -28,7 +29,6 @@ GhostSequenceView::GhostSequenceView(
     connect(ghost_track_view, &GhostTrackView::onDidAddGhostClipView, this, [this]() {
       scheduleUpdate();
     });
-    qDebug() << " " << ghost_track_view->isVisible() << "\n";
   }
 
   for (auto track : sequence->tracks()) {
@@ -45,7 +45,74 @@ GhostSequenceView::GhostSequenceView(
 
 }
 
+void GhostSequenceView::doCalculateMagnetTimes() {
+  magnet_start_ = 0;
+  magnet_end_ = 0;
+  int ret = 1e8;
+  int absret = 1e8;
+  int threshold = scroll_view_->getTimeAmountRelativeToView(10);
+  for (auto gtv : ghost_track_views_) {
+    for (auto ghost_clip : gtv->ghost_clip_views()) {
+      int start_time = ghost_clip->start_time();
+      int end_time = ghost_clip->end_time();
+      int extended_start_time = start_time + start_extent_ + translation_;
+      int extended_end_time = end_time + end_extent_ + translation_;
+      {
+        if (manipulation_state_ != ManipulationState::ResizeRight) {
+          auto it = magnet_times_.lower_bound(extended_start_time);
+          if (it != magnet_times_.end()) {
+            int dt = it->first - extended_start_time;
+            if (std::abs(dt) < absret) {
+              absret = std::abs(dt);
+              ret = dt;
+            }
+          }
+          if (it != magnet_times_.begin() && magnet_times_.size() > 0) {
+            it = std::prev(it);
+            int dt = it->first - extended_start_time;
+            if (std::abs(dt) < absret) {
+              absret = std::abs(dt);
+              ret = dt;
+            }
+          }
+        }
+      }
+      {
+        if (manipulation_state_ != ManipulationState::ResizeLeft) {
+          auto it = magnet_times_.lower_bound(extended_end_time);
+          if (it != magnet_times_.end()) {
+            int dt = it->first - extended_end_time;
+            if (std::abs(dt) < absret) {
+              absret = std::abs(dt);
+              ret = dt;
+            }
+          }
+          if (it != magnet_times_.begin() && magnet_times_.size() > 0) {
+            it = std::prev(it);
+            int dt = it->first - extended_end_time;
+            if (std::abs(dt) < absret) {
+              absret = std::abs(dt);
+              ret = dt;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (absret >= threshold) ret = 0;
+  if (manipulation_state_ == ManipulationState::Translate) {
+    start_magnet_time_ = end_magnet_time_ = ret;
+  }
+  else if (manipulation_state_ == ManipulationState::ResizeLeft) {
+    start_magnet_time_ = ret;
+  }
+  else if (manipulation_state_ == ManipulationState::ResizeRight) {
+    end_magnet_time_ = ret;
+  }
+}
+
 void GhostSequenceView::doUpdate() {
+  doCalculateMagnetTimes();
   for (auto gtv : ghost_track_views_) {
     for (auto ghost_clip : gtv->ghost_clip_views()) {
       int start_time = ghost_clip->start_time();
@@ -65,7 +132,7 @@ void GhostSequenceView::doUpdate() {
     track_view->move(0, i * 30);
   }
   
-  QWidget::update();
+  update();
 }
 
 void GhostSequenceView::scheduleUpdate() {
@@ -122,6 +189,10 @@ void GhostSequenceView::removeTrackListener(QSharedPointer<Track> track) {
   auto connections = track_connections_.find(track);
   for (auto& connection : connections->second) connection.disconnect();
   track_connections_.erase(connections);
+}
+
+int GhostSequenceView::getClosestDeltaTime(int time) const {
+  return -1;
 }
 
 void GhostSequenceView::addMagnetTime(int time) {

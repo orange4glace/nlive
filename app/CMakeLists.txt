@@ -7,6 +7,7 @@ set(NLIVE_RESOURCES
   ${NLIVE_RESOURCES}
   browser/widgets/timeline/images/images.qrc
   browser/widgets/effect_control/images/images.qrc
+  browser/widgets/project/images/images.qrc
 )
 
 add_subdirectory(ext)

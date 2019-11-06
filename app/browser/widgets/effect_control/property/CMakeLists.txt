@@ -7,5 +7,7 @@ set(NLIVE_SOURCES
   browser/widgets/effect_control/property/number_input_box.cpp
   browser/widgets/effect_control/property/vector2_property_view.h
   browser/widgets/effect_control/property/vector2_property_view.cpp
+  browser/widgets/effect_control/property/scalar_property_view.h
+  browser/widgets/effect_control/property/scalar_property_view.cpp
   PARENT_SCOPE
 )

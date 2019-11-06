@@ -96,6 +96,8 @@ void SequenceScrollView::doUpdate() {
   int end_time = qCeil(sequence_->duration() * scrollbar_.end());
   start_time = max(min_start_time_, start_time);
   end_time = min(max_end_time_, end_time);
+  // To prevent infinite-loop. Also start_time == end_time should not be happened.
+  if (start_time == end_time) return;
   // Initial value
   unit_frame_time_ = 30;
   unit_width_ = width() / ((end_time - start_time) / unit_frame_time_);

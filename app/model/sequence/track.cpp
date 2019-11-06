@@ -155,6 +155,7 @@ void Track::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer,
   auto clip = getClipAt(time);
   if (clip == nullptr) return;
   int64_t clip_timecode = getClipBTimecodeOffset(time, clip);
+  qDebug() << "Track::render " << time << clip->b_time() << clip->start_time() << clip_timecode;
   clip->render(command_buffer, clip_timecode);
 }
 

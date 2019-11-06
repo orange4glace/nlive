@@ -37,6 +37,9 @@ public:
     SequenceScrollView* sequence_scroll_view,
     QSharedPointer<IThemeService> theme_service);
 
+  inline NumberInputBox* x_input_box() { return x_input_box_; }
+  inline NumberInputBox* y_input_box() { return y_input_box_; }
+
 };
 
 }

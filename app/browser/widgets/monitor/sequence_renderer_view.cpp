@@ -15,7 +15,6 @@ SequenceRendererView::SequenceRendererView(QWidget* widget, QSharedPointer<Seque
 
 SequenceRendererView::~SequenceRendererView() {
   // TODO
-  qDebug() << "#########################\n";
   sequence_renderer_ = nullptr;
   QOpenGLWidget::~QOpenGLWidget();
 }

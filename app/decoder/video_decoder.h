@@ -49,6 +49,7 @@ private:
 
 public:
   VideoDecoder(std::string path);
+  ~VideoDecoder();
 
   void open();
   void close();

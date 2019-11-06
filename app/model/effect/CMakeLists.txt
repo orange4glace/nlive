@@ -8,5 +8,7 @@ set(NLIVE_SOURCES
   # model/effect/effect.cpp
   model/effect/transform_effect.h
   model/effect/transform_effect.cpp
+  model/effect/gray_scale_effect.h
+  model/effect/gray_scale_effect.cpp
   PARENT_SCOPE
 )

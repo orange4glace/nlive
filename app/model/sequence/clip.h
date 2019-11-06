@@ -82,6 +82,38 @@ signals:
 
 QDebug operator<<(QDebug dbg, const Clip &type);
 
+
+
+struct ClipStartCompare {
+  using is_transparent = void;
+  inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const
+  { int lhs = a->start_time(); int rhs = b->start_time();
+    if (lhs == rhs) return a.get() < b.get();
+    return lhs < rhs; }
+  inline bool operator() (const QSharedPointer<Clip>& a, const Clip* b) const
+  { int lhs = a->start_time(); int rhs = b->start_time();
+    if (lhs == rhs) return a.get() < b;
+    return lhs < rhs; }
+  inline bool operator() (const Clip* a, const QSharedPointer<Clip>& b) const
+  { int lhs = a->start_time(); int rhs = b->start_time();
+    if (lhs == rhs) return a < b.get();
+    return lhs < rhs; }
+};
+struct ClipEndCompare {
+  using is_transparent = void;
+  inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const
+  { int lhs = a->end_time(); int rhs = b->end_time();
+    if (lhs == rhs) return a.get() < b.get();
+    return lhs < rhs; }
+  inline bool operator() (const QSharedPointer<Clip>& a, const Clip* b) const
+  { int lhs = a->end_time(); int rhs = b->end_time();
+    if (lhs == rhs) return a.get() < b;
+    return lhs < rhs; }
+  inline bool operator() (const Clip* a, const QSharedPointer<Clip>& b) const
+  { int lhs = a->end_time(); int rhs = b->end_time();
+    if (lhs == rhs) return a < b.get();
+    return lhs < rhs; }
+};
 struct ClipCompare {
   using is_transparent = void;
   inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const

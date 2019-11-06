@@ -16,7 +16,7 @@ private:
 
 public:
   inline SolidShaderProgram(QOpenGLContext* gl) :
-    ShaderProgram(gl) {
+    ShaderProgram(gl, "SolidShader") {
     compile(
         "#version 300 es\n"
         "in vec2 a_position;\n"
@@ -37,8 +37,8 @@ public:
     gf->glGenBuffers(1, &position_buffer_);
   }
 
-  GLuint position() const { return position_; }
-  GLuint position_buffer() const { return position_buffer_; }
+  inline GLuint position() const { return position_; }
+  inline GLuint position_buffer() const { return position_buffer_; }
 
 };
 

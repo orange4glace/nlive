@@ -9,7 +9,9 @@
 #include "browser/widgets/timeline/sequenceview.h"
 #include "browser/widgets/effect_control/sequence_view.h"
 #include "browser/widgets/effect_control/effect_view_factory.h"
+
 #include "browser/widgets/effect_control/transform/transform_effect_view.h"
+#include "browser/widgets/effect_control/effects/gray_scale_effect_view.h"
 
 namespace nlive {
 
@@ -20,6 +22,9 @@ void EffectControlWidget::Initialize() {
   EffectViewFactoryRegistry::registerFactory(
     effect::TransformEffect::TYPE,
     new TransformEffectViewFactory());
+  EffectViewFactoryRegistry::registerFactory(
+    effect::GrayScaleEffect::TYPE,
+    new GrayScaleEffectViewFactory());
 }
 
 EffectControlWidget::EffectControlWidget(

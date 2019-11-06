@@ -32,6 +32,7 @@ void NumberInputBox::EditView::focusOutEvent(QFocusEvent *e) {
 
 NumberInputBox::SlideView::SlideView(NumberInputBox* parent, double value) :
   QWidget(parent), number_input_box_(parent), value_(value) {
+  sliding_step_ = 1;
   text_color_ = Qt::black;
 }
 
@@ -48,7 +49,7 @@ void NumberInputBox::SlideView::mousePressEvent(QMouseEvent* event) {
 
 void NumberInputBox::SlideView::mouseMoveEvent(QMouseEvent* event) {
   QPoint dp = event->pos() - last_mouse_pos_;
-  number_input_box_->setValue(number_input_box_->value() + dp.x());
+  number_input_box_->setValue(number_input_box_->value() + dp.x() * sliding_step_);
   last_mouse_pos_ = event->pos();
   press_and_moved_ = true;
 }

@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include <QSharedPointer>
 #include "base/layout/flex_layout.h"
+#include "base/layout/fillparentbox.h"
 #include "base/ui/text_box.h"
 #include "platform/theme/themeservice.h"
 
@@ -24,6 +25,7 @@ private:
 
   QSharedPointer<StorageDirectory> directory_;
 
+  FillParentBox* container_;
   FlexLayout* outer_view_;
   TextBox* directory_path_view_;
   DirectoryView* directory_view_;

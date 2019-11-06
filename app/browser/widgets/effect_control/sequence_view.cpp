@@ -27,17 +27,17 @@ SequenceView::SequenceView(
   sequence_scroll_view_->show();
 
   auto& theme = theme_service_->getTheme();
-  form_background_ = new SolidBox(this, theme.surfaceDarkColor());
-  timeline_background_ = new SolidBox(this, theme.surfaceColor());
-  form_background_->lower();
-  timeline_background_->lower();
-  theme_service_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
-    [this]() {
-      auto& theme = theme_service_->getTheme();
-      form_background_->setColor(theme.surfaceDarkColor());
-      timeline_background_->setColor(theme.surfaceColor());
-    }
-  )));
+  // form_background_ = new SolidBox(this, theme.surfaceDarkColor());
+  // timeline_background_ = new SolidBox(this, theme.surfaceColor());
+  // form_background_->lower();
+  // timeline_background_->lower();
+  // theme_service_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
+  //   [this]() {
+  //     auto& theme = theme_service_->getTheme();
+  //     form_background_->setColor(theme.surfaceDarkColor());
+  //     timeline_background_->setColor(theme.surfaceColor());
+  //   }
+  // )));
 
   this->handleDidChangeFocusedClips();
   timeline_widget_sequence_view_->timeline_view()->onDidChangeFocusedClips.connect(
@@ -63,6 +63,7 @@ void SequenceView::createClipView(QSharedPointer<Clip> clip) {
     theme_service_, memento_service_);
   clip_view_->setGeometry(0, 30, width(), clip_view_->sizeHint().height());
   clip_view_->show();
+  clip_view_->raise();
 }
 
 void SequenceView::clearClipView() {
@@ -72,6 +73,10 @@ void SequenceView::clearClipView() {
 
 void SequenceView::paintEvent(QPaintEvent* event) {
   QPainter p(this);
+  auto& theme = theme_service_->getTheme();
+  p.setPen(theme.surfaceBrightColor());
+  p.drawLine(layout_params_->form_width() - 1, 0,
+    layout_params_->form_width() - 1, height());
 }
 
 void SequenceView::resizeEvent(QResizeEvent* event) {
@@ -86,8 +91,8 @@ void SequenceView::resizeEvent(QResizeEvent* event) {
     int form_value_width = form_width * 0.5;
     layout_params_->setWidth(width());
     layout_params_->setFormValueWidth(form_value_width);
-    form_background_->setGeometry(0, 0, form_width, height());
-    timeline_background_->setGeometry(form_width, 0, width() - form_width, height());
+    // form_background_->setGeometry(0, 0, form_width, height());
+    // timeline_background_->setGeometry(form_width, 0, width() - form_width, height());
   }
 }
 

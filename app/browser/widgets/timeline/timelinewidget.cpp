@@ -32,8 +32,8 @@ TimelineWidget::TimelineWidget(
 }
 
 void TimelineWidget::resizeEvent(QResizeEvent* event) {
-  // TODO : implementn SplitView
-  split_left_view_->move(0, 0);
+  // TODO : implement SplitView
+  split_left_view_->move(0, 30);
   split_left_view_->resize(200, height());
   split_right_view_->move(200, 0);
   split_right_view_->resize(width() - 200, height());
@@ -56,7 +56,6 @@ void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
     onDidChangeSequence(sequence);
     return;
   }
-  qDebug() << "emiti seq chan " << sequence << "\n";
   sequence_view_ = new SequenceView(sequence, theme_service_);
   split_left_view_->setContent(sequence_view_->side_view());
   split_right_view_->setContent(sequence_view_->timeline_view()->scroll_view());

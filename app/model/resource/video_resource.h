@@ -30,6 +30,7 @@ public:
   const Rational& time_base() const;
   const Rational& frame_rate() const;
   int64_t duration() const;
+  int64_t duration_in_seconds() const;
   int width() const;
   int height() const;
 

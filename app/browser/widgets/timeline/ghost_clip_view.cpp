@@ -21,6 +21,8 @@ GhostClipView::GhostClipView(SequenceScrollView* scroll_view, int start_time, in
 void GhostClipView::updateView() {
   int left = scroll_view_->getPositionRelativeToView(extended_start_time_);
   int right = scroll_view_->getPositionRelativeToView(extended_end_time_);
+  // TODO : FIXME
+  // This fires ClipView to be repainted. but WHY?
   move(left, 0);
   resize(right - left, height());
 }
@@ -37,8 +39,6 @@ void GhostClipView::paintEvent(QPaintEvent* event) {
 void GhostClipView::setExtendedTime(int start_time, int end_time) {
   extended_start_time_ = start_time;
   extended_end_time_ = end_time;
-  qDebug() << extended_start_time_ << " " << extended_end_time_ << "\n";
-  for (int i = 0; i < 1000; i ++)
   updateView();
 }
 

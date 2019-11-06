@@ -20,7 +20,7 @@ QWidget* FillParentBox::setContent(QWidget* widget) {
 }
 
 void FillParentBox::contentRectUpdated() {
-  if (content_) content_->resize(width(), height());
+  if (content_) content_->setGeometry(rect());
 }
 
 }

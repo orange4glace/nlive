@@ -7,12 +7,11 @@
 #include <QMetaObject>
 #include <QTimer>
 #include "base/common/sig.h"
+#include "model/sequence/sequence.h"
 #include "model/sequence/track.h"
+#include "browser/widgets/timeline/scrollview/sequencescrollview.h"
 
 namespace nlive {
-
-class Sequence;
-class SequenceScrollView;
 
 namespace timelinewidget {
 
@@ -22,6 +21,13 @@ class GhostClipView;
 class GhostSequenceView : public QWidget, public Sig {
   Q_OBJECT
 
+public:
+  enum ManipulationState {
+    Translate = 0,
+    ResizeLeft,
+    ResizeRight
+  };
+
 private:
   QSharedPointer<Sequence> sequence_;
   std::vector<GhostTrackView*> ghost_track_views_;
@@ -30,6 +36,8 @@ private:
 
   std::map<int, int> magnet_times_;
   std::map<QSharedPointer<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
+
+  ManipulationState manipulation_state_;
 
   bool magnet_start_;
   bool magnet_end_;
@@ -59,6 +67,7 @@ private:
   bool on_schedule_;
 
   void scheduleUpdate();
+  void doCalculateMagnetTimes();
   void doUpdate();
 
   void addGhostTrackView();
@@ -80,6 +89,8 @@ public:
   void reset();
 
   GhostTrackView* getGhostTrackView(int index);
+
+  inline ManipulationState manipulation_state() const { return manipulation_state_; }
 
   bool magnet_start() const;
   bool magnet_end() const;
@@ -104,6 +115,11 @@ public:
   int start_magnet_time() const;
   int end_magnet_time() const;
   int translation_magnet_time() const;
+
+  inline void setManipulationState(ManipulationState value) {
+    manipulation_state_ = value;
+    scheduleUpdate();
+  }
 
   void setMagnetStart(bool value);
   void setMagnetEnd(bool value);

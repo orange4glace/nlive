@@ -45,7 +45,6 @@ void SequenceSideView::removeTrackView(QSharedPointer<Track> track, int index) {
 void SequenceSideView::resizeEvent(QResizeEvent* event) {
   // Space for ruler
   // TODO : remove hard coding
-  move(0, 30);
   for (int i = 0; i < track_views_.size(); i ++) {
     auto& track_view = track_views_[i];
     track_view->resize(width(), 29);

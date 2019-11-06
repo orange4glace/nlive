@@ -32,7 +32,8 @@ void Clip::setTime(int64_t start_time, int64_t end_time, int64_t b_time) {
   start_time_ = start_time;
   end_time_ = end_time;
   b_time_ = b_time;
-  emit onDidChangeTime(old_start_time, old_end_time, old_b_time);
+  onDidChangeTime(old_start_time, old_end_time, old_b_time);
+  onDidUpdate();
 }
 
 void Clip::addEffect(QSharedPointer<effect::Effect> effect) {

@@ -31,7 +31,9 @@ private:
 
   std::set<ClipView*> clip_views_;
   std::set<ClipView*> focused_clip_views_;
-  std::map<QSharedPointer<Clip>, ClipView*, ClipCompare> clip_to_view_map_;
+  std::map<QSharedPointer<Clip>, ClipView*, ClipStartCompare> clip_to_view_map_;
+
+  void doLayout();
 
 private slots:
   void handleDidAddClip(QSharedPointer<Clip> track);
@@ -39,9 +41,7 @@ private slots:
 
 
 protected:
-  void mouseMoveEvent(QMouseEvent* event) override;
-
-  void paintEvent(QPaintEvent* event) override;
+  bool event(QEvent* event) override;
 
 public:
   TrackTimelineView(
@@ -50,7 +50,9 @@ public:
     SequenceScrollView* const scrollView,
     QSharedPointer<IThemeService> const themeService);
 
-  ClipView* const getClipView(const Clip* const clip);
+  void updateClipViews();
+
+  ClipView* const getClipView(QSharedPointer<Clip> clip);
   void blurAllClips();
 
   const std::set<ClipView*>& clip_views();

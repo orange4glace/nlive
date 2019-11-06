@@ -2,6 +2,7 @@
 #define _NLIVE_TIMELINE_WIDGET_SEQUENCE_TIMELINE_VIEW_H_
 
 #include <QWidget>
+#include <QCursor>
 #include <QSharedPointer>
 #include <set>
 #include <vector>
@@ -25,8 +26,8 @@ namespace {
 
 enum ManipulateState {
   IDLE,
-  RESIZE_START,
-  RESIZE_END,
+  RESIZE_LEFT,
+  RESIZE_RIGHT,
   CLIP_BAR_PRESSED,
   CLIP_TRANSLATE,
   DRAG_AND_DROP,
@@ -66,7 +67,7 @@ private:
   void handleClipResizeLeft(QMouseEvent* event);
   void endClipResizeLeft(QMouseEvent* event);
 
-  void startClipResizeRight(QMouseEvent* event);
+  void startClipResizeRight(ClipView* clip_view, QMouseEvent* event);
   void handleClipResizeRight(QMouseEvent* event);
   void endClipResizeRight(QMouseEvent* event);
 
@@ -77,6 +78,7 @@ private:
   void handleDrag(QDragMoveEvent* event);
   void handleDrop(QDropEvent* event);
 
+  void updateClipViews();
   void updateGhostSequenceView();
 
 /*#endregion*/
@@ -108,6 +110,8 @@ public:
 
   int getTrackIndexAtPoint(QPoint& point) const;
   int getTrackIndexAtPoint(QPoint&& point) const;
+  TrackTimelineView* getTrackViewAt(int index);
+  
   SequenceScrollView* scroll_view();
 
   const std::set<ClipView*>& focused_clip_views();

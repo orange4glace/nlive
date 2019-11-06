@@ -16,13 +16,15 @@ protected:
   ResourceIdentifier id_;
   std::string type_;
   std::string path_;
+  QString name_;
 
 protected:
-  Resource(std::string type, std::string path);
+  Resource(std::string type, std::string path, QString name);
 
 public:
   std::string const& type() const;
   std::string const& path() const;
+  QString const& name() const;
 
 };
 

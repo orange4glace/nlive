@@ -52,7 +52,6 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent* event) {
-    qDebug() << width() << " " << height() << "\n";
     resize(width(), height());
     q->setGeometry(rect());
   }
@@ -92,12 +91,6 @@ MainWindow::MainWindow() {
   sequence->addTrack();
   auto track1 = sequence->addTrack();
   auto track2 = sequence->addTrack();
-  auto clip1 = QSharedPointer<Clip>(new nlive::Clip(track1->undo_stack(), sequence->time_base(), 30, 150, 0));
-  track1->addClip(clip1);
-  track2->addClip(QSharedPointer<Clip>(new nlive::Clip(track2->undo_stack(), sequence->time_base(), 120, 260, 0)));
-
-  QSharedPointer<effect::TransformEffect> transform_effect = QSharedPointer<effect::TransformEffect>(new effect::TransformEffect());
-  clip1->addEffect(transform_effect);
 
   project_widget::ProjectWidget::Initialize();
   auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service);

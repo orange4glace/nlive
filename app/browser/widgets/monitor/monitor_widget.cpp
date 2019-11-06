@@ -57,7 +57,6 @@ void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
 
 void MonitorWidget::paintEvent(QPaintEvent* event) {
   QPainter p(this);
-  p.fillRect(rect(), Qt::darkYellow);
 }
 
 void MonitorWidget::resizeEvent(QResizeEvent* event) {

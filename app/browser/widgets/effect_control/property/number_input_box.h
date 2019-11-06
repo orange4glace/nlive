@@ -40,6 +40,8 @@ private:
 
     QColor text_color_;
 
+    double sliding_step_;
+
   protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
@@ -49,6 +51,10 @@ private:
   public:
     SlideView(NumberInputBox* parent, double value);
     void setValue(double value);
+
+    inline void setSlidingStep(double value) {
+      sliding_step_ = value;
+    }
 
     inline void setTextColor(QColor color) {
       text_color_ = color;
@@ -78,6 +84,10 @@ public:
 
   inline void setTextColor(QColor color) {
     slide_view_->setTextColor(color);
+  }
+
+  inline void setSlidingStep(double value) {
+    slide_view_->setSlidingStep(value);
   }
 
   void switchToSlideView();

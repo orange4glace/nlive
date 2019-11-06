@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/widget/project">
+    <file>folder.svg</file>
+  </qresource>
+</RCC>

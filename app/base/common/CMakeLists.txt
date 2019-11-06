@@ -4,6 +4,7 @@ set(NLIVE_SOURCES
   base/common/memory.h
   base/common/uuid.h
   base/common/uuid.cpp
+  base/common/datetime.h
   base/common/progressable.h
   PARENT_SCOPE
 )

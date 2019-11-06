@@ -23,6 +23,13 @@ VideoDecoder::VideoDecoder(std::string path) :
   initialize();
 }
 
+
+VideoDecoder::~VideoDecoder() {
+  if (fmt_ctx_) avformat_close_input(&fmt_ctx_);
+  if (dec_ctx_) avcodec_free_context(&dec_ctx_);
+  if (opts_) av_dict_free(&opts_);
+}
+
 void VideoDecoder::initialize() {
   qDebug() << "[VideoDecoder] initialize " << QString::fromStdString(path_) << "\n";
   initialized_ = false;

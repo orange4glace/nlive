@@ -17,7 +17,7 @@ ThemeService::ThemeService() :
     QColor("#ff5040"),
     QColor("#212624"),
     QColor("#1a1a1a"),
-    QColor("#616161"),
+    QColor("#424242"),
     QColor("#BDBDBD"),
     QColor("#BDBDBD")) {
 

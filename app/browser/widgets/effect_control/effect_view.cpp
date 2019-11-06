@@ -31,10 +31,10 @@ EffectViewHeader::EffectViewHeader(
   label_view->setColor(theme.surfaceTextColor())->setPadding(Div::LEFT, 10);
   this->addChild(button_container);
   this->addChild(label_view);
-  connect(arrow_button_, &QPushButton::clicked,
-    [this]() {
+  arrow_button_->clicked.connect(SIG2_TRACK(sig2_t<void (bool)>::slot_type(
+    [this](bool checked) {
       onArrowButtonClicked(opened_);
-    });
+    })));
 }
 
 void EffectViewHeader::setOpened(bool value) {
@@ -47,7 +47,7 @@ void EffectViewHeader::paintEvent(QPaintEvent* e) {
   auto& theme = theme_service_->getTheme();
   QPainter p(this);
   int form_width = width() - layout_->timeline_width();
-  p.setPen(theme.surfaceColor());
+  p.setPen(theme.surfaceBrightColor());
   p.drawLine(0, height() - 1, form_width, height() - 1);
 }
 
@@ -110,6 +110,7 @@ void EffectView::doLayout() {
 
 void EffectView::doPaint() {
   QPainter p(this);
+  // p.fillRect(rect(), Qt::green);
 }
 
 bool EffectView::event(QEvent* event) {

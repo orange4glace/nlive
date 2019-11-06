@@ -19,7 +19,7 @@ private:
 
 public:
   inline MirrorShaderProgram(QOpenGLContext* gl) :
-    ShaderProgram(gl) {
+    ShaderProgram(gl, "MirrorShader") {
     compile(
         "#version 300 es\n"
         "in vec2 a_position;\n"
@@ -51,11 +51,11 @@ public:
     gf->glGenBuffers(1, &texCoord_buffer_);
   }
 
-  GLuint position() const { return position_; }
-  GLuint texCoord() const { return texCoord_; }
-  GLuint image() const { return image_; }
-  GLuint position_buffer() const { return position_buffer_; }
-  GLuint texCoord_buffer() const { return texCoord_buffer_; }
+  inline GLuint position() const { return position_; }
+  inline GLuint texCoord() const { return texCoord_; }
+  inline GLuint image() const { return image_; }
+  inline GLuint position_buffer() const { return position_buffer_; }
+  inline GLuint texCoord_buffer() const { return texCoord_buffer_; }
 
 };
 

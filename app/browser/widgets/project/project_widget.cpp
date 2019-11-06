@@ -3,6 +3,7 @@
 #include "base/layout/flex_layout.h"
 #include "base/layout/fillparentbox.h"
 #include "base/ui/solid_box.h"
+#include "base/ui/svg_button.h"
 #include "platform/theme/themeservice.h"
 #include "model/storage/storage_directory.h"
 #include "browser/widgets/project/directory_view.h"
@@ -33,11 +34,14 @@ ProjectWidget::ProjectWidget(QWidget* parent,
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());
 
-  outer_view_ = new FlexLayout(this, FlexLayout::Direction::Row);
+  outer_view_ = new FlexLayout(nullptr, FlexLayout::Direction::Row);
+  container_ = new FillParentBox(this, outer_view_);
+  container_->setPadding(Div::ALL, 15);
 
   FlexLayout* header = new FlexLayout(this);
-  SolidBox* btn1 = new SolidBox(header);
-  btn1->setFlexBasis(30)->setFlexGrow(0)->setFlexShrink(0);
+  header->setPadding(Div::TOP, 5)->setPadding(Div::BOTTOM, 5);
+  SvgButton* btn1 = new SvgButton(header, ":/widget/project/folder.svg");
+  btn1->setFlexBasis(20)->setFlexGrow(0)->setFlexShrink(0);
   directory_path_view_ = new TextBox(header, "");
   directory_path_view_->setFlag(directory_path_view_->flag() | Qt::AlignVCenter)->setPadding(Div::LEFT, 10);
   directory_path_view_->setColor(theme_service_->getTheme().surfaceTextColor());
@@ -65,7 +69,7 @@ void ProjectWidget::setDirectory(QSharedPointer<StorageDirectory> directory) {
 }
 
 void ProjectWidget::resizeEvent(QResizeEvent* event) {
-  outer_view_->setGeometry(rect());
+  container_->setGeometry(rect());
   // if (directory_view_ != nullptr)
   //   directory_view_->setGeometry(rect());
 }

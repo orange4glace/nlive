@@ -1,7 +1,8 @@
 #include "model/resource/audio_resource.h"
 
 #include <QSharedPointer>
-
+#include <QString>
+#include <boost/filesystem.hpp>
 #include "platform/logger/logger.h"
 #include "platform/task/task_service.h"
 #include "platform/task/task.h"
@@ -25,7 +26,8 @@ public:
 };
 
 AudioResource::AudioResource(std::string path) :
-  Resource(AudioResource::TYPE, path) {
+  Resource(AudioResource::TYPE, path,
+    QString::fromStdString(boost::filesystem::path(path).filename().string())) {
 
 }
 

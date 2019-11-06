@@ -106,7 +106,7 @@ void Sequence::doSetDuration(int64_t value) {
 }
 
 QSharedPointer<Track> Sequence::getTrackAt(int index) {
-  if (index < 0 || index >= tracks_.size()) return nullptr;
+  Q_ASSERT (0 <= index && index < tracks_.size());
   return tracks_[index];
 }
 

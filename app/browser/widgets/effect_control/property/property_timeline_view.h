@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <map>
+#include "base/layout/div.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/effect_control/property/keyframe_view.h"
 #include "model/sequence/sequence.h"
@@ -16,7 +17,7 @@ namespace nlive {
 namespace effect_control {
 
 template <class T>
-class PropertyTimelineView : public QWidget, public Sig {
+class PropertyTimelineView : public Div {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -25,11 +26,20 @@ private:
   QSharedPointer<Clip> clip_;
   QSharedPointer<effect::Property<T>> property_;
   SequenceScrollView* sequence_scroll_view_;
-  std::map<QSharedPointer<effect::Keyframe<T>>, KeyframeView<T>> keyframe_view_map_;
+  std::map<QSharedPointer<effect::Keyframe<T>>, KeyframeView<T>*> keyframe_view_map_;
 
   void doCreateKeyframeView(QSharedPointer<effect::Keyframe<T>> keyframe) {
     KeyframeView<T>* kf_view = new KeyframeView<T>(this, keyframe, theme_service_);
+    Q_ASSERT(keyframe_view_map_.count(keyframe) == 0);
+    keyframe_view_map_[keyframe] = kf_view;
     updateKeyframeViewPosition(kf_view);
+  }
+
+  void updateAll() {
+    for (auto const& kfp : keyframe_view_map_) {
+      auto kfv = kfp.second;
+      updateKeyframeViewPosition(kfv);
+    }
   }
 
   void updateKeyframeViewPosition(KeyframeView<T>* keyframe_view) {
@@ -47,8 +57,6 @@ private:
     }
   }
 
-protected:
-
 public:
   PropertyTimelineView(
     QWidget* parent,
@@ -58,7 +66,7 @@ public:
     QSharedPointer<effect::Property<T>> property,
     SequenceScrollView* sequence_scroll_view,  
     QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
+  Div(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
   property_(property), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   
   property->onDidUpdate.connect(
@@ -73,6 +81,16 @@ public:
   property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<effect::Keyframe<T>>)>::slot_type(
     [this](QSharedPointer<effect::Keyframe<T>> keyframe) {
     doCreateKeyframeView(keyframe);
+  })));
+  clip->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
+    [this]() {
+      updateAll();
+  })));
+
+  setBorder(Div::BOTTOM, 1, theme_service->getTheme().surfaceBrightColor());
+  theme_service->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+    [this]() {
+      setBorder(Div::BOTTOM, 1, theme_service_->getTheme().surfaceBrightColor());
   })));
 }  
 

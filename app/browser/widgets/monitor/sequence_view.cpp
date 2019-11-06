@@ -35,7 +35,7 @@ void SequenceView::resizeEvent(QResizeEvent* e) {
 
 void SequenceView::paintEvent(QPaintEvent* e) {
   QPainter p(this);
-  p.fillRect(rect(), Qt::darkCyan);
+  // p.fillRect(rect(), Qt::darkCyan);
 }
 
 }

@@ -45,7 +45,6 @@ int GridLayout::doRemoveWidget(QWidget* widget) {
 
 void GridLayout::doLayout() {
   const QRect& crect = content_rect();
-  qDebug() << crect.width() << crect.height();
   int max_width = 200;
   int column_size = qCeil(crect.width() / (qreal)max_width);
   int row_size = items_.size() / column_size + (items_.size() % column_size != 0);

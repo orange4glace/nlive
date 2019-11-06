@@ -6,6 +6,7 @@
 #include <QDebug>
 #include "base/common/sig.h"
 #include "base/common/uuid.h"
+#include "renderer/video_renderer/command_buffer.h"
 
 namespace nlive {
 
@@ -22,6 +23,8 @@ public:
     id_ = UUID::instance()->generateUUID();
     qDebug() << QString::fromStdString(id_);
   }
+
+  inline virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) {}
 
   const std::string& id() const { return id_; }
   const std::string& type() const { return type_; }

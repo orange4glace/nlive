@@ -13,6 +13,7 @@ Nlive is succeed to [Olive](https://github.com/orange4glace/olive), which is als
 * Qt5
   * Nlive is based on Qt5
 * Boost
+  * with `Boost_USE_STATIC_LIBS=ON`
 * OpenGL
   * Nlive uses OpenGL for rendering
 * FFmpeg >= 3.4
@@ -34,7 +35,9 @@ As for me, on Windows 10 with MSVC 2017,
 
 `%CMAKE_PREFIX_PATH% = Q:\Qt\5.13.0\msvc2017_64\lib\cmake\Qt5;D:\cpplib\ffmpeg-3.4\lib;D:\cpplib\ffmpeg-3.4\include;D:\cpplib\spdlog\include;`
 
-`%BOOST% = D:\cpplib\boost_1_70_0%;`
+`%BOOST_ROOT% = D:\cpplib\boost_1_70_0;`
+`%BOOST_INCLUDEDIR% = D:\cpplib\boost_1_70_0\boost;`
+`%BOOST_LIBRARYDIR% = D:\cpplib\boost_1_70_0\lib64-msvc-14.1;`
 
 3. Get sources from git
 
