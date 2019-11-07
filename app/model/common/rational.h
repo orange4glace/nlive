@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RATIONAL_H_
-#define _NLIVE_RATIONAL_H_
+#ifndef NLIVE_RATIONAL_H_
+#define NLIVE_RATIONAL_H_
 
 #include <stdint.h>
 extern "C" {

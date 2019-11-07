@@ -1,5 +1,5 @@
-#ifndef _NLIVE_PROJECTS_SERVICE_H_
-#define _NLIVE_PROJECTS_SERVICE_H_
+#ifndef NLIVE_PROJECTS_SERVICE_H_
+#define NLIVE_PROJECTS_SERVICE_H_
 
 #include <QObject>
 

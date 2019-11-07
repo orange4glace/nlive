@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RESOURCE_H_
-#define _NLIVE_RESOURCE_H_
+#ifndef NLIVE_RESOURCE_H_
+#define NLIVE_RESOURCE_H_
 
 #include <QObject>
 #include <QString>

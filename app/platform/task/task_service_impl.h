@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TASK_SERVICE_IMPL_H_
-#define _NLIVE_TASK_SERVICE_IMPL_H_
+#ifndef NLIVE_TASK_SERVICE_IMPL_H_
+#define NLIVE_TASK_SERVICE_IMPL_H_
 
 #include "platform/task/task_service.h"
 #include <QThread>

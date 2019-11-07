@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TRACK_H_
-#define _NLIVE_TRACK_H_
+#ifndef NLIVE_TRACK_H_
+#define NLIVE_TRACK_H_
 
 #include <set>
 #include <QObject>

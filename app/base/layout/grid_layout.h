@@ -1,5 +1,5 @@
-#ifndef _NLIVE_GRID_LAYOUT_H_
-#define _NLIVE_GRID_LAYOUT_H_
+#ifndef NLIVE_GRID_LAYOUT_H_
+#define NLIVE_GRID_LAYOUT_H_
 
 #include <vector>
 #include "base/layout/div.h"

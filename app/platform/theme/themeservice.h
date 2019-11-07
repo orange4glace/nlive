@@ -1,5 +1,5 @@
-#ifndef _NLIVE_ITHEME_SERVICE_H_
-#define _NLIVE_ITHEME_SERVICE_H_
+#ifndef NLIVE_ITHEME_SERVICE_H_
+#define NLIVE_ITHEME_SERVICE_H_
 
 #include <QObject>
 #include "base/common/sig.h"

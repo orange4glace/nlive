@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TASK_H_
-#define _NLIVE_TASK_H_
+#ifndef NLIVE_TASK_H_
+#define NLIVE_TASK_H_
 
 #include <functional>
 

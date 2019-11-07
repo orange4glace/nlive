@@ -1,5 +1,5 @@
-#ifndef _NLIVE_SEQUENCE_H_
-#define _NLIVE_SEQUENCE_H_
+#ifndef NLIVE_SEQUENCE_H_
+#define NLIVE_SEQUENCE_H_
 
 #include <QObject>
 #include <QMetaObject>

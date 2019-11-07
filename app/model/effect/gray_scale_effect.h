@@ -1,5 +1,5 @@
-#ifndef _NLIVE_GRAY_SCALEEFFECT_H_
-#define _NLIVE_GRAY_SCALEEFFECT_H_
+#ifndef NLIVE_GRAY_SCALEEFFECT_H_
+#define NLIVE_GRAY_SCALEEFFECT_H_
 
 #include <QSharedPointer>
 

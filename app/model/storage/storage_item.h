@@ -1,5 +1,5 @@
-#ifndef _NLIVE_STORAGE_ITEM_H_
-#define _NLIVE_STORAGE_ITEM_H_
+#ifndef NLIVE_STORAGE_ITEM_H_
+#define NLIVE_STORAGE_ITEM_H_
 
 #include <QObject>
 #include <QSharedPointer>

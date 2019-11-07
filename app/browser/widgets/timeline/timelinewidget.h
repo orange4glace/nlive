@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TIMELINE_WIDGET_H_
-#define _NLIVE_TIMELINE_WIDGET_H_
+#ifndef NLIVE_TIMELINE_WIDGET_H_
+#define NLIVE_TIMELINE_WIDGET_H_
 
 #include <QDockWidget>
 #include <QSharedPointer>

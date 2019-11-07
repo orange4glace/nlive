@@ -1,5 +1,5 @@
-#ifndef _NLIVE_STATIC_DRAG_AND_DROP_H_
-#define _NLIVE_STATIC_DRAG_AND_DROP_H_
+#ifndef NLIVE_STATIC_DRAG_AND_DROP_H_
+#define NLIVE_STATIC_DRAG_AND_DROP_H_
 
 #include <QDrag>
 

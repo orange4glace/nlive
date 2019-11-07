@@ -1,5 +1,5 @@
-#ifndef _NLIVE_VIDEO_RENDERER_RENDERER_H_
-#define _NLIVE_VIDEO_RENDERER_RENDERER_H_
+#ifndef NLIVE_VIDEO_RENDERER_RENDERER_H_
+#define NLIVE_VIDEO_RENDERER_RENDERER_H_
 
 #include <vector>
 #include <memory>

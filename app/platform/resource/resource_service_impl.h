@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RESOURCE_SERVICE_IMPL_H_
-#define _NLIVE_RESOURCE_SERVICE_IMPL_H_
+#ifndef NLIVE_RESOURCE_SERVICE_IMPL_H_
+#define NLIVE_RESOURCE_SERVICE_IMPL_H_
 
 #include "platform/resource/resource_service.h"
 

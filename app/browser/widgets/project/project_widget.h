@@ -1,5 +1,5 @@
-#ifndef _NLIVE_PROJECT_WIDGET_H_
-#define _NLIVE_PROJECT_WIDGET_H_
+#ifndef NLIVE_PROJECT_WIDGET_H_
+#define NLIVE_PROJECT_WIDGET_H_
 
 #include <QDockWidget>
 #include <QSharedPointer>

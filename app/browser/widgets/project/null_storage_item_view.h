@@ -1,5 +1,5 @@
-#ifndef _NLIVE_PROJECT_WIDGET_NULL_STORAGE_ITEM_VIEW_H_
-#define _NLIVE_PROJECT_WIDGET_NULL_STORAGE_ITEM_VIEW_H_
+#ifndef NLIVE_PROJECT_WIDGET_NULL_STORAGE_ITEM_VIEW_H_
+#define NLIVE_PROJECT_WIDGET_NULL_STORAGE_ITEM_VIEW_H_
 
 #include "browser/widgets/project/storage_item_view.h"
 #include "browser/widgets/project/storage_item_view_factory.h"

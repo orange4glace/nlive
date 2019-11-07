@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TIMELINE_WIDGET_TRACK_VIEW_H_
-#define _NLIVE_TIMELINE_WIDGET_TRACK_VIEW_H_
+#ifndef NLIVE_TIMELINE_WIDGET_TRACK_VIEW_H_
+#define NLIVE_TIMELINE_WIDGET_TRACK_VIEW_H_
 
 #include "browser/widgets/timeline/tracksideview.h"
 #include "browser/widgets/timeline/tracktimelineview.h"

@@ -1,5 +1,5 @@
-#ifndef _NLIVE_SIMPLE_RENDER_COMMAND_H_
-#define _NLIVE_SIMPLE_RENDER_COMMAND_H_
+#ifndef NLIVE_SIMPLE_RENDER_COMMAND_H_
+#define NLIVE_SIMPLE_RENDER_COMMAND_H_
 
 #include <QSharedPointer>
 #include <QOpenGLFunctions>

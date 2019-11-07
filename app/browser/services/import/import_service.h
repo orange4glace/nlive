@@ -1,5 +1,5 @@
-#ifndef _NLIVE_IMPORT_SERVICE_H_
-#define _NLIVE_IMPORT_SERVICE_H_
+#ifndef NLIVE_IMPORT_SERVICE_H_
+#define NLIVE_IMPORT_SERVICE_H_
 
 #include <QObject>
 #include <QFileInfo>

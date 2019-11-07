@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RENDER_COMMAND_H_
-#define _NLIVE_RENDER_COMMAND_H_
+#ifndef NLIVE_RENDER_COMMAND_H_
+#define NLIVE_RENDER_COMMAND_H_
 
 #include <QOpenGLContext>
 #include "renderer/video_renderer/renderer_context.h"

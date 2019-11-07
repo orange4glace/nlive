@@ -1,5 +1,5 @@
-#ifndef _NLIVE_CLIP_H_
-#define _NLIVE_CLIP_H_
+#ifndef NLIVE_CLIP_H_
+#define NLIVE_CLIP_H_
 
 #include <vector>
 #include <QObject>

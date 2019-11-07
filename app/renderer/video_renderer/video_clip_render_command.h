@@ -1,5 +1,5 @@
-#ifndef _NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
-#define _NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
+#ifndef NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
+#define NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
 
 #include <QSharedPointer>
 #include <QOpenGLFunctions>

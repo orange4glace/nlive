@@ -1,5 +1,5 @@
-#ifndef _NLIVE_MAIN_WINDOW_H_
-#define _NLIVE_MAIN_WINDOW_H_
+#ifndef NLIVE_MAIN_WINDOW_H_
+#define NLIVE_MAIN_WINDOW_H_
 
 #include <QMainWindow>
 #include <QPaintEvent>

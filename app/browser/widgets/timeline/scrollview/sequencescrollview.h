@@ -1,5 +1,5 @@
-#ifndef _NLIVE_SEQUENCE_SCROLL_VIEW_H_
-#define _NLIVE_SEQUENCE_SCROLL_VIEW_H_
+#ifndef NLIVE_SEQUENCE_SCROLL_VIEW_H_
+#define NLIVE_SEQUENCE_SCROLL_VIEW_H_
 
 #include <QWidget>
 #include "base/common/sig.h"

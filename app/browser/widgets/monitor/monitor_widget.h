@@ -1,5 +1,5 @@
-#ifndef _NLIVE_MONITOR_WIDGET_H_
-#define _NLIVE_MONITOR_WIDGET_H_
+#ifndef NLIVE_MONITOR_WIDGET_H_
+#define NLIVE_MONITOR_WIDGET_H_
 
 #include <QDockWidget>
 #include <QSharedPointer>

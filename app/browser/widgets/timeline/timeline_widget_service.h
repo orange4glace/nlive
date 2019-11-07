@@ -1,5 +1,5 @@
-#ifndef _NLIVE_TIMELINE_WIDGET_SERVICE_H_
-#define _NLIVE_TIMELINE_WIDGET_SERVICE_H_
+#ifndef NLIVE_TIMELINE_WIDGET_SERVICE_H_
+#define NLIVE_TIMELINE_WIDGET_SERVICE_H_
 
 #include "base/common/sig.h"
 #include "browser/widgets/timeline/timelinewidget.h"

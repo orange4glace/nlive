@@ -1,5 +1,5 @@
-#ifndef _NLIVE_AUDIO_RESOUCE_H_
-#define _NLIVE_AUDIO_RESOUCE_H_
+#ifndef NLIVE_AUDIO_RESOUCE_H_
+#define NLIVE_AUDIO_RESOUCE_H_
 
 #include <string>
 

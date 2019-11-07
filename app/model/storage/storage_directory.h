@@ -1,5 +1,5 @@
-#ifndef _NLIVE_STORAGE_DIRECTORY_H_
-#define _NLIVE_STORAGE_DIRECTORY_H_
+#ifndef NLIVE_STORAGE_DIRECTORY_H_
+#define NLIVE_STORAGE_DIRECTORY_H_
 
 #include <QSharedPointer>
 #include <vector>

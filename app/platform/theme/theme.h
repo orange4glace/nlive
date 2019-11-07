@@ -1,5 +1,5 @@
-#ifndef _NLIVE_THEME_H_
-#define _NLIVE_THEME_H_
+#ifndef NLIVE_THEME_H_
+#define NLIVE_THEME_H_
 
 #include <string>
 #include <QColor>

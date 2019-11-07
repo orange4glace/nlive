@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RUNNABLE_TASK_H_
-#define _NLIVE_RUNNABLE_TASK_H_
+#ifndef NLIVE_RUNNABLE_TASK_H_
+#define NLIVE_RUNNABLE_TASK_H_
 
 #include <QObject>
 #include <QRunnable>

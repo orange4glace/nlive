@@ -1,5 +1,5 @@
-#ifndef _NLIVE_ITHEME_SERVICE_IMPL_H_
-#define _NLIVE_ITHEME_SERVICE_IMPL_H_
+#ifndef NLIVE_ITHEME_SERVICE_IMPL_H_
+#define NLIVE_ITHEME_SERVICE_IMPL_H_
 
 #include <QSharedPointer>
 #include "platform/theme/themeservice.h"

@@ -1,5 +1,5 @@
-#ifndef _NLIVE_GHOST_TRACK_VIEW_H_
-#define _NLIVE_GHOST_TRACK_VIEW_H_
+#ifndef NLIVE_GHOST_TRACK_VIEW_H_
+#define NLIVE_GHOST_TRACK_VIEW_H_
 
 #include <QWidget>
 #include <set>

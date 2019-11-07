@@ -1,5 +1,5 @@
-#ifndef _NLIVE_EFFECT_H_
-#define _NLIVE_EFFECT_H_
+#ifndef NLIVE_EFFECT_H_
+#define NLIVE_EFFECT_H_
 
 #include <string>
 #include <QSharedPointer>

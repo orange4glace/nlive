@@ -1,5 +1,5 @@
-#ifndef _NLIVE_GHOST_SEQUENCE_VIEW_H_
-#define _NLIVE_GHOST_SEQUENCE_VIEW_H_
+#ifndef NLIVE_GHOST_SEQUENCE_VIEW_H_
+#define NLIVE_GHOST_SEQUENCE_VIEW_H_
 
 #include <map>
 #include <QWidget>

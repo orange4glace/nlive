@@ -1,5 +1,5 @@
-#ifndef _NLIVE_RESOURCE_SERVICE_H_
-#define _NLIVE_RESOURCE_SERVICE_H_
+#ifndef NLIVE_RESOURCE_SERVICE_H_
+#define NLIVE_RESOURCE_SERVICE_H_
 
 #include <QSharedPointer>
 #include <functional>

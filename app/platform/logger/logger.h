@@ -1,5 +1,5 @@
-#ifndef _NLIVE_LOGGER_H_
-#define _NLIVE_LOGGER_H_
+#ifndef NLIVE_LOGGER_H_
+#define NLIVE_LOGGER_H_
 
 #include <spdlog/spdlog.h>
 

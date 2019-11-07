@@ -1,5 +1,5 @@
-#ifndef _NLIVE_MEMENTO_SCOPE_H_
-#define _NLIVE_MEMENTO_SCOPE_H_
+#ifndef NLIVE_MEMENTO_SCOPE_H_
+#define NLIVE_MEMENTO_SCOPE_H_
 
 #include <string>
 #include <cassert>

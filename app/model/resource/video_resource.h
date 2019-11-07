@@ -1,5 +1,5 @@
-#ifndef _NLIVE_VIDEO_RESOUCE_H_
-#define _NLIVE_VIDEO_RESOUCE_H_
+#ifndef NLIVE_VIDEO_RESOUCE_H_
+#define NLIVE_VIDEO_RESOUCE_H_
 
 #include <QSharedPointer>
 #include <string>
