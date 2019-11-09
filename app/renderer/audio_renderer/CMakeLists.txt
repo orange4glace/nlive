@@ -1,0 +1,19 @@
+add_subdirectory(command)
+
+set(NLIVE_SOURCES
+  ${NLIVE_SOURCES}
+  renderer/audio_renderer/render_command.h
+  renderer/audio_renderer/command_buffer.h
+  renderer/audio_renderer/command_buffer.cpp
+  renderer/audio_renderer/ring_buffer.h
+  renderer/audio_renderer/render_state.h
+  renderer/audio_renderer/render_state.cpp
+  renderer/audio_renderer/render_context.h
+  renderer/audio_renderer/render_context.cpp
+  renderer/audio_renderer/render_io.h
+  renderer/audio_renderer/render_io.cpp
+  renderer/audio_renderer/renderer.h
+  renderer/audio_renderer/renderer.cpp
+  renderer/audio_renderer/test_renderer.h
+  PARENT_SCOPE
+)

@@ -23,6 +23,8 @@
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
 
+#include "renderer/audio_renderer/test_renderer.h"
+
 #include <QDebug>
 #include <QPainter>
 #include <QLayout>
@@ -63,6 +65,8 @@ protected:
 MainWindow::MainWindow() {
 
   qDebug() << "Main thread = " << thread() << "\n";
+
+  auto at = new audio_renderer::TestRenderer(this);
 
   registerLoggers();
 
