@@ -2,6 +2,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <cstdlib>
 #include <boost/filesystem.hpp>
 #include "platform/logger/logger.h"
 #include "platform/task/task_service.h"
@@ -25,18 +26,11 @@ public:
   }
 };
 
-AudioResource::AudioResource(std::string path) :
+AudioResource::AudioResource(std::string path, Rational time_base, int sample_rate, int64_t duration) :
   Resource(AudioResource::TYPE, path,
-    QString::fromStdString(boost::filesystem::path(path).filename().string())) {
+    QString::fromStdString(boost::filesystem::path(path).filename().string())),
+  time_base_(time_base), sample_rate_(sample_rate), duration_(duration) {
 
-}
-
-int64_t AudioResource::sample_rate() const {
-  return sample_rate_;
-}
-
-int64_t AudioResource::duration() const {
-  return duration_;
 }
 
 }

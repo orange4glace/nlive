@@ -18,7 +18,7 @@ VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
   Div(parent) {
   QSharedPointer<VideoResourceStorageItem> vrsi = item.staticCast<VideoResourceStorageItem>();
   QSharedPointer<VideoResource> vs = vrsi->video_resource();
-  VideoDecoder dec(item->resource()->path());
+  VideoDecoder dec(item->video_resource()->path());
   auto frame = dec.decode(0, true);
   uint8_t* rgb = new uint8_t[vs->width() * vs->height() * 4];
   frame->scale(rgb, AV_PIX_FMT_RGB32);
@@ -132,12 +132,7 @@ VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, QSha
 
 VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory() {}
 StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) {
-  if (item->type() != VideoResourceStorageItem::TYPE) {
-    spdlog::get(LOGGER_DEFAULT)->warn(
-      "[VideoResourceStorageItemViewFactory] StorageItem type not match! expected = {}, got = {}", VideoResourceStorageItem::TYPE, item->type());
-    return nullptr;
-  }
-  qDebug() << "Factory VideoResourceStorageItemView Ctor";
+  Q_ASSERT(item->type() == VideoResourceStorageItem::TYPE);
   QSharedPointer<VideoResourceStorageItem> vrsi = item.staticCast<VideoResourceStorageItem>();
   return new VideoResourceStorageItemView(parent, vrsi, theme_service);
 }

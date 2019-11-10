@@ -6,6 +6,8 @@ set(NLIVE_SOURCES
   model/storage/storage_directory.cpp
   model/storage/resource_storage_item.h
   model/storage/resource_storage_item.cpp
+  model/storage/audio_storage_item.h
+  model/storage/audio_storage_item.cpp
   model/storage/video_resource_storage_item.h
   model/storage/video_resource_storage_item.cpp
   PARENT_SCOPE

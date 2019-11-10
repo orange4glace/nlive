@@ -9,9 +9,11 @@ const std::string VideoResourceStorageItem::TYPE = "nlive.StorageItem.VideoResou
 
 VideoResourceStorageItem::VideoResourceStorageItem(
   QSharedPointer<StorageItem> parent,
-  QSharedPointer<VideoResource> video_resource) :
-  ResourceStorageItem(VideoResourceStorageItem::TYPE, parent, video_resource),
-  video_resource_(video_resource) {
+  QString name,
+  QSharedPointer<VideoResource> video_resource,
+  QSharedPointer<AudioResource> audio_resource) :
+  StorageItem(VideoResourceStorageItem::TYPE, name, parent),
+  video_resource_(video_resource), audio_resource_(audio_resource) {
 
 }
 
@@ -25,6 +27,10 @@ QSharedPointer<Clip> VideoResourceStorageItem::cliperize(Rational time_base) {
 
 QSharedPointer<VideoResource> VideoResourceStorageItem::video_resource() {
   return video_resource_;
+}
+
+QSharedPointer<AudioResource> VideoResourceStorageItem::audio_resource() {
+  return audio_resource_;
 }
 
 }

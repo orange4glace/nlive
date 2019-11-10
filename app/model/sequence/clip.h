@@ -10,14 +10,10 @@
 #include "platform/undo/undo_stack.h"
 #include "model/common/rational.h"
 #include "model/effect/transform_effect.h"
+#include "renderer/video_renderer/command_buffer.h"
+#include "renderer/audio_renderer/command_buffer.h"
 
 namespace nlive {
-
-namespace video_renderer {
-
-class CommandBuffer;
-
-}
 
 namespace effect {
 
@@ -53,6 +49,7 @@ public:
   void addEffect(QSharedPointer<effect::Effect> effect);
 
   virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
+  virtual void renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t time);
 
   QSharedPointer<effect::TransformEffect> transform();
 

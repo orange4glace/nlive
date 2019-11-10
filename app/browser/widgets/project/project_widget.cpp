@@ -11,6 +11,7 @@
 #include "browser/widgets/project/storage_item_view_factory.h"
 #include "browser/widgets/project/null_storage_item_view.h"
 #include "browser/widgets/project/video_resource_storage_item_view.h"
+#include "browser/widgets/project/storage_item_view/audio_storage_item_view.h"
 
 #include <QDebug>
 
@@ -22,6 +23,7 @@ void ProjectWidget::Initialize() {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory());
   StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory());
+  StorageItemViewFactoryRegistry::registerFactory(AudioStorageItem::TYPE, new AudioStorageItemViewFactory());
 
 }
 

@@ -8,5 +8,7 @@ set(NLIVE_SOURCES
   model/sequence/clip.cpp
   model/sequence/video_clip.h
   model/sequence/video_clip.cpp
+  model/sequence/audio_clip.h
+  model/sequence/audio_clip.cpp
   PARENT_SCOPE
 )

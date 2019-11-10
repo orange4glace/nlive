@@ -4,6 +4,8 @@
 #include <QObject>
 #include "browser/services/import/import_service.h"
 
+#include "model/storage/storage_item.h"
+
 namespace nlive {
 
 class IResourceService;
@@ -13,8 +15,10 @@ class ImportService : public IImportService {
 
 private:
   IResourceService* resource_service_;
-
   QList<QFileInfo> current_urls_;
+
+  QSharedPointer<StorageItem> doImportVideoContainer(QFileInfo& url, QSharedPointer<StorageDirectory> directory);
+  QSharedPointer<StorageItem> doImportAudio(QFileInfo& url, QSharedPointer<StorageDirectory> directory);
 
 public:
   ImportService(IResourceService* resource_service);

@@ -28,13 +28,11 @@ public:
     bytes_per_slot_ = kernel_size * kernel_length_per_slot * byte_per_sample;
     buffer_size_ = bytes_per_slot_ * slot_length;
     buffer_ = new T[kernel_size * kernel_length_per_slot * slot_length];
-    qDebug() << "[RingBuffer] Ctor buffer size =" << kernel_size << kernel_length_per_slot << slot_length;
   }
 
   void copyFrom(int slot_index, void* src) {
     int slot_offset = slot_index % slot_length_;
     void* slot_addr = buffer_ + (kernel_size_ * kernel_length_per_slot_) * slot_offset;
-    qDebug() << "[RingBuffer] copyFrom" << slot_index << slot_offset << buffer_ << (buffer_ + (kernel_size_ * kernel_length_per_slot_) * slot_offset) << src;
     memcpy(slot_addr, src, bytes_per_slot_);
   }
 

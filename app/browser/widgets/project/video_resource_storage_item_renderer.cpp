@@ -12,7 +12,7 @@ VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
   Div(parent) {
   QSharedPointer<VideoResourceStorageItem> vrsi = item.staticCast<VideoResourceStorageItem>();
   QSharedPointer<VideoResource> vs = vrsi->video_resource();
-  VideoDecoder dec(item->resource()->path());
+  VideoDecoder dec(item->video_resource()->path());
   auto frame = dec.decode(0, true);
   uint8_t* rgb = new uint8_t[vs->width() * vs->height() * 3];
   frame->scale(rgb, AV_PIX_FMT_RGB24);

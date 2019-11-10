@@ -39,7 +39,6 @@ public:
       QSharedPointer<PCMRenderCommand> nrc = QSharedPointer<PCMRenderCommand>(
         new PCMRenderCommand(buffer, offset, length));
       rb->addCommand(nrc);
-      qDebug() << "Got onRenderRequest " << this->thread();
       renderer_->sendRenderCommandBuffer(rb, index);
     }, Qt::QueuedConnection);
     renderer_->start();

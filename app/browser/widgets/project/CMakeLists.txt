@@ -1,3 +1,5 @@
+add_subdirectory(storage_item_view)
+
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   browser/widgets/project/project_widget.h

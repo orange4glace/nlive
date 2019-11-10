@@ -4,10 +4,11 @@
 #include <QSharedPointer>
 #include <functional>
 #include <QObject>
+#include "model/resource/resource.h"
+#include "model/resource/video_resource.h"
+#include "model/resource/audio_resource.h"
 
 namespace nlive {
-
-class Resource;
 
 class IResourceService : public QObject {
   Q_OBJECT
@@ -16,7 +17,8 @@ protected:
   inline IResourceService() {}
 
 public:
-  virtual void loadResource(QString path, std::function<void(QSharedPointer<Resource>)>&& callback) = 0;
+  virtual QSharedPointer<VideoResource> loadBestVideoResource(QString path) = 0;
+  virtual QSharedPointer<AudioResource> loadBestAudioResource(QString path) = 0;
 
 };
 

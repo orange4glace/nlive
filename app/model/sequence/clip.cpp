@@ -49,17 +49,8 @@ QSharedPointer<effect::TransformEffect> Clip::transform() {
   return transform_effect_;
 }
 
-void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
-  // auto pre = QSharedPointer<video_renderer::VideoClipPreRenderCommand>(
-  //     new video_renderer::VideoClipPreRenderCommand(nullptr));
-  // auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(
-  //     new video_renderer::VideoClipPostRenderCommand(nullptr));
-  // command_buffer->addCommand(pre);
-  // command_buffer->addCommand(post);
-  // video_renderer::SimpleRenderCommand* cmd = 
-  //   new video_renderer::SimpleRenderCommand(0, 0, 0, -0.5f, -0.5f);
-  // command_buffer->addCommand(cmd);
-}
+void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {}
+void Clip::renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t time) {}
 
 int64_t Clip::start_time() const { return start_time_; }
 int64_t Clip::end_time() const { return end_time_; }
