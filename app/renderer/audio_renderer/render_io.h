@@ -18,6 +18,8 @@ private:
   sptr<RenderState> render_state_;
   int buffer_size_;
 
+  int64_t byte_index_;
+
 protected:
   qint64 readData(char* data, qint64 max_size) override;
   qint64 writeData(const char* data, qint64 max_size) override;

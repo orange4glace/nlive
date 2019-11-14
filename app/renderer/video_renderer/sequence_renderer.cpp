@@ -27,8 +27,8 @@ SequenceRenderer::SequenceRenderer(
   target_gl_(target_gl) {
   renderer_ = QSharedPointer<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
   
-  sequence->onDirty.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<CommandBuffer>)>::slot_type(
-    boost::bind(&SequenceRenderer::render, this, _1))));
+  sequence->onDirty.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+    boost::bind(&SequenceRenderer::render, this))));
   connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
     emit onDidReadyData();
   });
@@ -90,7 +90,8 @@ void SequenceRenderer::initialize() {
   gf->glGenTextures(1, &tex_);
 }
 
-void SequenceRenderer::render(QSharedPointer<CommandBuffer> command_buffer) {
+void SequenceRenderer::render() {
+  auto command_buffer = sequence_->renderVideo(sequence_->current_time());
   renderer_->render(command_buffer);
 }
 

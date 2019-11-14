@@ -33,9 +33,7 @@ public:
   // std::unique_ptr<RenderTexture> getRenderData();
   void initialize();
   void paint();
-
-public slots:
-  void render(QSharedPointer<CommandBuffer> command_buffer);
+  void render();
 
 signals:
   void onDidReadyData();

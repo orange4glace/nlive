@@ -10,6 +10,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF) 
 
 add_compile_definitions(__STDC_CONSTANT_MACROS)
+add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 

@@ -11,9 +11,12 @@ class NoiseRenderCommand : public RenderCommand {
 
 public:
   inline void render(QSharedPointer<RenderContext> ctx) override {
-    auto data = (uint8_t*)ctx->data();
-    for (int i = 0; i < ctx->buffer_size() / ctx->byte_per_sample(); i ++) {
-      data[i] = i % 8;
+    auto data = (float*)ctx->data();
+    int z = 0;
+    for (int i = 0; i < ctx->nb_channels(); i ++) {
+      for (int j = 0; j < ctx->samples_per_channel(); j ++) {
+        data[z++] = z / (float)128;
+      }
     }
   }
 

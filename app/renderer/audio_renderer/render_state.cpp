@@ -4,11 +4,13 @@ namespace nlive {
 
 namespace audio_renderer {
 
-RenderState::RenderState(int sample_rate, int kernel_size, int kernel_length_per_slot,
-    int slot_length) :
-  sample_rate_(sample_rate), slot_length_(slot_length) {
-  buffer_ = std::make_shared<RingBuffer<float>>
-    (kernel_size, kernel_length_per_slot, slot_length);
+RenderState::RenderState(int nb_channels, int bytes_per_sample, int sample_rate,
+    int samples_per_channel, int kernels_per_slot, int slot_length) :
+  nb_channels_(nb_channels), bytes_per_sample_(bytes_per_sample), sample_rate_(sample_rate),
+  samples_per_channel_(samples_per_channel), kernels_per_slot_(kernels_per_slot), slot_length_(slot_length) {
+  samples_per_kernel_ = nb_channels * samples_per_channel;
+  buffer_ = std::make_shared<RingBuffer<uint8_t>>
+    (nb_channels, samples_per_channel, bytes_per_sample, kernels_per_slot, slot_length);
   producer_index_ = 0;
   consumer_index_ = 0;
   for (int i = 0; i < slot_length; i ++) {

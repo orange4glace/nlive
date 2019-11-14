@@ -20,23 +20,27 @@ public:
   };
 
 private:
+  int nb_channels_;
+  int bytes_per_sample_;
+  int sample_rate_;
+  int samples_per_channel_;
+  int samples_per_kernel_;
+  int kernels_per_slot_;
+  int slot_length_;
 
-
-  sptr<RingBuffer<float>> buffer_;
+  sptr<RingBuffer<uint8_t>> buffer_;
   std::mutex state_mutex_;
   std::condition_variable state_cv_;
   std::vector<std::mutex*> slot_mutexes_;
   std::mutex mutex_;
-  int sample_rate_;
-  int slot_length_;
 
   int producer_index_;
   int consumer_index_;
   bool producer_wait_flag_;
 
 public:
-  RenderState(int sample_rate, int kernel_size, int kernel_length_per_slot,
-    int slot_length);
+  RenderState(int nb_channels, int bytes_per_sample, int sample_rate,
+    int samples_per_channel, int kernels_per_slot, int slot_length);
 
   void reset();
 
@@ -55,14 +59,14 @@ public:
   inline bool producer_wait_flag() { return producer_wait_flag_; }
   inline void setProducerWaitFlag(int value) { producer_wait_flag_ = value; }
   
+  inline int nb_channels() const { return nb_channels_; }
+  inline int bytes_per_sample() const { return bytes_per_sample_; }
   inline int sample_rate() const { return sample_rate_; }
-  inline int kernel_size() const { return buffer_->kernel_size(); }
-  inline int kernel_length_per_slot() const { return buffer_->kernel_length_per_slot(); }
-  inline int slot_length() const { return buffer_->slot_length(); }
-  inline int bytes_per_slot() const { return buffer_->bytes_per_slot(); }
-  inline int buffer_size() const { return buffer_->buffer_size(); }
+  inline int samples_per_kernel() const { return samples_per_kernel_; }
+  inline int kernels_per_slot() const { return kernels_per_slot_; }
+  inline int slot_length() const { return slot_length_; }
 
-  inline sptr<RingBuffer<float>> buffer() { return buffer_; }
+  inline sptr<RingBuffer<uint8_t>> buffer() { return buffer_; }
 
 };
 

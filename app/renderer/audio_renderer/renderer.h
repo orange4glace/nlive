@@ -1,12 +1,16 @@
 #ifndef NLIVE_AUDIO_RENDERER_RENDERER_H_
 #define NLIVE_AUDIO_RENDERER_RENDERER_H_
 
+extern "C" {
+  #include <libswresample/swresample.h>
+}
 #include <QSharedPointer>
 #include <QThread>
 #include <queue>
 #include <mutex>
 #include <condition_variable>
 #include "base/common/memory.h"
+#include "model/common/rational.h"
 #include "renderer/audio_renderer/render_context.h"
 #include "renderer/audio_renderer/render_state.h"
 #include "renderer/audio_renderer/command_buffer.h"
@@ -31,6 +35,7 @@ private:
 
   int state_;
   int sample_rate_;
+  int samples_per_channel_;
   sptr<RenderState> render_state_;
   QSharedPointer<RenderContext> render_context_;
   sptr<RenderIO> render_io_;
@@ -44,16 +49,20 @@ protected:
   void run() override;
 
 public:
-  Renderer(int sample_rate, int kernel_size, int kernel_length_per_slot,
-    int slot_length);
+  Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate,
+    int samples_per_channel, int kernels_per_slot, int slot_length);
   
   void reset();
   void sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index);
 
+  int calculateFrameByIndex(int index) const;
+
   inline QSharedPointer<RenderContext> render_context() { return render_context_; }
 
+  inline int sample_rate() const { return sample_rate_; }
+
 signals:
-  void onRenderRequest(int index);
+  void onRenderRequest(int index, int start_frame, int end_frame);
 
 
 };

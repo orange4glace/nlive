@@ -31,13 +31,17 @@ Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time) :
   invalidateTimer_->start();
 }
 
-void Sequence::doMakeDirty() {
+QSharedPointer<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t timecode) {
   QSharedPointer<video_renderer::CommandBuffer> command_buffer =
     QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
   for (auto track : tracks_) {
-    track->render(command_buffer, current_time_);
+    track->render(command_buffer, timecode);
   }
-  onDirty(command_buffer);
+  return command_buffer;
+}
+
+void Sequence::doMakeDirty() {
+  onDirty();
 }
 
 void Sequence::doInvalidate() {
@@ -124,16 +128,6 @@ void Sequence::setDuration(int64_t value) {
 
 int64_t Sequence::getClipBTimecodeOffset(QSharedPointer<Clip> clip) const {
   return current_time_ - clip->start_time() + clip->b_time();
-}
-
-void Sequence::renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer) {
-  
-}
-
-void Sequence::renderVideo(QSharedPointer<video_renderer::Renderer> renderer, int64_t timecode) {
-  QSharedPointer<video_renderer::CommandBuffer> command_buffer
-    = QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
-  renderVideoCommandBuffer(command_buffer);
 }
 
 void Sequence::invalidate() {

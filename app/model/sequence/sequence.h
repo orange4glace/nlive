@@ -12,6 +12,7 @@
 #include "platform/undo/undo_stack.h"
 #include "model/common/rational.h"
 #include "model/sequence/track.h"
+#include "renderer/video_renderer/command_buffer.h"
 
 namespace nlive {
 
@@ -62,7 +63,7 @@ public:
 
   int64_t getClipBTimecodeOffset(QSharedPointer<Clip> clip) const;
 
-  void renderVideoCommandBuffer(QSharedPointer<video_renderer::CommandBuffer> command_buffer);
+  QSharedPointer<video_renderer::CommandBuffer> renderVideo(int64_t timecode);
 
   void invalidate();
 
@@ -81,10 +82,7 @@ public:
   sig2_t<void (QSharedPointer<Track>, int /*index*/)> onWillRemoveTrack;
   sig2_t<void (int64_t /*old_current_time*/)> onDidChangeCurrentTime;
   sig2_t<void (int64_t /*old_duration*/)> onDidChangeDuration;
-  sig2_t<void (QSharedPointer<video_renderer::CommandBuffer> /*command_buffer*/)> onDirty;
-
-public slots:
-  void renderVideo(QSharedPointer<video_renderer::Renderer> renderer, int64_t timecode);
+  sig2_t<void ()> onDirty;
 
 };
 

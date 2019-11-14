@@ -76,8 +76,8 @@ MainWindow::MainWindow() {
 
   auto theme_service = ThemeService::instance();
   auto timeline_widget_service = TimelineWidgetService::instance();
-  auto task_service = new TaskService();
-  auto resource_service = new ResourceService(task_service);
+  auto task_service = new QSharedPointer<ITaskService>(new TaskService());
+  auto resource_service = new ResourceService(*task_service);
   auto import_service = new ImportService(resource_service);
   auto memento_service = new QSharedPointer<IMementoService>(new InMemoryMementoService());
 

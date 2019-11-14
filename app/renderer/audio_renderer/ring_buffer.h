@@ -12,43 +12,53 @@ template <typename T>
 class RingBuffer {
 
 private:
-  int kernel_size_;
-  int kernel_length_per_slot_;
+  int nb_channels_;
+  int samples_per_channel_;
+  int bytes_per_sample_;
+  int bytes_per_channel_;
+  int bytes_per_kernel_;
+  int kernels_per_slot_;
   int slot_length_;
   int buffer_size_;
   int bytes_per_slot_;
   T* buffer_;
 
 public:
-  RingBuffer(int kernel_size, int kernel_length_per_slot, int slot_length) :
-    kernel_size_(kernel_size), kernel_length_per_slot_(kernel_length_per_slot),
-    slot_length_(slot_length) {
-    // TODO : generalize byte size by type
-    int byte_per_sample = 4;
-    bytes_per_slot_ = kernel_size * kernel_length_per_slot * byte_per_sample;
+  RingBuffer(int nb_channels, int samples_per_channel, int bytes_per_sample, int kernels_per_slot, int slot_length) :
+    nb_channels_(nb_channels), samples_per_channel_(samples_per_channel),
+    bytes_per_sample_(bytes_per_sample), kernels_per_slot_(kernels_per_slot), slot_length_(slot_length) {
+    bytes_per_channel_ = samples_per_channel * bytes_per_sample;
+    bytes_per_kernel_ = nb_channels * bytes_per_channel_; 
+    bytes_per_slot_ = bytes_per_kernel_ * kernels_per_slot;
     buffer_size_ = bytes_per_slot_ * slot_length;
-    buffer_ = new T[kernel_size * kernel_length_per_slot * slot_length];
+    buffer_ = new T[buffer_size_];
   }
 
-  void copyFrom(int slot_index, void* src) {
+  void copyFrom(int slot_index, uint8_t* src) {
     int slot_offset = slot_index % slot_length_;
-    void* slot_addr = buffer_ + (kernel_size_ * kernel_length_per_slot_) * slot_offset;
+    uint8_t* slot_addr = buffer_ + bytes_per_slot_ * slot_offset;
     memcpy(slot_addr, src, bytes_per_slot_);
   }
 
-  void copyTo(int slot_index, void* dst) {
+  void copyTo(int slot_index, uint8_t* dst) {
     int slot_offset = slot_index % slot_length_;
-    void* slot_addr = buffer_ + (kernel_size_ * kernel_length_per_slot_) * slot_offset;
+    uint8_t* slot_addr = buffer_ + bytes_per_slot_ * slot_offset;
     memcpy(dst, slot_addr, bytes_per_slot_);
+  }
+
+  void copyTo(int slot_index, uint8_t* dst, int offset, int length) {
+    int slot_offset = slot_index % slot_length_;
+    uint8_t* slot_addr = buffer_ + bytes_per_slot_ * slot_offset;
+    memcpy(dst, slot_addr + offset, length);
   }
 
   T* getSlot(int index) {
     int offset = index % slot_length_;
-    return (buffer_ + (kernel_size_ * kernel_length_per_slot_) * offset);
+    return (buffer_ + (bytes_per_kernel_ * kernels_per_slot_) * offset);
   }
 
-  int kernel_size() const { return kernel_size_; }
-  int kernel_length_per_slot() const { return kernel_length_per_slot_; }
+  int bytes_per_kernel() const { return bytes_per_kernel_; }
+  int kernels_per_slot() const { return kernels_per_slot_; }
   int slot_length() const { return slot_length_; }
   int bytes_per_slot() const { return bytes_per_slot_; }
   int buffer_size() const { return buffer_size_; }

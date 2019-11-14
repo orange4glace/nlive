@@ -2,9 +2,13 @@
 
 #include <QDebug>
 #include <QThread>
+#include <QFile>
+#include <QDataStream>
+#include <map>
 
 extern "C" {
 #include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
 #include <libavutil/dict.h>
 }
 
@@ -30,6 +34,118 @@ struct AudioMetadata {
   AVRational time_base;
   int sample_rate;
   int64_t duration;
+};
+
+class AudioResourceRawConvertingTask : public Task {
+
+private:
+  QSharedPointer<AudioResource> resource_;
+
+protected:
+  void run() override {
+    const std::string& path = resource_->path();
+    spdlog::get(LOGGER_DEFAULT)->info("[AudioResourceRawConvertingTask] Start task. path = {}", path.c_str());
+
+    AVCodec* dec = nullptr;
+    AVCodecContext* dec_ctx = nullptr;
+    AVStream* stream;
+    int stream_index;
+    AVDictionary* opts = nullptr;
+    AVPacket* pkt;
+    AVFrame* frame;
+
+    QFile outfile(QString::fromStdString(path + ".raw"));
+    outfile.open(QIODevice::WriteOnly);
+    QDataStream outstream(&outfile);
+    qDebug() << outstream.status();
+    
+    AVFormatContext* fmt_ctx = nullptr;
+    int ret;
+    ret = avformat_open_input(&fmt_ctx, resource_->path().c_str(), NULL, NULL);
+    if (ret != 0) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avformat_open_input path = {} result = {}", path.c_str(), ret);
+      return;
+    }
+    ret = avformat_find_stream_info(fmt_ctx, nullptr);
+    if (ret != 0) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avformat_find_stream_info path = {} result = {}", path.c_str(), ret);
+      avformat_close_input(&fmt_ctx);
+      return;
+    }
+    stream_index = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
+    if (stream_index < 0) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to av_find_best_stream path = {} result = {}", path.c_str(), stream_index);
+      avformat_close_input(&fmt_ctx);
+      return;
+    }
+    stream = fmt_ctx->streams[stream_index];
+    dec = avcodec_find_decoder(stream->codecpar->codec_id);
+    if (dec == nullptr) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_find_decoder path = {}", path.c_str());
+      avformat_close_input(&fmt_ctx);
+      return;
+    }
+    dec_ctx = avcodec_alloc_context3(dec);
+    ret = avcodec_parameters_to_context(dec_ctx, stream->codecpar);
+    if (ret < 0) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_parameters_to_context path = {} result = {}", path.c_str(), ret);
+      avcodec_free_context(&dec_ctx);
+      avformat_close_input(&fmt_ctx);
+      return;
+    }
+    av_dict_set(&opts, "refcounted_frames", "0", 0);
+    ret = avcodec_open2(dec_ctx, dec, &opts);
+    if (ret < 0) {
+      spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_open2 path = {} result = {}", path.c_str(), ret);
+      avcodec_free_context(&dec_ctx);
+      avformat_close_input(&fmt_ctx);
+      return;
+    }
+    pkt = av_packet_alloc();
+    frame = av_frame_alloc();
+    spdlog::get(LOGGER_DEFAULT)->info("[AudioResourceRawConvertingTask] Audio sample format = {} sample rate = {} path = {}", dec_ctx->sample_fmt, dec_ctx->sample_rate, path.c_str());
+    while (av_read_frame(fmt_ctx, pkt) >= 0) {
+      if (pkt->stream_index == stream_index) {
+        ret = avcodec_send_packet(dec_ctx, pkt);
+        if (ret < 0) {
+          spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_send_packet path = {} result = {}", path.c_str(), ret);
+          avcodec_free_context(&dec_ctx);
+          avformat_close_input(&fmt_ctx);
+          av_packet_free(&pkt);
+          av_frame_free(&frame);
+          return;
+        }
+        ret = avcodec_receive_frame(dec_ctx, frame);
+        if (ret >= 0) {
+          int byte_per_sample = av_get_bytes_per_sample((AVSampleFormat)frame->format);
+          outstream.writeRawData((char*)frame->data[0], frame->nb_samples * byte_per_sample);
+        }
+        else if (ret == AVERROR(EAGAIN)) {
+          continue;
+        }
+        else {
+          spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_receive_frame path = {} result = {}", path.c_str(), ret);
+          avcodec_free_context(&dec_ctx);
+          avformat_close_input(&fmt_ctx);
+          av_packet_free(&pkt);
+          av_frame_free(&frame);
+          return;
+        }
+      }
+    }
+    avcodec_free_context(&dec_ctx);
+    avformat_close_input(&fmt_ctx);
+    av_packet_free(&pkt);
+    av_frame_free(&frame);
+    spdlog::get(LOGGER_DEFAULT)->info("[AudioResourceRawConvertingTask] End task. path = {}", path.c_str());
+  }
+
+public:
+  AudioResourceRawConvertingTask(QSharedPointer<AudioResource> resource) :
+    resource_(resource) {
+
+  }
+
 };
 
 // void getFirstVideoFrame(AVFormatContext* fmt_ctx, AVStream* stream) {
@@ -122,10 +238,19 @@ AudioMetadata* findBestAudioMetadata(QString path) {
 }
 
 
+AudioResourceRawConvertingService::AudioResourceRawConvertingService(QSharedPointer<ITaskService> task_service) :
+  task_service_(task_service) {}
 
-ResourceService::ResourceService(ITaskService* task_service) :
-  task_service_(task_service) {
+void AudioResourceRawConvertingService::process(QSharedPointer<AudioResource> resource) {
+  auto task = new AudioResourceRawConvertingTask(resource);
+  task_service_->queueTask(task, [](Task* task){});
+}
 
+
+ResourceService::ResourceService(QSharedPointer<ITaskService> task_service) :
+  task_service_(task_service),
+  audio_resource_raw_converting_service_(task_service) {
+  
 }
 
 QSharedPointer<VideoResource> ResourceService::loadBestVideoResource(QString path) {
@@ -151,6 +276,7 @@ QSharedPointer<AudioResource> ResourceService::loadBestAudioResource(QString pat
           Rational::fromAVRational(metadata->time_base),
           metadata->sample_rate,
           metadata->duration));
+    audio_resource_raw_converting_service_.process(resource);
     delete metadata;
     return resource;
   }

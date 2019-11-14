@@ -6,14 +6,18 @@ namespace nlive {
 
 namespace audio_renderer {
 
-Renderer::Renderer(int sample_rate, int kernel_size, int kernel_length_per_slot,
-    int slot_length) :
-  sample_rate_(sample_rate) {
+Renderer::Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate,
+    int samples_per_channel, int kernels_per_slot, int slot_length) :
+  sample_rate_(sample_rate), samples_per_channel_(samples_per_channel) {
+  int nb_channels = av_get_channel_layout_nb_channels(ch_layout);
+  int bytes_per_sample = av_get_bytes_per_sample(sample_fmt);
   render_state_ = std::make_shared<RenderState>(
-    sample_rate, kernel_size, kernel_length_per_slot, slot_length);
+    nb_channels, bytes_per_sample, sample_rate, samples_per_channel,
+    kernels_per_slot, slot_length);
   render_io_ = std::make_shared<RenderIO>(this, render_state_);
   render_context_ = QSharedPointer<RenderContext>(
-    new RenderContext(render_state_->sample_rate(), render_state_->buffer()->bytes_per_slot()));
+    new RenderContext(ch_layout, sample_fmt, sample_rate,
+        samples_per_channel));
 }
 
 void Renderer::run() {
@@ -41,7 +45,9 @@ void Renderer::run() {
 
     std::unique_lock<std::mutex> state_lock(state_mutex_);
     writing_index_ = writing_index;
-    emit onRenderRequest(writing_index);
+    int start_frame = calculateFrameByIndex(writing_index);
+    int end_frame = calculateFrameByIndex(writing_index + 1);
+    emit onRenderRequest(writing_index, start_frame, end_frame);
     // Wait until render data arrived
     state_ = State::WAITING_DATA;
     state_cv_.wait(state_lock);
@@ -81,6 +87,17 @@ void Renderer::sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buf
     requested_command_buffer_ = command_buffer;
     state_ = State::DATA_AVAILABLE;
     state_cv_.notify_one();
+}
+
+int Renderer::calculateFrameByIndex(int index) const {
+  return samples_per_channel_ * index;
+  int d = sample_rate_ / samples_per_channel_;
+  int z = sample_rate_ * (index / d) + samples_per_channel_ * (index % d);
+  if (d != 0 && index % d == 0) return z + samples_per_channel_;
+  else {
+    int r = sample_rate_ % samples_per_channel_;
+    return z + samples_per_channel_ + r;
+  }
 }
 
 }
