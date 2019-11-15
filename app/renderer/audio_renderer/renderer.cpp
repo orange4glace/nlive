@@ -18,6 +18,8 @@ Renderer::Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate
   render_context_ = QSharedPointer<RenderContext>(
     new RenderContext(ch_layout, sample_fmt, sample_rate,
         samples_per_channel));
+  requested_command_buffer_ = nullptr;
+  requested_burst_command_buffer_ = nullptr;
 }
 
 void Renderer::run() {
@@ -38,37 +40,60 @@ void Renderer::run() {
     int consumer_index = render_state_->consumer_index();
     render_state_->setProducerWaitFlag(false);
     render_state_lock.unlock();
-    int writing_index;
-    if (producer_index < consumer_index)
-      writing_index = consumer_index + 1;
-    else writing_index = producer_index;
 
     std::unique_lock<std::mutex> state_lock(state_mutex_);
-    writing_index_ = writing_index;
-    int start_frame = calculateFrameByIndex(writing_index);
-    int end_frame = calculateFrameByIndex(writing_index + 1);
-    emit onRenderRequest(writing_index, start_frame, end_frame);
-    // Wait until render data arrived
-    state_ = State::WAITING_DATA;
-    state_cv_.wait(state_lock);
-    if (state_ == State::RESET) continue;
-    // Is this check statement redundant?
-    assert(state_ == State::DATA_AVAILABLE);
-    QSharedPointer<CommandBuffer> rcb = requested_command_buffer_;
-    for (auto command : rcb->commands()) {
-      command->render(render_context_);
-    }
-    state_lock.unlock();
+    if (requested_burst_command_buffer_ != nullptr) {
+      int writing_index = consumer_index + 1;
+      QSharedPointer<CommandBuffer> rcb = requested_burst_command_buffer_;
+      requested_burst_command_buffer_ = nullptr;
+      state_lock.unlock();
+      for (auto command : rcb->commands()) {
+        command->render(render_context_);
+      }
 
-    auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
-    auto buffer = render_state_->buffer();
-    slot_mutex.lock();
-    buffer->copyFrom(writing_index, render_context_->data());
-    state_lock.lock();
-    render_state_->setProducerIndex(writing_index + 1);
-    state_lock.unlock();
-    slot_mutex.unlock();
-    render_context_->clearData();
+      auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
+      auto buffer = render_state_->buffer();
+      slot_mutex.lock();
+      buffer->copyFrom(writing_index, render_context_->data());
+      state_lock.lock();
+      render_state_->setProducerIndex(std::max(producer_index, writing_index + 1));
+      state_lock.unlock();
+      slot_mutex.unlock();
+      render_context_->clearData();
+    }
+
+    else {
+      int writing_index;
+      if (producer_index < consumer_index)
+        writing_index = consumer_index + 1;
+      else writing_index = producer_index;
+
+      writing_index_ = writing_index;
+      int start_frame = calculateFrameByIndex(writing_index);
+      int end_frame = calculateFrameByIndex(writing_index + 1);
+      emit onRenderRequest(writing_index, start_frame, end_frame);
+      // Wait until render data arrived
+      state_ = State::WAITING_DATA;
+      state_cv_.wait(state_lock);
+      if (state_ == State::RESET) continue;
+      // Is this check statement redundant?
+      assert(state_ == State::DATA_AVAILABLE);
+      QSharedPointer<CommandBuffer> rcb = requested_command_buffer_;
+      state_lock.unlock();
+      for (auto command : rcb->commands()) {
+        command->render(render_context_);
+      }
+
+      auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
+      auto buffer = render_state_->buffer();
+      slot_mutex.lock();
+      buffer->copyFrom(writing_index, render_context_->data());
+      state_lock.lock();
+      render_state_->setProducerIndex(writing_index + 1);
+      state_lock.unlock();
+      slot_mutex.unlock();
+      render_context_->clearData();
+    }
   }
 }
 
@@ -79,6 +104,13 @@ void Renderer::reset() {
     render_state_->reset();
     render_state_mutex.unlock();
     state_ = State::RESET;
+}
+
+void Renderer::sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer) {
+    std::unique_lock<std::mutex> state_lock(state_mutex_);
+    requested_burst_command_buffer_ = command_buffer;
+    state_ = State::DATA_AVAILABLE;
+    state_cv_.notify_one();
 }
 
 void Renderer::sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index) {

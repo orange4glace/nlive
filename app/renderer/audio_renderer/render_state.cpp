@@ -11,18 +11,18 @@ RenderState::RenderState(int nb_channels, int bytes_per_sample, int sample_rate,
   samples_per_kernel_ = nb_channels * samples_per_channel;
   buffer_ = std::make_shared<RingBuffer<uint8_t>>
     (nb_channels, samples_per_channel, bytes_per_sample, kernels_per_slot, slot_length);
-  producer_index_ = 0;
-  consumer_index_ = 0;
   for (int i = 0; i < slot_length; i ++) {
     std::mutex* m = new std::mutex();
     slot_mutexes_.push_back(m);
   }
+  reset();
 }
 
 void RenderState::reset() {
   producer_index_ = 0;
   consumer_index_ = 0;
   producer_wait_flag_ = false;
+  timer_.restart();
   state_cv_.notify_all();
 }
 

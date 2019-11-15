@@ -9,6 +9,8 @@
 #include <fstream>
 #include <cstring>
 
+#define UTIME_SYNC_THRESHOLD 50000000LL
+
 namespace nlive {
 
 namespace audio_renderer {
@@ -38,23 +40,28 @@ qint64 RenderDevice::readData(char* data, qint64 max_size) {
   int bytes_per_slot = render_state_->buffer()->bytes_per_slot();
   int max_mixed_samples = max_size / bytes_per_mixed_sample;
 
-  int start_byte = byte_index_;
-  int end_byte = start_byte + max_mixed_samples * bytes_per_mixed_sample;
+  auto& state_mutex = render_state_->state_mutex();
+  state_mutex.lock();
+  int producer_index = render_state_->producer_index();
+  int64_t state_elapsed_utime = render_state_->elapsed_utime();
+  state_mutex.unlock();
+  int64_t device_elasped_utime = byte_index_ / bytes_per_mixed_sample * (int64_t)1e+9 / render_state_->sample_rate();
+  int64_t delta_elasped_utime = state_elapsed_utime - device_elasped_utime;
+  if (std::abs(delta_elasped_utime) > UTIME_SYNC_THRESHOLD) {
+    int64_t delta_bytes = delta_elasped_utime * render_state_->sample_rate() * bytes_per_mixed_sample / (int64_t)1e+9;
+    delta_bytes = delta_bytes / bytes_per_mixed_sample * bytes_per_mixed_sample;
+    byte_index_ += delta_bytes;
+  }
+
+  int64_t start_byte = byte_index_;
+  int64_t end_byte = start_byte + max_mixed_samples * bytes_per_mixed_sample;
   int start_consumer_slot_index = start_byte / bytes_per_slot;
   int end_consumer_slot_index = end_byte / bytes_per_slot;
   byte_index_ = end_byte;
 
-  // TODO :
-  // There's no need to check(acquiring render state lock) producer index.
-  // Instead, we can store the index of the slot content into the slot itself
-  // So only checking content index of the slot can assure whether slot content is valid or not
-  auto& state_mutex = render_state_->state_mutex();
-  state_mutex.lock();
-  int producer_index = render_state_->producer_index();
-  state_mutex.unlock();
   auto buffer = render_state_->buffer();
 
-  int cur_byte = start_byte;
+  int64_t cur_byte = start_byte;
   for (int i = start_consumer_slot_index; i <= end_consumer_slot_index; i ++) {
     if (i >= producer_index) break;
     int this_slot_end_byte = (i + 1) * bytes_per_slot;

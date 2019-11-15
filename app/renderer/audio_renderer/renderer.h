@@ -30,7 +30,7 @@ private:
     IDLE,
     RESET,
     WAITING_DATA,
-    DATA_AVAILABLE,
+    DATA_AVAILABLE
   };
 
   int state_;
@@ -44,6 +44,7 @@ private:
 
   int writing_index_;
   QSharedPointer<CommandBuffer> requested_command_buffer_;
+  QSharedPointer<CommandBuffer> requested_burst_command_buffer_;
 
 protected:
   void run() override;
@@ -52,8 +53,11 @@ public:
   Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate,
     int samples_per_channel, int kernels_per_slot, int slot_length);
   
+  // void start();
   void reset();
+  // void restart();
   void sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index);
+  void sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer);
 
   int calculateFrameByIndex(int index) const;
 

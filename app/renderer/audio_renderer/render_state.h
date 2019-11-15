@@ -1,6 +1,7 @@
 #ifndef NLIVE_AUDIO_RENDERER_RENDER_STATE_H_
 #define NLIVE_AUDIO_RENDERER_RENDER_STATE_H_
 
+#include <QElapsedTimer>
 #include <QSharedPointer>
 #include <mutex>
 #include <condition_variable>
@@ -38,6 +39,8 @@ private:
   int consumer_index_;
   bool producer_wait_flag_;
 
+  QElapsedTimer timer_;
+
 public:
   RenderState(int nb_channels, int bytes_per_sample, int sample_rate,
     int samples_per_channel, int kernels_per_slot, int slot_length);
@@ -50,6 +53,7 @@ public:
     int offset = index % slot_length_;
     return *slot_mutexes_[offset];
   }
+  inline int64_t elapsed_utime() { return timer_.nsecsElapsed(); }
 
   inline int producer_index() { return producer_index_; }
   inline void setProducerIndex(int value) { producer_index_ = value; }
