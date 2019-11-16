@@ -9,6 +9,7 @@
 #include <QThread>
 
 #include "browser/widgets/monitor/sequence_renderer_view.h"
+#include "browser/services/play/play_service.h"
 
 namespace nlive {
 
@@ -19,6 +20,8 @@ namespace monitor_widget {
 class SequenceView : public QWidget {
 
 private:
+  QSharedPointer<PlayService> play_service_;
+
   QSharedPointer<Sequence> sequence_;
   SequenceRendererView* renderer_view_;
 
@@ -27,7 +30,8 @@ protected:
   void paintEvent(QPaintEvent* e);
 
 public:
-  SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence);
+  SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
+    QSharedPointer<PlayService> play_service);
 
 };
 

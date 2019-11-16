@@ -19,11 +19,13 @@
 #include "browser/widgets/effect_control/effect_control_widget.h"
 #include "browser/services/import/import_service_impl.h"
 #include "browser/services/memento/in_memory_memento_service.h"
+#include "browser/services/play/play_service.h"
 
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
 
 #include "renderer/audio_renderer/test_renderer.h"
+#include "renderer/audio_renderer/sequence_renderer.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -40,11 +42,6 @@
 namespace nlive {
 
 namespace {
-
-int qtr(int a) {
-  qDebug() << "a = " << a << " " << QThread::currentThreadId() << "\n";
-  return a + 3;
-}
 
 class KD : public QDockWidget {
 
@@ -66,7 +63,7 @@ MainWindow::MainWindow() {
 
   qDebug() << "Main thread = " << thread() << "\n";
 
-  auto at = new audio_renderer::TestRenderer(this);
+  // auto at = new audio_renderer::TestRenderer(this);
 
   registerLoggers();
 
@@ -80,6 +77,7 @@ MainWindow::MainWindow() {
   auto resource_service = new ResourceService(*task_service);
   auto import_service = new ImportService(resource_service);
   auto memento_service = new QSharedPointer<IMementoService>(new InMemoryMementoService());
+  auto play_service = new QSharedPointer<PlayService>(new PlayService(this));
 
   auto s_resource_service = new QSharedPointer<ResourceService>(resource_service);
   auto s_import_service = new QSharedPointer<ImportService>(import_service);
@@ -110,17 +108,13 @@ MainWindow::MainWindow() {
     this, theme_service, timeline_widget_service, *memento_service);
   addDockWidget(Qt::TopDockWidgetArea, effect_control_widget);
 
-  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service);
+  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service, *play_service);
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {
   QPainter p(this);
   p.fillRect(rect(), QColor("#212624"));
-}
-
-void MainWindow::ff() {
-  qDebug() << "ff = " << QThread::currentThreadId() << "\n";
 }
 
 }

@@ -17,12 +17,12 @@ VideoResourceStorageItem::VideoResourceStorageItem(
 
 }
 
-QSharedPointer<Clip> VideoResourceStorageItem::cliperize(Rational time_base) {
+QSharedPointer<Clip> VideoResourceStorageItem::cliperize(QSharedPointer<Sequence> sequence) {
   qDebug() << "cliperize " << video_resource_->duration() << " " <<
       video_resource_->time_base().num() << video_resource_->time_base().den() << " " <<
-      time_base.num() << " " << time_base.den() << "\n";
-  return QSharedPointer<Clip>(new VideoClip(nullptr, video_resource_, time_base,
-    0, Rational::rescale(video_resource_->duration(), video_resource_->time_base(), time_base), 0));
+      sequence->time_base().num() << " " << sequence->time_base().den() << "\n";
+  return QSharedPointer<Clip>(new VideoClip(nullptr, video_resource_, sequence->time_base(), sequence->sample_rate(),
+    0, Rational::rescale(video_resource_->duration(), video_resource_->time_base(), sequence->time_base()), 0));
 }
 
 QSharedPointer<VideoResource> VideoResourceStorageItem::video_resource() {

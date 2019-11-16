@@ -22,7 +22,7 @@ public:
     QString name,
     QSharedPointer<AudioResource> audio_resource);
 
-  QSharedPointer<Clip> cliperize(Rational time_base) override;
+  QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) override;
 
   QSharedPointer<AudioResource> audio_resource();
 

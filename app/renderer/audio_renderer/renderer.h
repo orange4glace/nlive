@@ -59,14 +59,14 @@ public:
   void sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index);
   void sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer);
 
-  int calculateFrameByIndex(int index) const;
+  int64_t calculateFrameByIndex(int index) const;
 
   inline QSharedPointer<RenderContext> render_context() { return render_context_; }
 
   inline int sample_rate() const { return sample_rate_; }
 
 signals:
-  void onRenderRequest(int index, int start_frame, int end_frame);
+  void onRenderRequest(int index, qint64 start_frame, qint64 end_frame);
 
 
 };

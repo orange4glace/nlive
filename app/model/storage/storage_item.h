@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <QString>
 
+#include "model/sequence/sequence.h"
 #include "model/common/rational.h"
 
 namespace nlive {
@@ -29,7 +30,7 @@ public:
   QString getAbsoluteNamePath() const;
   std::string getAbsolutePath() const;
 
-  virtual QSharedPointer<Clip> cliperize(Rational time_base) = 0;
+  virtual QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) = 0;
 
   StorageItem* parent();
 

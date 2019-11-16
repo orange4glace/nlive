@@ -15,9 +15,6 @@ public:
 protected:
   void paintEvent(QPaintEvent* event) override;
 
-public slots:
-  void ff();
-
 };
 
 }

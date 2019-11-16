@@ -2,8 +2,11 @@
 #define NLIVE_RESOURCE_SERVICE_IMPL_H_
 
 #include <map>
+#include <vector>
 #include "platform/task/task_service.h"
 #include "platform/resource/resource_service.h"
+#include "model/resource/raw_audio_resource.h"
+#include "model/resource/audio_resource.h"
 
 namespace nlive {
 
@@ -13,7 +16,8 @@ class AudioResourceRawConvertingService {
 
 private:
   QSharedPointer<ITaskService> task_service_;
-  std::map<QString, std::string> m_;
+  std::map<std::string, std::vector<QSharedPointer<AudioResource>>> processing_map_;
+  std::map<std::string, QSharedPointer<RawAudioResource>> processed_map_;
 
 public:
   AudioResourceRawConvertingService(QSharedPointer<ITaskService> task_service);

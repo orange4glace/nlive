@@ -114,8 +114,8 @@ QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
           frame = QSharedPointer<VideoFrame>(new VideoFrame(frame_, width_, height_, pix_fmt_));
           last_pts_ = pts;
           av_free_packet(pkt_);
-    std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
-    qDebug() << "d dt = " <<  sec.count();  
+    // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
+    // qDebug() << "d dt = " <<  sec.count();  
           return frame;
         }
       }

@@ -3,6 +3,8 @@ add_subdirectory(command)
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   renderer/audio_renderer/render_command.h
+  renderer/audio_renderer/decoder_manager.h
+  renderer/audio_renderer/decoder_manager.cpp
   renderer/audio_renderer/command_buffer.h
   renderer/audio_renderer/command_buffer.cpp
   renderer/audio_renderer/ring_buffer.h
@@ -15,5 +17,7 @@ set(NLIVE_SOURCES
   renderer/audio_renderer/renderer.h
   renderer/audio_renderer/renderer.cpp
   renderer/audio_renderer/test_renderer.h
+  renderer/audio_renderer/sequence_renderer.h
+  renderer/audio_renderer/sequence_renderer.cpp
   PARENT_SCOPE
 )

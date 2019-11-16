@@ -4,8 +4,8 @@
 
 namespace nlive {
 
-Track::Track(sptr<IUndoStack> undo_stack) :
-  undo_stack_(undo_stack) {
+Track::Track(sptr<IUndoStack> undo_stack, Rational time_base, int sample_rate) :
+  undo_stack_(undo_stack), time_base_(time_base), sample_rate_(sample_rate) {
 
 }
 
@@ -65,7 +65,6 @@ void Track::doRemoveClip(QSharedPointer<Clip> clip) {
 
 void Track::doClearTime(int start_time, int end_time) {
   // TODO : Improve time complexity
-  qDebug() << "Clear " << start_time << " " << end_time << "\n";
   auto copied_clips_ = clips_;
   for (auto& clip : copied_clips_) {
     if (detached_clips_.count(clip)) continue;
@@ -133,6 +132,15 @@ QSharedPointer<Clip> Track::getClipAt(int64_t time) {
   return nullptr;
 }
 
+// TODO : Remove O(N) complexity
+std::vector<QSharedPointer<Clip>> Track::getClipsBetween(int64_t from, int64_t to) {
+  std::vector<QSharedPointer<Clip>> result;
+  for (auto clip : clips_) {
+    if (clip->start_time() <= to && from < clip->end_time()) result.push_back(clip);
+  }
+  return result;
+}
+
 QSharedPointer<Clip> Track::getNextClip(QSharedPointer<Clip> clip) {
   if (!hasClip(clip)) return nullptr;
   auto it = clip_end_ordered_set_.upper_bound(clip);
@@ -151,12 +159,30 @@ int64_t Track::getClipBTimecodeOffset(int64_t timecode, QSharedPointer<Clip> cli
   return timecode - clip->start_time() + clip->b_time();
 }
 
+int64_t Track::audioFrameToTimecode(int64_t frame) const {
+  return Rational::rescale(frame, Rational(1, sample_rate_), time_base_);
+}
+
+int64_t Track::timecodeToAudioFrame(int64_t timecode) const {
+  return Rational::rescale(timecode, time_base_, Rational(1, sample_rate_));
+}
+
 void Track::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {
   auto clip = getClipAt(time);
   if (clip == nullptr) return;
   int64_t clip_timecode = getClipBTimecodeOffset(time, clip);
-  qDebug() << "Track::render " << time << clip->b_time() << clip->start_time() << clip_timecode;
   clip->render(command_buffer, clip_timecode);
+}
+
+void Track::renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame) {
+  int64_t start_timecode = audioFrameToTimecode(start_frame);
+  int64_t end_timecode = audioFrameToTimecode(end_frame);
+  auto clips = getClipsBetween(start_timecode, end_timecode);
+  for (auto& clip : clips) {
+    int64_t b = -clip->start_time() + clip->b_time();
+    int64_t b_frame = timecodeToAudioFrame(b);
+    clip->renderAudio(command_buffer, start_frame + b_frame, end_frame + b_frame);
+  }
 }
 
 void Track::invalidate() {

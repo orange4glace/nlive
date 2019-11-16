@@ -11,18 +11,20 @@
 #include "base/common/sig.h"
 #include "platform/undo/undo_stack.h"
 #include "model/sequence/clip.h"
+#include "renderer/video_renderer/command_buffer.h"
+#include "renderer/audio_renderer/command_buffer.h"
 
 namespace nlive {
-
-namespace video_renderer {
-class CommandBuffer;
-}
 
 class Track : public QObject, public Sig {
   Q_OBJECT
 
 private:
   sptr<IUndoStack> undo_stack_;
+
+  Rational time_base_;
+  int sample_rate_;
+
   std::set<QSharedPointer<Clip>, ClipCompare> clips_;
   std::set<QSharedPointer<Clip>, ClipStartCompare> clip_start_ordered_set_;
   std::set<QSharedPointer<Clip>, ClipEndCompare> clip_end_ordered_set_;
@@ -40,7 +42,7 @@ private:
   void doInvalidate();
 
 public:
-  Track(sptr<IUndoStack> undo_stack);
+  Track(sptr<IUndoStack> undo_stack, Rational time_base, int sample_rate);
 
   void addClip(QSharedPointer<Clip> clip);
   void removeClip(QSharedPointer<Clip> clip);
@@ -48,19 +50,25 @@ public:
   void detachClip(QSharedPointer<Clip> clip);
   bool hasClip(QSharedPointer<Clip> clip) const;
   QSharedPointer<Clip> getClipAt(int64_t time);
+  std::vector<QSharedPointer<Clip>> getClipsBetween(int64_t from, int64_t to);
 
   QSharedPointer<Clip> getNextClip(QSharedPointer<Clip> clip);
   QSharedPointer<Clip> getPrevClip(QSharedPointer<Clip> clip);
 
   int64_t getClipBTimecodeOffset(int64_t timecode, QSharedPointer<Clip> clip) const;
+  int64_t audioFrameToTimecode(int64_t frame) const;
+  int64_t timecodeToAudioFrame(int64_t timecode) const;
 
   void invalidate();
 
   void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
+  void renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame);
 
   const std::set<QSharedPointer<Clip>, ClipCompare>& clips();
 
   sptr<IUndoStack> undo_stack();
+  inline Rational const& time_base() const { return time_base_; }
+  inline int sample_rate() const { return sample_rate_; }
 
   sig2_t<void (QSharedPointer<Clip>)> onDidAddClip;
   sig2_t<void (QSharedPointer<Clip>)> onWillRemoveClip;

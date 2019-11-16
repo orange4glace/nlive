@@ -17,7 +17,7 @@ QSharedPointer<StorageDirectory> Project::root_storage_directory() {
 }
 
 QSharedPointer<Sequence> Project::createSequence() {
-  QSharedPointer<Sequence> sequence = QSharedPointer<Sequence>(new Sequence(undo_stack_, 30));
+  QSharedPointer<Sequence> sequence = QSharedPointer<Sequence>(new Sequence(undo_stack_, 30, 48000));
   return sequence;
 }
 

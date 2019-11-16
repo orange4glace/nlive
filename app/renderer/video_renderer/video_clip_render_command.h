@@ -88,11 +88,9 @@ public:
   }
 
   inline void render(QSharedPointer<RendererContext> ctx) {
-MEASURE_PERF_TIME(
     ctx->decoder_manager()->releaseDecoder(sharing->decoder_ref);
     ctx->releaseTemporaryRenderTexture("clip");
     ctx->releaseTemporaryRenderTexture("clip_temp");
-, "VideoPostRender")
   }
 
 };

@@ -13,6 +13,7 @@
 #include "model/common/rational.h"
 #include "model/sequence/track.h"
 #include "renderer/video_renderer/command_buffer.h"
+#include "renderer/audio_renderer/command_buffer.h"
 
 namespace nlive {
 
@@ -28,6 +29,7 @@ private:
   std::string id_;
   sptr<IUndoStack> undo_stack_;
   Rational time_base_;
+  int sample_rate_;
   int64_t current_time_;
   int64_t duration_;
 
@@ -51,7 +53,7 @@ private:
   void doInvalidate();
 
 public:
-  Sequence(sptr<IUndoStack> undo_stack, int base_time);
+  Sequence(sptr<IUndoStack> undo_stack, int base_time, int sample_rate);
 
   QSharedPointer<Track> addTrack();
   void removeTrackAt(int index);
@@ -64,12 +66,14 @@ public:
   int64_t getClipBTimecodeOffset(QSharedPointer<Clip> clip) const;
 
   QSharedPointer<video_renderer::CommandBuffer> renderVideo(int64_t timecode);
+  QSharedPointer<audio_renderer::CommandBuffer> renderAudio(int64_t start_frame, int64_t end_frame);
 
   void invalidate();
 
   const std::string& id();
   const Rational& time_base() const;
   int base_time() const;
+  inline int sample_rate() const { return sample_rate_; }
   int64_t current_time() const;
   int64_t duration() const;
   int width() const;
@@ -82,6 +86,7 @@ public:
   sig2_t<void (QSharedPointer<Track>, int /*index*/)> onWillRemoveTrack;
   sig2_t<void (int64_t /*old_current_time*/)> onDidChangeCurrentTime;
   sig2_t<void (int64_t /*old_duration*/)> onDidChangeDuration;
+  sig2_t<void ()> onInvalidate;
   sig2_t<void ()> onDirty;
 
 };

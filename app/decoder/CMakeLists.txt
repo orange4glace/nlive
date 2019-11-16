@@ -4,5 +4,8 @@ set(NLIVE_SOURCES
   decoder/video_decoder.cpp
   decoder/video_frame.h
   decoder/video_frame.cpp
+  decoder/audio_decoder.h
+  decoder/audio_decoder.cpp
+  decoder/audio_frame.h
   PARENT_SCOPE
 )

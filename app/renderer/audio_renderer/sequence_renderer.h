@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include "base/common/sig.h"
 #include "model/sequence/sequence.h"
+#include "renderer/audio_renderer/renderer.h"
 
 namespace nlive {
 
@@ -13,11 +14,21 @@ namespace audio_renderer {
 class SequenceRenderer : public QObject, public Sig {
 
 private:
-  QSharedPointeR<Sequence> sequence_;
+  QSharedPointer<Renderer> renderer_;
+  QSharedPointer<Sequence> sequence_;
+
+  int64_t base_frame_;
+  bool playing_;
+
+  void playingCallback(int index, int64_t start_frame, int64_t end_frame);
 
 public:
   SequenceRenderer(
     QSharedPointer<Sequence> sequence);
+
+  void start();
+  void stop();
+  void render();
 
 };
 

@@ -12,8 +12,8 @@ namespace {
   int __next_id = 0;
 }
 
-Clip::Clip(sptr<IUndoStack> undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
-  undo_stack_(undo_stack), time_base_(time_base), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
+Clip::Clip(sptr<IUndoStack> undo_stack, Rational time_base, int sample_rate, int64_t start_time, int64_t end_time, int64_t b_time) :
+  undo_stack_(undo_stack), time_base_(time_base), sample_rate_(sample_rate), start_time_(start_time), end_time_(end_time), b_time_(b_time), id_(__next_id++) {
   QSharedPointer<effect::TransformEffect> transform_effect = 
     QSharedPointer<effect::TransformEffect>(new effect::TransformEffect());
   addEffect(transform_effect);
@@ -21,7 +21,7 @@ Clip::Clip(sptr<IUndoStack> undo_stack, Rational time_base, int64_t start_time, 
 }
 
 Clip::Clip(const Clip& clip) :
-  Clip(clip.undo_stack_, clip.time_base_, clip.start_time_, clip.end_time_, clip.b_time_) {
+  Clip(clip.undo_stack_, clip.time_base_, clip.sample_rate_, clip.start_time_, clip.end_time_, clip.b_time_) {
 
 }
 
@@ -50,7 +50,7 @@ QSharedPointer<effect::TransformEffect> Clip::transform() {
 }
 
 void Clip::render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time) {}
-void Clip::renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t time) {}
+void Clip::renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame) {}
 
 int64_t Clip::start_time() const { return start_time_; }
 int64_t Clip::end_time() const { return end_time_; }

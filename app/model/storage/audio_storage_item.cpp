@@ -16,12 +16,12 @@ AudioStorageItem::AudioStorageItem(
 
 }
 
-QSharedPointer<Clip> AudioStorageItem::cliperize(Rational time_base) {
+QSharedPointer<Clip> AudioStorageItem::cliperize(QSharedPointer<Sequence> sequence) {
   qDebug() << "cliperize " << audio_resource_->duration() << " " <<
       audio_resource_->time_base().num() << audio_resource_->time_base().den() << " " <<
-      time_base.num() << " " << time_base.den() << "\n";
-  return QSharedPointer<Clip>(new AudioClip(nullptr, audio_resource_, time_base,
-    0, Rational::rescale(audio_resource_->duration(), audio_resource_->time_base(), time_base), 0));
+      sequence->time_base().num() << " " << sequence->time_base().den() << "\n";
+  return QSharedPointer<Clip>(new AudioClip(nullptr, audio_resource_, sequence->time_base(), sequence->sample_rate(),
+    0, Rational::rescale(audio_resource_->duration(), audio_resource_->time_base(), sequence->time_base()), 0));
 }
 
 QSharedPointer<AudioResource> AudioStorageItem::audio_resource() {

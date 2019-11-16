@@ -16,7 +16,7 @@ private:
 
 public:
   VideoClip(sptr<IUndoStack> undo_stack, QSharedPointer<VideoResource> video_resource,
-      Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
+      Rational time_base, int sample_rate, int64_t start_time, int64_t end_time, int64_t b_time);
   VideoClip(const VideoClip&);
 
   void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timecode) override;

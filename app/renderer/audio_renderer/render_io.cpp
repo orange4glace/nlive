@@ -33,9 +33,9 @@ RenderDevice::RenderDevice(QObject* parent, sptr<RenderState> render_state) :
 
 qint64 RenderDevice::readData(char* data, qint64 max_size) {
   if (max_size == 0) return 0;
+  memset(data, 0, max_size);
 
   char* cur_data_ptr = data;
-
   int bytes_per_mixed_sample = render_state_->bytes_per_sample() * render_state_->nb_channels();
   int bytes_per_slot = render_state_->buffer()->bytes_per_slot();
   int max_mixed_samples = max_size / bytes_per_mixed_sample;

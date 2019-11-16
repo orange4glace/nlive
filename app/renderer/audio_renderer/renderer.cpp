@@ -43,7 +43,7 @@ void Renderer::run() {
 
     std::unique_lock<std::mutex> state_lock(state_mutex_);
     if (requested_burst_command_buffer_ != nullptr) {
-      int writing_index = consumer_index + 1;
+      int writing_index = consumer_index;
       QSharedPointer<CommandBuffer> rcb = requested_burst_command_buffer_;
       requested_burst_command_buffer_ = nullptr;
       state_lock.unlock();
@@ -69,16 +69,21 @@ void Renderer::run() {
       else writing_index = producer_index;
 
       writing_index_ = writing_index;
-      int start_frame = calculateFrameByIndex(writing_index);
-      int end_frame = calculateFrameByIndex(writing_index + 1);
+      int64_t start_frame = calculateFrameByIndex(writing_index);
+      int64_t end_frame = calculateFrameByIndex(writing_index + 1);
       emit onRenderRequest(writing_index, start_frame, end_frame);
       // Wait until render data arrived
       state_ = State::WAITING_DATA;
       state_cv_.wait(state_lock);
-      if (state_ == State::RESET) continue;
+      if (state_ == State::RESET) {
+        state_ = State::IDLE;
+        continue;
+      }
       // Is this check statement redundant?
       assert(state_ == State::DATA_AVAILABLE);
-      QSharedPointer<CommandBuffer> rcb = requested_command_buffer_;
+      QSharedPointer<CommandBuffer> rcb;
+      if (requested_burst_command_buffer_) continue;
+      else rcb = requested_command_buffer_;
       state_lock.unlock();
       for (auto command : rcb->commands()) {
         command->render(render_context_);
@@ -103,7 +108,10 @@ void Renderer::reset() {
     render_state_mutex.lock();
     render_state_->reset();
     render_state_mutex.unlock();
+    requested_burst_command_buffer_ = nullptr;
+    requested_command_buffer_ = nullptr;
     state_ = State::RESET;
+    state_cv_.notify_one();
 }
 
 void Renderer::sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer) {
@@ -121,15 +129,8 @@ void Renderer::sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buf
     state_cv_.notify_one();
 }
 
-int Renderer::calculateFrameByIndex(int index) const {
+int64_t Renderer::calculateFrameByIndex(int index) const {
   return samples_per_channel_ * index;
-  int d = sample_rate_ / samples_per_channel_;
-  int z = sample_rate_ * (index / d) + samples_per_channel_ * (index % d);
-  if (d != 0 && index % d == 0) return z + samples_per_channel_;
-  else {
-    int r = sample_rate_ % samples_per_channel_;
-    return z + samples_per_channel_ + r;
-  }
 }
 
 }

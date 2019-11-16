@@ -13,9 +13,10 @@ namespace monitor_widget {
 
 MonitorWidget::MonitorWidget(QWidget* parent,
   QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-  QSharedPointer<IThemeService> theme_service) :
+  QSharedPointer<IThemeService> theme_service,
+  QSharedPointer<PlayService> play_service) :
   QDockWidget(parent),
-  timeline_widget_service_(timeline_widget_service),
+  timeline_widget_service_(timeline_widget_service), play_service_(play_service),
   theme_service_(theme_service),
   sequence_view_(nullptr) {
 
@@ -49,7 +50,7 @@ void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
   }
   sequence_view_ = nullptr;
   if (sequence) {
-    sequence_view_ = new SequenceView(this, sequence);
+    sequence_view_ = new SequenceView(this, sequence, play_service_);
     sequence_view_->show();
     sequence_view_->resize(size());
   }

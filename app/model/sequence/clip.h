@@ -31,6 +31,7 @@ protected:
   sptr<IUndoStack> undo_stack_;
 
   Rational time_base_;
+  int sample_rate_;
 
   int64_t start_time_;
   int64_t end_time_;
@@ -42,17 +43,18 @@ protected:
   QSharedPointer<effect::TransformEffect> transform_effect_;
 
 public:
-  Clip(sptr<IUndoStack> undo_stack, Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time);
+  Clip(sptr<IUndoStack> undo_stack, Rational time_base, int sample_rate, int64_t start_time, int64_t end_time, int64_t b_time);
   Clip(const Clip&);
 
   void setTime(int64_t start_time, int64_t end_time, int64_t b_time);
   void addEffect(QSharedPointer<effect::Effect> effect);
 
   virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
-  virtual void renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t time);
+  virtual void renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame);
 
   QSharedPointer<effect::TransformEffect> transform();
 
+  inline int sample_rate() const { return sample_rate_; }
   int64_t start_time() const;
   int64_t end_time() const;
   int64_t b_time() const;

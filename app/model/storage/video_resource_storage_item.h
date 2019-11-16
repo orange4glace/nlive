@@ -24,7 +24,7 @@ public:
     QSharedPointer<VideoResource> video_resource,
     QSharedPointer<AudioResource> audio_resouce);
 
-  QSharedPointer<Clip> cliperize(Rational time_base) override;
+  QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) override;
 
   QSharedPointer<VideoResource> video_resource();
   QSharedPointer<AudioResource> audio_resource();

@@ -106,7 +106,7 @@ void SequenceTimelineView::dragEnterEvent(QDragEnterEvent* event) {
     project_widget::StorageItemView* storage_item_view = 
       static_cast<project_widget::StorageItemView*>(StaticDragAndDrop::data());
     auto storage_item = storage_item_view->storage_item();
-    auto clip = storage_item->cliperize(sequence_->time_base());
+    auto clip = storage_item->cliperize(sequence_);
 
     ghost_sequence_view_ = new GhostSequenceView(this, &scroll_view_, sequence_);
     ghost_sequence_view_->setManipulationState(GhostSequenceView::ManipulationState::Translate);

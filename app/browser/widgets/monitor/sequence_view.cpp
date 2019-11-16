@@ -8,9 +8,10 @@ namespace nlive {
 
 namespace monitor_widget {
 
-SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence) :
-  QWidget(parent), sequence_(sequence) {
-  renderer_view_ = new SequenceRendererView(this, sequence);
+SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
+  QSharedPointer<PlayService> play_service) :
+  QWidget(parent), play_service_(play_service), sequence_(sequence) {
+  renderer_view_ = new SequenceRendererView(this, sequence, play_service_);
   renderer_view_->show();
 }
 

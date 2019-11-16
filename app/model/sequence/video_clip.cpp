@@ -11,8 +11,8 @@
 namespace nlive {
 
 VideoClip::VideoClip(sptr<IUndoStack> undo_stack, QSharedPointer<VideoResource> video_resource,
-    Rational time_base, int64_t start_time, int64_t end_time, int64_t b_time) :
-  Clip(undo_stack, time_base, start_time, end_time, b_time),
+    Rational time_base, int sample_rate, int64_t start_time, int64_t end_time, int64_t b_time) :
+  Clip(undo_stack, time_base, sample_rate, start_time, end_time, b_time),
   resource_(video_resource) {
   QSharedPointer<effect::GrayScaleEffect> gse = 
       QSharedPointer<effect::GrayScaleEffect>(new effect::GrayScaleEffect());
@@ -20,7 +20,7 @@ VideoClip::VideoClip(sptr<IUndoStack> undo_stack, QSharedPointer<VideoResource> 
 }
 
 VideoClip::VideoClip(const VideoClip& clip) :
-  VideoClip(clip.undo_stack_, clip.resource_, clip.time_base_, clip.start_time_, clip.end_time_, clip.b_time_) {
+  VideoClip(clip.undo_stack_, clip.resource_, clip.time_base_, clip.sample_rate_, clip.start_time_, clip.end_time_, clip.b_time_) {
   // TODO : Clone effects
 }
 
@@ -33,7 +33,6 @@ void VideoClip::render(QSharedPointer<video_renderer::CommandBuffer> command_buf
       new video_renderer::TransformBlitRenderCommand(position.x(), position.y()));
   auto post = QSharedPointer<video_renderer::VideoClipPostRenderCommand>(
       new video_renderer::VideoClipPostRenderCommand(pre->sharing, resource_));
-  qDebug() << "Render" << timecode;
   command_buffer->addCommand(pre);
   for (auto effect : effects_) effect->render(command_buffer, timecode);
   command_buffer->addCommand(blit);

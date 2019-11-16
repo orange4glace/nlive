@@ -18,6 +18,7 @@ RenderContext::RenderContext(int64_t ch_layout, AVSampleFormat sample_fmt,
   bytes_per_channel_ = samples_per_channel_ * bytes_per_sample_;
   buffer_size_ = nb_channels_ * bytes_per_channel_;
   data_ = new uint8_t[buffer_size_];
+  decoder_manager_ = QSharedPointer<DecoderManager>(new DecoderManager());
   clearData();
 }
 
@@ -45,8 +46,8 @@ SwrValue* RenderContext::getSwrValue(SwrKey& key) {
   uint8_t* out_data;
   uint8_t* flush_data;
   int linesize;
-  av_samples_alloc(&out_data, &linesize, nb_channels_, samples_per_channel_, sample_fmt_, 0);
-  av_samples_alloc(&flush_data, &linesize, nb_channels_, samples_per_channel_, sample_fmt_, 0);
+  av_samples_alloc(&out_data, &linesize, nb_channels_, samples_per_channel_ + 20000 /* padding for safety */, sample_fmt_, 0);
+  av_samples_alloc(&flush_data, &linesize, nb_channels_, samples_per_channel_ + 20000, sample_fmt_, 0);
   val.out_data = out_data;
   val.flush_data = flush_data;
   swr_map_[key] = val;

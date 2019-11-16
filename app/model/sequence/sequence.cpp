@@ -15,10 +15,9 @@ namespace {
   int z = 0;
 }
 
-Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time) :
-  undo_stack_(undo_stack), time_base_(1, base_time), current_time_(0),
-  invalidated_(false),
-  width_(1920), height_(1080) {
+Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time, int sample_rate) :
+  undo_stack_(undo_stack), time_base_(1, base_time), sample_rate_(sample_rate), 
+  current_time_(0), invalidated_(false), width_(1920), height_(1080) {
 
   invalidateTimer_ = new QTimer();
   connect(invalidateTimer_, &QTimer::timeout, this, [this]() {
@@ -29,6 +28,7 @@ Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time) :
   });
   invalidateTimer_->setInterval(33);
   invalidateTimer_->start();
+
 }
 
 QSharedPointer<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t timecode) {
@@ -40,11 +40,21 @@ QSharedPointer<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t time
   return command_buffer;
 }
 
+QSharedPointer<audio_renderer::CommandBuffer> Sequence::renderAudio(int64_t start_frame, int64_t end_frame) {
+  QSharedPointer<audio_renderer::CommandBuffer> command_buffer =
+    QSharedPointer<audio_renderer::CommandBuffer>(new audio_renderer::CommandBuffer());
+  for (auto track : tracks_) {
+    track->renderAudio(command_buffer, start_frame, end_frame);
+  }
+  return command_buffer;
+}
+
 void Sequence::doMakeDirty() {
   onDirty();
 }
 
 void Sequence::doInvalidate() {
+  onInvalidate();
   invalidated_ = true;
 }
 
@@ -53,7 +63,7 @@ QSharedPointer<Track> Sequence::addTrack() {
 }
 
 QSharedPointer<Track> Sequence::doAddTrack() {
-  QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_));
+  QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_, time_base_, sample_rate_));
   tracks_.push_back(track);
   std::vector<sig2_conn_t> connections;
   connections.push_back(track->onDidAddClip.connect(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
@@ -143,7 +153,7 @@ const Rational& Sequence::time_base() const {
 }
 
 int Sequence::base_time() const {
-  return time_base_.num();
+  return time_base_.den();
 }
 
 int64_t Sequence::current_time() const {

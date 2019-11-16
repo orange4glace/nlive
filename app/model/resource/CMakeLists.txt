@@ -2,6 +2,8 @@ set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   model/resource/resource.h
   model/resource/resource.cpp
+  model/resource/raw_audio_resource.h
+  model/resource/raw_audio_resource.cpp
   model/resource/audio_resource.h
   model/resource/audio_resource.cpp
   model/resource/video_resource.h

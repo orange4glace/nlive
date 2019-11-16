@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "base/common/sig.h"
+#include "browser/services/play/play_service.h"
 
 namespace nlive {
 
@@ -28,6 +29,7 @@ class MonitorWidget : public QDockWidget, public Sig {
 private:
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
   QSharedPointer<IThemeService> theme_service_;
+  QSharedPointer<PlayService> play_service_;
 
   std::vector<sig2_conn_t> widget_connections_;
   SequenceView* sequence_view_;
@@ -42,7 +44,8 @@ protected:
 public:
   MonitorWidget(QWidget* parent,
     QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-    QSharedPointer<IThemeService> theme_service);
+    QSharedPointer<IThemeService> theme_service,
+    QSharedPointer<PlayService> play_service);
 
 };
 
