@@ -9,7 +9,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 GhostTrackView::GhostTrackView(QWidget* parent, SequenceScrollView* scroll_view) :
   QWidget(parent),

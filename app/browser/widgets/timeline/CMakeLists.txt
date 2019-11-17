@@ -2,8 +2,11 @@ add_subdirectory(scrollview)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
-  browser/widgets/timeline/timelinewidget.h
-  browser/widgets/timeline/timelinewidget.cpp
+  browser/widgets/timeline/sequence_playable.h
+  browser/widgets/timeline/sequence_playable.cpp
+
+  browser/widgets/timeline/timeline_widget.h
+  browser/widgets/timeline/timeline_widget.cpp
 
   browser/widgets/timeline/sequenceview.h
   browser/widgets/timeline/sequenceview.cpp

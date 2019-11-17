@@ -34,6 +34,7 @@ void SequenceRenderer::start() {
 
 void SequenceRenderer::stop() {
   playing_ = false;
+  renderer_->reset();
 }
 
 void SequenceRenderer::render() {

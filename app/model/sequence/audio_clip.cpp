@@ -17,7 +17,6 @@ AudioClip::AudioClip(const AudioClip& clip) :
 }
 
 void AudioClip::renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame) {
-  qDebug() << "Render Audio" << start_frame << end_frame;
   auto cmd = QSharedPointer<audio_renderer::AudioResourceRenderCommand>(new 
     audio_renderer::AudioResourceRenderCommand(resource_, sample_rate_, id(), start_frame, end_frame));
   command_buffer->addCommand(cmd);

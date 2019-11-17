@@ -1,8 +1,6 @@
-#include "browser/widgets/monitor/sequence_playable.h"
+#include "browser/widgets/timeline/sequence_playable.h"
 
 namespace nlive {
-
-namespace monitor_widget {
 
 SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence) :
     QObject(parent), sequence_(sequence), invalidated_(false),
@@ -25,19 +23,17 @@ SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> seq
 }
 
 SequencePlayable::~SequencePlayable() {
-  if (sequence_video_renderer_) delete sequence_video_renderer_;
+  // if (sequence_video_renderer_) delete sequence_video_renderer_;
   if (audio_sequence_renderer_) delete audio_sequence_renderer_;
 }
 
-void SequencePlayable::initializeVideoRenderer(QOpenGLContext* context) {
-  sequence_video_renderer_ =
-      new video_renderer::SequenceRenderer(sequence_, context);
-  sequence_video_renderer_->initialize();
+void SequencePlayable::setVideoRenderer(video_renderer::SequenceRenderer* renderer) {
+  sequence_video_renderer_ = renderer;
 }
 
 void SequencePlayable::onInvalidate() {
   if (playing()) return;
-  sequence_video_renderer_->render();
+  if (sequence_video_renderer_) sequence_video_renderer_->render();
   audio_sequence_renderer_->render();
 }
 
@@ -56,15 +52,13 @@ void SequencePlayable::playingCallback(int64_t elapsed_time) {
   int64_t timecode = started_timecode_ + elapsed_timecode;
   if (playing_timecode_ != timecode) {
     sequence_->setCurrentTime(started_timecode_ + elapsed_timecode);
-    sequence_video_renderer_->render();
+    if (sequence_video_renderer_) sequence_video_renderer_->render();
     playing_timecode_ = timecode;
   }
 }
 
 void SequencePlayable::playStopCallback() {
   audio_sequence_renderer_->stop();
-}
-
 }
 
 }

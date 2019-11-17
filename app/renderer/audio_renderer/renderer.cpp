@@ -42,28 +42,20 @@ void Renderer::run() {
     render_state_lock.unlock();
 
     std::unique_lock<std::mutex> state_lock(state_mutex_);
+    int writing_index;
+    int next_producer_index;
     if (requested_burst_command_buffer_ != nullptr) {
-      int writing_index = consumer_index;
+      writing_index = consumer_index;
       QSharedPointer<CommandBuffer> rcb = requested_burst_command_buffer_;
       requested_burst_command_buffer_ = nullptr;
       state_lock.unlock();
       for (auto command : rcb->commands()) {
         command->render(render_context_);
       }
-
-      auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
-      auto buffer = render_state_->buffer();
-      slot_mutex.lock();
-      buffer->copyFrom(writing_index, render_context_->data());
-      state_lock.lock();
-      render_state_->setProducerIndex(std::max(producer_index, writing_index + 1));
-      state_lock.unlock();
-      slot_mutex.unlock();
-      render_context_->clearData();
+      next_producer_index = std::max(producer_index, writing_index + 1);
     }
 
     else {
-      int writing_index;
       if (producer_index < consumer_index)
         writing_index = consumer_index + 1;
       else writing_index = producer_index;
@@ -88,17 +80,26 @@ void Renderer::run() {
       for (auto command : rcb->commands()) {
         command->render(render_context_);
       }
-
-      auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
-      auto buffer = render_state_->buffer();
-      slot_mutex.lock();
-      buffer->copyFrom(writing_index, render_context_->data());
-      state_lock.lock();
-      render_state_->setProducerIndex(writing_index + 1);
-      state_lock.unlock();
-      slot_mutex.unlock();
-      render_context_->clearData();
+      next_producer_index = writing_index + 1;
     }
+
+    auto& slot_mutex = render_state_->slot_mutex_at(writing_index);
+    auto buffer = render_state_->buffer();
+    // TODO : FIXME :
+    // This seems really inefficient. So many locks.
+    slot_mutex.lock();
+    buffer->copyFrom(writing_index, render_context_->data());
+    slot_mutex.unlock();
+    state_lock.lock();
+    if (state_ == State::RESET) {
+      state_ = State::IDLE;
+      continue;
+    }
+    render_state_lock.lock();
+    render_state_->setProducerIndex(next_producer_index);
+    render_state_lock.unlock();
+    state_lock.unlock();
+    render_context_->clearData();
   }
 }
 

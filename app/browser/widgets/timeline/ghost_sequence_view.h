@@ -13,7 +13,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class GhostTrackView;
 class GhostClipView;

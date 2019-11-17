@@ -4,7 +4,7 @@
 #include <QSharedPointer>
 
 #include "browser/widgets/timeline/timeline_widget_service.h"
-#include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget.h"
 
 namespace nlive {
 
@@ -13,7 +13,7 @@ class TimelineWidgetService : public ITimelineWidgetService {
 private:
   static QSharedPointer<TimelineWidgetService> instance_;
 
-  timelinewidget::TimelineWidget* current_widget_;
+  timeline_widget::TimelineWidget* current_widget_;
 
 public:
   static void Initialize();
@@ -23,8 +23,8 @@ public:
 
   TimelineWidgetService();
 
-  void setCurrentWidget(timelinewidget::TimelineWidget* widget) override;
-  timelinewidget::TimelineWidget* current_widget() override;
+  void setCurrentWidget(timeline_widget::TimelineWidget* widget) override;
+  timeline_widget::TimelineWidget* current_widget() override;
 
 };
 

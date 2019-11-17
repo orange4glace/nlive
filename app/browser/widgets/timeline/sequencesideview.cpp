@@ -10,13 +10,13 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 SequenceSideView::SequenceSideView(
   QWidget* parent,
   QSharedPointer<Sequence> sequence,
   QSharedPointer<IThemeService> theme_service) : 
-  QWidget(parent), sequence_(sequence), theme_service_(theme_service) {
+  Div(parent), sequence_(sequence), theme_service_(theme_service) {
 
   auto& tracks = sequence->tracks();
   for (int i = 0; i < tracks.size(); i ++) addTrackView(tracks[i], i);
@@ -42,7 +42,7 @@ void SequenceSideView::removeTrackView(QSharedPointer<Track> track, int index) {
   delete view;
 }
 
-void SequenceSideView::resizeEvent(QResizeEvent* event) {
+void SequenceSideView::contentRectUpdated() {
   // Space for ruler
   // TODO : remove hard coding
   for (int i = 0; i < track_views_.size(); i ++) {
@@ -50,8 +50,6 @@ void SequenceSideView::resizeEvent(QResizeEvent* event) {
     track_view->resize(width(), 29);
     track_view->move(0, i * 30);
   }
-
-  QWidget::resizeEvent(event);
 }
 
 void SequenceSideView::paintEvent(QPaintEvent* event) {

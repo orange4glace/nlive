@@ -15,7 +15,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 ClipView::ClipView(
   QWidget* const parent,

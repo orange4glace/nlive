@@ -4,8 +4,6 @@ set(NLIVE_SOURCES
   browser/widgets/monitor/monitor_widget.cpp
   browser/widgets/monitor/sequence_view.h
   browser/widgets/monitor/sequence_view.cpp
-  browser/widgets/monitor/sequence_playable.h
-  browser/widgets/monitor/sequence_playable.cpp
   browser/widgets/monitor/sequence_renderer_view.h
   browser/widgets/monitor/sequence_renderer_view.cpp
   PARENT_SCOPE

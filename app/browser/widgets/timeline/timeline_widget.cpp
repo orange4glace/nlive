@@ -1,9 +1,8 @@
-#include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget.h"
 
-#include <QStyle>
 #include <QDebug>
 #include <QPainter>
-#include <QStyleOption>
+#include <QShortcut>
 
 #include "model/sequence/sequence.h"
 #include "platform/theme/themeservice.h"
@@ -14,30 +13,31 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 TimelineWidget::TimelineWidget(
   QWidget* parent,
   QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service) :
+  QSharedPointer<ITimelineWidgetService> timeline_widget_service,
+  QSharedPointer<PlayService> play_service) :
   QDockWidget(parent),
-  theme_service_(theme_service),
+  theme_service_(theme_service), play_service_(play_service),
   timeline_widget_service_(timeline_widget_service),
   sequence_(nullptr),
   sequence_view_(nullptr) {
-  split_left_view_ = new FillParentBox(this);
-  split_right_view_ = new FillParentBox(this);
   setTitleBarWidget(new QWidget());
   setFocusPolicy(Qt::ClickFocus);
+
+  QShortcut* SC_space = new QShortcut(QKeySequence(Qt::Key_Space), this, 0, 0, Qt::WidgetShortcut);
+  connect(SC_space, &QShortcut::activated, [this]() {
+    if (sequence_view_) {
+      play_service_->toggle(sequence_view_->sequence_playable());
+    }
+  });
 }
 
 void TimelineWidget::resizeEvent(QResizeEvent* event) {
-  // TODO : implement SplitView
-  split_left_view_->move(0, 30);
-  split_left_view_->resize(200, height());
-  split_right_view_->move(200, 0);
-  split_right_view_->resize(width() - 200, height());
-  QWidget::resizeEvent(event);
+  if (sequence_view_) sequence_view_->setGeometry(rect());
 }
 
 void TimelineWidget::focusInEvent(QFocusEvent* event) {
@@ -47,8 +47,6 @@ void TimelineWidget::focusInEvent(QFocusEvent* event) {
 void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
   if (sequence_ != nullptr) {
     sequence_ = nullptr;
-    split_left_view_->setContent(nullptr);
-    split_right_view_->setContent(nullptr);
     delete sequence_view_;
   }
   sequence_ = sequence;
@@ -56,9 +54,8 @@ void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
     onDidChangeSequence(sequence);
     return;
   }
-  sequence_view_ = new SequenceView(sequence, theme_service_);
-  split_left_view_->setContent(sequence_view_->side_view());
-  split_right_view_->setContent(sequence_view_->timeline_view()->scroll_view());
+  sequence_view_ = new SequenceView(this, sequence, theme_service_, play_service_);
+  sequence_view_->setGeometry(rect());
   onDidChangeSequence(sequence);
 }
 

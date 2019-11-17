@@ -4,7 +4,7 @@
 #include <QPainter>
 
 #include "browser/widgets/timeline/timeline_widget_service.h"
-#include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/monitor/sequence_view.h"
 
 namespace nlive {
@@ -22,11 +22,11 @@ MonitorWidget::MonitorWidget(QWidget* parent,
 
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
-    sig2_t<void (timelinewidget::TimelineWidget*)>::slot_type(
+    sig2_t<void (timeline_widget::TimelineWidget*)>::slot_type(
     &MonitorWidget::handleDidChangeCurrentTimelineWidget, this, _1).track(__sig_scope_));
 }
 
-void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::TimelineWidget* timeline_widget) {
+void MonitorWidget::handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget) {
   for (auto& connection : widget_connections_)
     connection.disconnect();
   widget_connections_.clear();
@@ -36,21 +36,22 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timelinewidget::Timelin
   }
   sequence_view_ = nullptr;
   if (timeline_widget != nullptr) {
-    handleDidChangeSequence(timeline_widget->sequence());
-    auto conn = timeline_widget->onDidChangeSequence.connect(
-      boost::bind(&MonitorWidget::handleDidChangeSequence, this, _1));
+    handleDidChangeSequenceView(timeline_widget->sequence_view());
+    auto conn = timeline_widget->onDidChangeSequence.connect(sig2_t<void (QSharedPointer<Sequence> sequence)>::slot_type([this, timeline_widget](QSharedPointer<Sequence> sequence) {
+      handleDidChangeSequenceView(timeline_widget->sequence_view());
+    }));
     widget_connections_.push_back(conn);
   }
 }
 
-void MonitorWidget::handleDidChangeSequence(QSharedPointer<Sequence> sequence) {
+void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* timeline_widget_sequence_view) {
   if (sequence_view_ != nullptr) {
     // TODO
     // delete sequence_view_;
   }
   sequence_view_ = nullptr;
-  if (sequence) {
-    sequence_view_ = new SequenceView(this, sequence, play_service_);
+  if (timeline_widget_sequence_view) {
+    sequence_view_ = new SequenceView(this, timeline_widget_sequence_view, play_service_);
     sequence_view_->show();
     sequence_view_->resize(size());
   }

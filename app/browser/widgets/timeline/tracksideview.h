@@ -11,7 +11,7 @@ namespace nlive {
 class Track;
 class IThemeService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TrackSideView : public QWidget {
 

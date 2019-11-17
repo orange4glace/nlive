@@ -8,7 +8,7 @@ namespace nlive {
 
 class SequenceScrollView;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class GhostClipView;
 

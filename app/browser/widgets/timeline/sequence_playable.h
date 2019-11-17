@@ -13,8 +13,6 @@
 
 namespace nlive {
 
-namespace monitor_widget {
-
 class SequencePlayable : public QObject, public Playable, public Sig {
 
 private:
@@ -34,7 +32,7 @@ public:
   SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence);
   ~SequencePlayable();
 
-  void initializeVideoRenderer(QOpenGLContext* context);
+  void setVideoRenderer(video_renderer::SequenceRenderer* renderer);
 
   void beforePlayStartCallback() override;
   void playStartCallback() override;
@@ -44,8 +42,6 @@ public:
   inline video_renderer::SequenceRenderer* sequence_video_renderer() { return sequence_video_renderer_; };
 
 };
-
-}
 
 }
 

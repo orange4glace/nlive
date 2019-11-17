@@ -30,7 +30,7 @@ SequenceScrollView::SequenceScrollView(
   QWidget* const content_widget,
   QSharedPointer<Sequence> sequence,
   QSharedPointer<IThemeService> theme_service) :
-  QWidget(parent),
+  Div(parent),
   theme_service_(theme_service),
   sequence_(sequence),
   content_widget_(nullptr),
@@ -202,9 +202,8 @@ void SequenceScrollView::paintEvent(QPaintEvent* event) {
   p.fillPath(path, theme.primaryColor());
 }
 
-void SequenceScrollView::resizeEvent(QResizeEvent* event) {
+void SequenceScrollView::contentRectUpdated() {
   doResize();
-  QWidget::resizeEvent(event);
 }
 
 int SequenceScrollView::getTimeRelativeToView(int pixel) const {

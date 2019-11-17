@@ -10,7 +10,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 GhostSequenceView::GhostSequenceView(
   QWidget* parent,

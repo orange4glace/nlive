@@ -1,9 +1,11 @@
 #ifndef NLIVE_BROWSER_PLAYABLE_H_
 #define NLIVE_BROWSER_PLAYABLE_H_
 
+#include "base/common/sig.h"
+
 namespace nlive {
 
-class Playable {
+class Playable : public Sig {
 
 friend class PlayService;
 
@@ -19,7 +21,7 @@ private:
   }
 
 protected:
-  Playable() = default;
+  inline Playable() : playing_(false) {}
 
 public:
   virtual inline void beforePlayStartCallback() {}
@@ -28,6 +30,9 @@ public:
   virtual inline void playStopCallback() {}
 
   inline bool playing() const { return playing_; }
+
+  sig2_t<void ()> onPlay;
+  sig2_t<void ()> onStop;
 
 };
 

@@ -16,7 +16,7 @@ namespace effect_control {
 SequenceView::SequenceView(
   QWidget* parent,
   QSharedPointer<EffectControlLayout> layout,
-  timelinewidget::SequenceView* timeline_widget_sequence_view,
+  timeline_widget::SequenceView* timeline_widget_sequence_view,
   QSharedPointer<IThemeService> theme_service,
   QSharedPointer<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),

@@ -7,14 +7,10 @@
 
 #include "base/common/sig.h"
 #include "browser/services/play/play_service.h"
+#include "browser/widgets/timeline/timeline_widget.h"
+#include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
-
-namespace timelinewidget {
-  
-class TimelineWidget;
-
-}
 
 class ITimelineWidgetService;
 class IThemeService;
@@ -34,8 +30,8 @@ private:
   std::vector<sig2_conn_t> widget_connections_;
   SequenceView* sequence_view_;
 
-  void handleDidChangeCurrentTimelineWidget(timelinewidget::TimelineWidget* timeline_widget);
-  void handleDidChangeSequence(QSharedPointer<Sequence> sequence);
+  void handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget);
+  void handleDidChangeSequenceView(timeline_widget::SequenceView* sequence_view);
 
 protected:
   void paintEvent(QPaintEvent* event) override;

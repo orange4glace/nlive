@@ -7,7 +7,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 GhostClipView::GhostClipView(SequenceScrollView* scroll_view, int start_time, int end_time) :
   scroll_view_(scroll_view),

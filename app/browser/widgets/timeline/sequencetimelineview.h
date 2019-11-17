@@ -7,6 +7,7 @@
 #include <set>
 #include <vector>
 
+#include "base/layout/div.h"
 #include "base/common/sig.h"
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
 #include "browser/widgets/timeline/ghost_sequence_view.h"
@@ -17,7 +18,7 @@ class Track;
 class Sequence;
 class IThemeService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TrackTimelineView;
 class ClipView;
@@ -35,14 +36,14 @@ enum ManipulateState {
 
 }
 
-class SequenceTimelineView : public QWidget, public Sig {
+class SequenceTimelineView : public Div {
   Q_OBJECT
 
 private:
   QSharedPointer<IThemeService> theme_service_;
 
   QSharedPointer<Sequence> sequence_;
-  nlive::SequenceScrollView scroll_view_;
+  nlive::SequenceScrollView* scroll_view_;
 
   ManipulateState manipulate_state_;
   GhostSequenceView* ghost_sequence_view_;
@@ -88,7 +89,7 @@ private slots:
   void handleWillRemoveTrack(QSharedPointer<Track> track, int index);
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
   void paintEvent(QPaintEvent* event) override;
 
   void mousePressEvent(QMouseEvent* event) override;
@@ -102,7 +103,7 @@ protected:
 
 public:
   SequenceTimelineView(
-    QWidget* parent,
+    SequenceScrollView* scroll_view,
     QSharedPointer<Sequence> const sequence,
     QSharedPointer<IThemeService> const themeService);
 

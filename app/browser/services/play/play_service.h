@@ -28,8 +28,11 @@ private:
 public:
   PlayService(QObject* parent);
   void play(Playable* playable);
+  void toggle(Playable* playable);
   void stop();
+  void stop(Playable* playable);
 
+  inline Playable* current_playable() { return current_playable_; }
   inline bool playing() const { return playing_; }
 
 };

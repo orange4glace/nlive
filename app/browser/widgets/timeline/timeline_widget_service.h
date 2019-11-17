@@ -2,7 +2,7 @@
 #define NLIVE_TIMELINE_WIDGET_SERVICE_H_
 
 #include "base/common/sig.h"
-#include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget.h"
 
 namespace nlive {
 
@@ -12,10 +12,10 @@ protected:
   inline ITimelineWidgetService() {}
 
 public:
-  virtual void setCurrentWidget(timelinewidget::TimelineWidget* widget) = 0;
-  virtual timelinewidget::TimelineWidget* current_widget() = 0;
+  virtual void setCurrentWidget(timeline_widget::TimelineWidget* widget) = 0;
+  virtual timeline_widget::TimelineWidget* current_widget() = 0;
 
-  sig2_t<void (timelinewidget::TimelineWidget* widget)> onDidChangeCurrentWidget;
+  sig2_t<void (timeline_widget::TimelineWidget* widget)> onDidChangeCurrentWidget;
 
 };
 

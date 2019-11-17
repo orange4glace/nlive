@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 #include <QVBoxLayout>
+#include "base/layout/div.h"
 #include "base/common/sig.h"
 
 namespace nlive {
@@ -12,11 +13,11 @@ class Sequence;
 class Track;
 class IThemeService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TrackSideView;
 
-class SequenceSideView : public QWidget, public Sig {
+class SequenceSideView : public Div {
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -30,7 +31,7 @@ private:
   void removeTrackView(QSharedPointer<Track> track, int index);
 
 protected:
-  void resizeEvent(QResizeEvent* event) override;
+  void contentRectUpdated() override;
   void paintEvent(QPaintEvent* event) override;
 
 public:

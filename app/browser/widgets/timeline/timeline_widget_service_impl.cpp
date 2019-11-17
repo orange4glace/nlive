@@ -14,13 +14,13 @@ TimelineWidgetService::TimelineWidgetService() :
 
 }
 
-void TimelineWidgetService::setCurrentWidget(timelinewidget::TimelineWidget* widget) {
+void TimelineWidgetService::setCurrentWidget(timeline_widget::TimelineWidget* widget) {
   if (current_widget_ == widget) return;
   current_widget_ = widget;
   onDidChangeCurrentWidget(widget);
 }
 
-timelinewidget::TimelineWidget* TimelineWidgetService::current_widget() {
+timeline_widget::TimelineWidget* TimelineWidgetService::current_widget() {
   return current_widget_;
 }
 

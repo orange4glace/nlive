@@ -18,7 +18,7 @@ class Track;
 class SequenceScrollView;
 class IThemeService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TrackTimelineView : public QWidget, public Sig {
   Q_OBJECT

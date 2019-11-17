@@ -2,6 +2,7 @@
 #define NLIVE_SEQUENCE_SCROLL_VIEW_H_
 
 #include <QWidget>
+#include "base/layout/div.h"
 #include "base/common/sig.h"
 #include "browser/widgets/timeline/scrollview/scrollbar.h"
 
@@ -10,7 +11,7 @@ namespace nlive {
 class Sequence;
 class IThemeService;
 
-class SequenceScrollView : public QWidget, public Sig {
+class SequenceScrollView : public Div {
   Q_OBJECT
 
 private:
@@ -46,8 +47,8 @@ private:
 protected:
   void mouseMoveEvent(QMouseEvent* event) override;
 
+  void contentRectUpdated() override;
   void paintEvent(QPaintEvent* event) override;
-  void resizeEvent(QResizeEvent* event) override;
 
 public:
   SequenceScrollView(

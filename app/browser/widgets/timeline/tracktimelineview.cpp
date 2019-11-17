@@ -12,7 +12,7 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 TrackTimelineView::TrackTimelineView(
   QWidget* const parent,

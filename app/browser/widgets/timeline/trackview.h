@@ -14,7 +14,7 @@ class Track;
 class IThemeService;
 class SequenceScrollView;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TrackView {
 

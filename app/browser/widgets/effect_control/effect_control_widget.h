@@ -14,7 +14,7 @@ namespace nlive {
 class IThemeService;
 class ITimelineWidgetService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class TimelineWidget;
 class SequenceView;
@@ -34,14 +34,14 @@ private:
   QSharedPointer<IMementoService> memento_service_;
 
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
-  timelinewidget::TimelineWidget* target_timeline_widget_;
+  timeline_widget::TimelineWidget* target_timeline_widget_;
   sig2_conn_t timeline_widget_connection_;
   effect_control::SequenceView* sequence_view_;
 
   QSharedPointer<EffectControlLayout> layout_params_;
 
-  void setTargetTimelineWidget(timelinewidget::TimelineWidget* widget);
-  void setTargetTimelineWidgetSequenceView(timelinewidget::SequenceView* sequence_view);
+  void setTargetTimelineWidget(timeline_widget::TimelineWidget* widget);
+  void setTargetTimelineWidgetSequenceView(timeline_widget::SequenceView* sequence_view);
   
 protected:
   void paintEvent(QPaintEvent* event);

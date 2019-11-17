@@ -38,13 +38,13 @@ EffectControlWidget::EffectControlWidget(
   sequence_view_(nullptr) {
   layout_params_ = QSharedPointer<EffectControlLayout>(new EffectControlLayout(0.5));
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
-    sig2_t<void (timelinewidget::TimelineWidget*)>::slot_type(
-    [this](timelinewidget::TimelineWidget* widget) {
+    sig2_t<void (timeline_widget::TimelineWidget*)>::slot_type(
+    [this](timeline_widget::TimelineWidget* widget) {
       this->setTargetTimelineWidget(widget);
     }).track(__sig_scope_));
 }
 
-void EffectControlWidget::setTargetTimelineWidget(timelinewidget::TimelineWidget* timeline_widget) {
+void EffectControlWidget::setTargetTimelineWidget(timeline_widget::TimelineWidget* timeline_widget) {
   qDebug() << "[EffectControlWidget] setTargetTimelineWidget " << timeline_widget << "\n";
   if (target_timeline_widget_ != nullptr) {
     target_timeline_widget_ = nullptr;
@@ -63,7 +63,7 @@ void EffectControlWidget::setTargetTimelineWidget(timelinewidget::TimelineWidget
     }));
 }
 
-void EffectControlWidget::setTargetTimelineWidgetSequenceView(timelinewidget::SequenceView* sequence_view) {
+void EffectControlWidget::setTargetTimelineWidgetSequenceView(timeline_widget::SequenceView* sequence_view) {
   qDebug() << "[EffectControlWidget] setTargetTimelineWidget " << sequence_view << "\n";
   if (sequence_view_ != nullptr)
     delete sequence_view_;

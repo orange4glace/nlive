@@ -21,24 +21,18 @@
 
 namespace nlive {
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 SequenceTimelineView::SequenceTimelineView(
-  QWidget* parent,
+  SequenceScrollView* scroll_view,
   QSharedPointer<Sequence> sequence,
   QSharedPointer<IThemeService> const theme_service) :
-  QWidget(nullptr),
-  sequence_(sequence),
-  scroll_view_(parent, this, sequence, theme_service),
-  manipulate_state_(ManipulateState::IDLE),
-  ghost_sequence_view_(nullptr),
-  theme_service_(theme_service) {
-  // TODO : fix this crazy hierarchy
-  // Current : (SequenceScrollView ---> SequenceTimelineView)
-  // Should be : (SequenceTimelineView ---> SequenceScrollView)
+  Div(scroll_view), theme_service_(theme_service), sequence_(sequence),
+  scroll_view_(scroll_view), manipulate_state_(ManipulateState::IDLE),
+  ghost_sequence_view_(nullptr) {
+  scroll_view->setContentWidget(this);
   setAcceptDrops(true);
-  setParent(&scroll_view_);
-  scroll_view_.onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+  scroll_view_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
     [this]() {
     updateClipViews();
   })));
@@ -52,7 +46,7 @@ SequenceTimelineView::SequenceTimelineView(
 
 void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int index) {
   // Create and add Track view
-  auto view = new TrackTimelineView(this, track, &scroll_view_, theme_service_);
+  auto view = new TrackTimelineView(this, track, scroll_view_, theme_service_);
   track_views_.emplace(track_views_.begin() + index, view);
 
   for (auto clip_view : view->focused_clip_views())
@@ -108,7 +102,7 @@ void SequenceTimelineView::dragEnterEvent(QDragEnterEvent* event) {
     auto storage_item = storage_item_view->storage_item();
     auto clip = storage_item->cliperize(sequence_);
 
-    ghost_sequence_view_ = new GhostSequenceView(this, &scroll_view_, sequence_);
+    ghost_sequence_view_ = new GhostSequenceView(this, scroll_view_, sequence_);
     ghost_sequence_view_->setManipulationState(GhostSequenceView::ManipulationState::Translate);
     manipulate_target_clips_.clear();
     manipulate_target_clips_.resize(track_views_.size());
@@ -116,7 +110,7 @@ void SequenceTimelineView::dragEnterEvent(QDragEnterEvent* event) {
     auto& manipulate_track = manipulate_target_clips_[0];
     manipulate_track.insert(clip);
     ghost_sequence_view_->getGhostTrackView(0)->addGhostClipView(
-      new GhostClipView(&scroll_view_, clip->start_time(), clip->end_time()));
+      new GhostClipView(scroll_view_, clip->start_time(), clip->end_time()));
     updateGhostSequenceView();
   }
   last_mouse_pos_ = event->pos();
@@ -193,7 +187,7 @@ void SequenceTimelineView::startClipResizeLeft(ClipView* clip_view, QMouseEvent*
   if (manipulate_state_ != ManipulateState::IDLE) return;
   manipulate_state_ = ManipulateState::RESIZE_LEFT;
   // TODO : delete
-  ghost_sequence_view_ = new GhostSequenceView(this, &scroll_view_, sequence_);
+  ghost_sequence_view_ = new GhostSequenceView(this, scroll_view_, sequence_);
   ghost_sequence_view_->setManipulationState(GhostSequenceView::ManipulationState::ResizeLeft);
   manipulate_target_clips_.clear();
   manipulate_target_clips_.resize(track_views_.size());
@@ -204,7 +198,7 @@ void SequenceTimelineView::startClipResizeLeft(ClipView* clip_view, QMouseEvent*
     auto& focused_clip_views = track_view->focused_clip_views();
     auto ghost_track_view = ghost_sequence_view_->getGhostTrackView(i);
     for (auto clip_view : focused_clip_views) {
-      ghost_track_view->addGhostClipView(new GhostClipView(&scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
+      ghost_track_view->addGhostClipView(new GhostClipView(scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
       manipulate_track.insert(clip_view->clip());
     }
   }
@@ -214,7 +208,7 @@ void SequenceTimelineView::startClipResizeLeft(ClipView* clip_view, QMouseEvent*
 void SequenceTimelineView::handleClipResizeLeft(QMouseEvent* event) {
   if (manipulate_state_ != ManipulateState::RESIZE_LEFT) return;
   QPoint d_mouse_pos = event->pos() - manipulate_start_mouse_pos_;
-  int dt = scroll_view_.getTimeAmountRelativeToView(d_mouse_pos.x());
+  int dt = scroll_view_->getTimeAmountRelativeToView(d_mouse_pos.x());
   ghost_sequence_view_->setStartExtent(dt);
 }
 
@@ -255,7 +249,7 @@ void SequenceTimelineView::startClipResizeRight(ClipView* clip_view, QMouseEvent
   if (manipulate_state_ != ManipulateState::IDLE) return;
   manipulate_state_ = ManipulateState::RESIZE_RIGHT;
   // TODO : delete
-  ghost_sequence_view_ = new GhostSequenceView(this, &scroll_view_, sequence_);
+  ghost_sequence_view_ = new GhostSequenceView(this, scroll_view_, sequence_);
   ghost_sequence_view_->setManipulationState(GhostSequenceView::ManipulationState::ResizeRight);
   manipulate_target_clips_.clear();
   manipulate_target_clips_.resize(track_views_.size());
@@ -266,7 +260,7 @@ void SequenceTimelineView::startClipResizeRight(ClipView* clip_view, QMouseEvent
     auto& focused_clip_views = track_view->focused_clip_views();
     auto ghost_track_view = ghost_sequence_view_->getGhostTrackView(i);
     for (auto clip_view : focused_clip_views) {
-      ghost_track_view->addGhostClipView(new GhostClipView(&scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
+      ghost_track_view->addGhostClipView(new GhostClipView(scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
       manipulate_track.insert(clip_view->clip());
     }
   }
@@ -276,7 +270,7 @@ void SequenceTimelineView::startClipResizeRight(ClipView* clip_view, QMouseEvent
 void SequenceTimelineView::handleClipResizeRight(QMouseEvent* event) {
   if (manipulate_state_ != ManipulateState::RESIZE_RIGHT) return;
   QPoint d_mouse_pos = event->pos() - manipulate_start_mouse_pos_;
-  int dt = scroll_view_.getTimeAmountRelativeToView(d_mouse_pos.x());
+  int dt = scroll_view_->getTimeAmountRelativeToView(d_mouse_pos.x());
   ghost_sequence_view_->setEndExtent(dt);
 }
 
@@ -317,7 +311,7 @@ void SequenceTimelineView::endClipResizeRight(QMouseEvent* event) {
 void SequenceTimelineView::startClipTranslate(QMouseEvent* event) {
   if (manipulate_state_ != ManipulateState::CLIP_BAR_PRESSED) return;
   manipulate_state_ = ManipulateState::CLIP_TRANSLATE;
-  ghost_sequence_view_ = new GhostSequenceView(this, &scroll_view_, sequence_);
+  ghost_sequence_view_ = new GhostSequenceView(this, scroll_view_, sequence_);
   ghost_sequence_view_->setManipulationState(GhostSequenceView::ManipulationState::Translate);
   manipulate_target_clips_.clear();
   manipulate_target_clips_.resize(track_views_.size());
@@ -328,7 +322,7 @@ void SequenceTimelineView::startClipTranslate(QMouseEvent* event) {
     auto& focused_clip_views = track_view->focused_clip_views();
     auto ghost_track_view = ghost_sequence_view_->getGhostTrackView(i);
     for (auto clip_view : focused_clip_views) {
-      ghost_track_view->addGhostClipView(new GhostClipView(&scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
+      ghost_track_view->addGhostClipView(new GhostClipView(scroll_view_, clip_view->clip()->start_time(), clip_view->clip()->end_time()));
       manipulate_track.insert(clip_view->clip());
     }
   }
@@ -338,7 +332,7 @@ void SequenceTimelineView::startClipTranslate(QMouseEvent* event) {
 void SequenceTimelineView::handleClipTranslate(QMouseEvent* event) {
   if (manipulate_state_ != ManipulateState::CLIP_TRANSLATE) return;
   QPoint d_mouse_pos = event->pos() - manipulate_start_mouse_pos_;
-  int dt = scroll_view_.getTimeAmountRelativeToView(d_mouse_pos.x());
+  int dt = scroll_view_->getTimeAmountRelativeToView(d_mouse_pos.x());
   int last_track_index = getTrackIndexAtPoint(last_mouse_pos_);
   int current_track_index = getTrackIndexAtPoint(event->pos());
   if (last_track_index != current_track_index) {
@@ -417,7 +411,7 @@ void SequenceTimelineView::endClipTranslate(QMouseEvent* event) {
 void SequenceTimelineView::handleDrag(QDragMoveEvent* event) {
   if (manipulate_state_ != ManipulateState::DRAG_AND_DROP) return;
   QPoint d_mouse_pos = event->pos() - manipulate_start_mouse_pos_;
-  int dt = scroll_view_.getTimeAmountRelativeToView(d_mouse_pos.x());
+  int dt = scroll_view_->getTimeAmountRelativeToView(d_mouse_pos.x());
   int last_track_index = getTrackIndexAtPoint(last_mouse_pos_);
   int current_track_index = getTrackIndexAtPoint(event->pos());
   if (last_track_index != current_track_index) {
@@ -487,15 +481,13 @@ TrackTimelineView* SequenceTimelineView::getTrackViewAt(int index) {
   return track_views_[index];
 }
 
-void SequenceTimelineView::resizeEvent(QResizeEvent* event) {
+void SequenceTimelineView::contentRectUpdated() {
   for (int i = 0; i < track_views_.size(); i ++) {
     auto& track_view = track_views_[i];
     track_view->resize(width(), 29);
     track_view->move(0, i * 30);
   }
   updateGhostSequenceView();
-
-  QWidget::resizeEvent(event);
 }
 
 void SequenceTimelineView::paintEvent(QPaintEvent* event) {
@@ -508,11 +500,10 @@ void SequenceTimelineView::paintEvent(QPaintEvent* event) {
     auto& track_view = track_views_[i];
     p.drawLine(0, (i + 1) * 30 - 1, width(), (i + 1) * 30 - 1);
   }
-  QWidget::paintEvent(event);
 }
 
 SequenceScrollView* SequenceTimelineView::scroll_view() {
-  return &scroll_view_;
+  return scroll_view_;
 }
 
 const std::set<ClipView*>& SequenceTimelineView::focused_clip_views() {

@@ -15,7 +15,7 @@ namespace nlive {
 
 class Clip;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 class SequenceView;
 
@@ -32,7 +32,7 @@ private:
   QSharedPointer<IThemeService> theme_service_;
   QSharedPointer<IMementoService> memento_service_;
   QSharedPointer<EffectControlLayout> layout_params_;
-  timelinewidget::SequenceView* timeline_widget_sequence_view_;
+  timeline_widget::SequenceView* timeline_widget_sequence_view_;
   SequenceScrollView* sequence_scroll_view_;
 
   QSharedPointer<Clip> clip_;
@@ -53,7 +53,7 @@ public:
   SequenceView(
     QWidget* parent,
     QSharedPointer<EffectControlLayout> layout,
-    timelinewidget::SequenceView* timeline_widget_sequence_view,
+    timeline_widget::SequenceView* timeline_widget_sequence_view,
     QSharedPointer<IThemeService> theme_service,
     QSharedPointer<IMementoService> memento_service);
 

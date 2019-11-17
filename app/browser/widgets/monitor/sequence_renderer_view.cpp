@@ -8,17 +8,19 @@ namespace nlive {
 
 namespace monitor_widget {
 
-SequenceRendererView::SequenceRendererView(QWidget* widget, QSharedPointer<Sequence> sequence,
+SequenceRendererView::SequenceRendererView(QWidget* widget, timeline_widget::SequenceView* timeline_widget_sequence_view,
   QSharedPointer<PlayService> play_service) :
   QOpenGLWidget(widget), play_service_(play_service),
-  sequence_(sequence), player_(nullptr) {
-  player_ = new SequencePlayable(this, sequence);
-  play_service_->play(player_);
+  timeline_widget_sequence_view_(timeline_widget_sequence_view),
+  sequence_(timeline_widget_sequence_view->sequence()), renderer_(nullptr) {
 }
 
 SequenceRendererView::~SequenceRendererView() {
   // TODO
-  delete player_;
+  if (renderer_) {
+    timeline_widget_sequence_view_->sequence_playable()->setVideoRenderer(nullptr);
+    delete renderer_;
+  }
 }
 
 void SequenceRendererView::scheduleRender() {
@@ -27,12 +29,14 @@ void SequenceRendererView::scheduleRender() {
 
 void SequenceRendererView::initializeGL() {
   initializeOpenGLFunctions();
-  player_->initializeVideoRenderer(context());
+  renderer_ = new video_renderer::SequenceRenderer(sequence_, context());
   connect(
-    player_->sequence_video_renderer(),
+    renderer_,
     &video_renderer::SequenceRenderer::onDidReadyData,
     this,
     &SequenceRendererView::scheduleRender);
+  renderer_->initialize();
+  timeline_widget_sequence_view_->sequence_playable()->setVideoRenderer(renderer_);
 }
 
 void SequenceRendererView::resizeGL(int w, int h) {
@@ -41,7 +45,7 @@ void SequenceRendererView::resizeGL(int w, int h) {
 }
 
 void SequenceRendererView::paintGL() {
-  player_->sequence_video_renderer()->paint();
+  renderer_->paint();
 }
 
 }

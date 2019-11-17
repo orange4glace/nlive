@@ -12,7 +12,7 @@
 #include "model/project/project.h"
 #include "model/effect/transform_effect.h"
 
-#include "browser/widgets/timeline/timelinewidget.h"
+#include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/timeline/timeline_widget_service_impl.h"
 #include "browser/widgets/project/project_widget.h"
 #include "browser/widgets/monitor/monitor_widget.h"
@@ -99,7 +99,7 @@ MainWindow::MainWindow() {
   addDockWidget(Qt::BottomDockWidgetArea, project_widget);
   project_widget->setDirectory(project->root_storage_directory());
 
-  auto timeline_widget = new timelinewidget::TimelineWidget(nullptr, theme_service, timeline_widget_service);
+  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service);
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
 

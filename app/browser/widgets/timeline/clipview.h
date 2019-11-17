@@ -14,7 +14,7 @@ class Clip;
 class SequenceScrollView;
 class IThemeService;
 
-namespace timelinewidget {
+namespace timeline_widget {
 
 enum ClipViewHandle {
   LEFT_OUTER,

@@ -29,11 +29,25 @@ void PlayService::play(Playable* playable) {
   timer_->start();
 }
 
+void PlayService::toggle(Playable* playable) {
+  if (playable == current_playable_) stop();
+  else {
+    stop();
+    play(playable);
+  }
+}
+
+void PlayService::stop(Playable* playable) {
+  if (playable == current_playable_) stop();
+}
+
 void PlayService::stop() {
   if (!playing_) return;
   timer_->stop();
   current_playable_->stop();
+  current_playable_->playStopCallback();
   playing_ = false;
+  current_playable_ = nullptr;
   disconnect(timer_conn_);
 }
   
