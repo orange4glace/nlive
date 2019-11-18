@@ -5,6 +5,7 @@ set(NLIVE_SOURCES
 
 set(NLIVE_RESOURCES
   ${NLIVE_RESOURCES}
+  browser/images/images.qrc
   browser/widgets/timeline/images/images.qrc
   browser/widgets/effect_control/images/images.qrc
   browser/widgets/project/images/images.qrc

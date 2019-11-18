@@ -14,7 +14,7 @@ PlayService::PlayService(QObject* parent) :
   elapsed_timer_.start();
 }
 
-void PlayService::play(Playable* playable) {
+void PlayService::play(QSharedPointer<Playable> playable) {
   if (playing_) stop();
   current_playable_ = playable;
   playing_ = true;
@@ -29,7 +29,7 @@ void PlayService::play(Playable* playable) {
   timer_->start();
 }
 
-void PlayService::toggle(Playable* playable) {
+void PlayService::toggle(QSharedPointer<Playable> playable) {
   if (playable == current_playable_) stop();
   else {
     stop();
@@ -37,7 +37,7 @@ void PlayService::toggle(Playable* playable) {
   }
 }
 
-void PlayService::stop(Playable* playable) {
+void PlayService::stop(QSharedPointer<Playable> playable) {
   if (playable == current_playable_) stop();
 }
 

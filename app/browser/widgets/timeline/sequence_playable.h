@@ -13,7 +13,7 @@
 
 namespace nlive {
 
-class SequencePlayable : public QObject, public Playable, public Sig {
+class SequencePlayable : public Playable {
 
 private:
   QSharedPointer<Sequence> sequence_;

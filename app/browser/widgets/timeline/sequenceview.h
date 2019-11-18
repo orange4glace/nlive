@@ -23,7 +23,7 @@ private:
   QSharedPointer<PlayService> play_service_;
 
   QSharedPointer<Sequence> sequence_;
-  SequencePlayable* sequence_playable_;
+  QSharedPointer<SequencePlayable> sequence_playable_;
 
   SequenceSideView* side_view_;
   
@@ -40,7 +40,7 @@ public:
   SequenceTimelineView* timeline_view();
 
   inline QSharedPointer<Sequence> sequence() { return sequence_; }
-  inline SequencePlayable* sequence_playable() { return sequence_playable_; }
+  inline QSharedPointer<SequencePlayable> sequence_playable() { return sequence_playable_; }
 
 
 };

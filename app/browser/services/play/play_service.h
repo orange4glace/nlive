@@ -19,7 +19,7 @@ private:
   QElapsedTimer elapsed_timer_;
   QMetaObject::Connection timer_conn_;
 
-  Playable* current_playable_;
+  QSharedPointer<Playable> current_playable_;
 
   int64_t started_time_;
 
@@ -27,12 +27,12 @@ private:
 
 public:
   PlayService(QObject* parent);
-  void play(Playable* playable);
-  void toggle(Playable* playable);
+  void play(QSharedPointer<Playable> playable);
+  void toggle(QSharedPointer<Playable> playable);
   void stop();
-  void stop(Playable* playable);
+  void stop(QSharedPointer<Playable> playable);
 
-  inline Playable* current_playable() { return current_playable_; }
+  inline QSharedPointer<Playable> current_playable() { return current_playable_; }
   inline bool playing() const { return playing_; }
 
 };

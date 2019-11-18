@@ -18,6 +18,9 @@ private:
   QColor surfaceBrightColor_;
   QColor surfaceTextColor_;
   QColor surfaceContrastColor_;
+  QColor buttonEnabled_;
+  QColor buttonHighlighted_;
+  QColor buttonDisabled_;
 
 
 public:
@@ -28,24 +31,33 @@ public:
     QColor surfaceDarkColor,
     QColor surfaceBrightColor,
     QColor surfaceTextColor,
-    QColor surfaceContrastColor) : 
+    QColor surfaceContrastColor,
+    QColor buttonEnabled,
+    QColor buttonHighlighted,
+    QColor buttonDisabled) : 
     primaryColor_(primaryColor),
     secondaryColor_(secondaryColor),
     surfaceColor_(surfaceColor),
     surfaceDarkColor_(surfaceDarkColor),
     surfaceBrightColor_(surfaceBrightColor),
     surfaceTextColor_(surfaceTextColor),
-    surfaceContrastColor_(surfaceContrastColor) {
+    surfaceContrastColor_(surfaceContrastColor),
+    buttonEnabled_(buttonEnabled),
+    buttonHighlighted_(buttonHighlighted),
+    buttonDisabled_(buttonDisabled) {
   }
 
   Theme(Theme const& rhs) : 
-    primaryColor_(rhs.primaryColor()),
-    secondaryColor_(rhs.secondaryColor()),
-    surfaceColor_(rhs.surfaceColor()),
-    surfaceDarkColor_(rhs.surfaceDarkColor()),
-    surfaceBrightColor_(rhs.surfaceBrightColor()),
-    surfaceTextColor_(rhs.surfaceTextColor()),
-    surfaceContrastColor_(rhs.surfaceContrastColor()) {
+    primaryColor_(rhs.primaryColor_),
+    secondaryColor_(rhs.secondaryColor_),
+    surfaceColor_(rhs.surfaceColor_),
+    surfaceDarkColor_(rhs.surfaceDarkColor_),
+    surfaceBrightColor_(rhs.surfaceBrightColor_),
+    surfaceTextColor_(rhs.surfaceTextColor_),
+    surfaceContrastColor_(rhs.surfaceContrastColor_),
+    buttonEnabled_(rhs.buttonEnabled_),
+    buttonHighlighted_(rhs.buttonHighlighted_),
+    buttonDisabled_(rhs.buttonDisabled_) {
   }
 
   inline const QColor& primaryColor() const { return primaryColor_; }
@@ -55,6 +67,9 @@ public:
   inline const QColor& surfaceBrightColor() const { return surfaceBrightColor_; }
   inline const QColor& surfaceTextColor() const { return surfaceTextColor_; }
   inline const QColor& surfaceContrastColor() const { return surfaceContrastColor_; }
+  inline const QColor& buttonEnabled() const { return buttonEnabled_; }
+  inline const QColor& buttonHighlighted() const { return buttonHighlighted_; }
+  inline const QColor& buttonDisabled() const { return buttonDisabled_; }
 
 };
 

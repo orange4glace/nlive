@@ -6,5 +6,7 @@ set(NLIVE_SOURCES
   base/layout/fillparentbox.cpp
   base/layout/grid_layout.h
   base/layout/grid_layout.cpp
+  base/layout/action_bar.h
+  base/layout/action_bar.cpp
   PARENT_SCOPE
 )

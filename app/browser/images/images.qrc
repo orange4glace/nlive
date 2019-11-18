@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/browser">
+    <file>play-button.svg</file>
+  </qresource>
+</RCC>

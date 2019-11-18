@@ -63,8 +63,13 @@ _XMLCacheStorage XMLCacheStorage;
 
 }
 
-SvgSprite::SvgSprite(QString path, int width, int height) :
-  path_(path), width_(width), height_(height), pixmap_(nullptr) {
+SvgSprite::SvgSprite(QString path) :
+  path_(path), pixmap_(nullptr) {
+  width_ = height_ = 0;
+}
+
+SvgSprite::SvgSprite(QString path, int width, int height, std::string color) :
+  path_(path), width_(width), height_(height), color_(color), pixmap_(nullptr) {
 
   pixmap_ = new QPixmap(width, height);
   doCreateSprite();
@@ -75,8 +80,43 @@ SvgSprite::~SvgSprite() {
   delete pixmap_;
 }
 
+void SvgSprite::resize(int width, int height) {
+  if (width_ == width && height_ == height) return;
+  width_ = width;
+  height_ = height;
+  doCreateSprite();
+}
+
+void SvgSprite::setColor(std::string color) {
+  color_ = color;
+  doCreateSprite();
+}
+
+void SvgSprite::setColor(QColor color) {
+  setColor(color.name(QColor::HexRgb).toStdString());
+}
+
+namespace {
+
+void iter(XMLNode* el, const char* color) {
+  for (XMLNode* n = el->FirstChild(); n; n = n->NextSibling()) {
+    auto e = n->ToElement();
+    if (strcmp(e->Name(), "path") == 0 || strcmp(e->Name(), "polygon"))
+      e->SetAttribute("fill", color);
+    iter(n, color);
+  }
+}
+
+}
+
 void SvgSprite::doCreateSprite() {
+  if (width_ <= 0 || height_ <= 0) return;
+  if (pixmap_) delete pixmap_;
+  pixmap_ = new QPixmap(width_, height_);
+  pixmap_->fill(Qt::transparent);
+
   auto xml = XMLCacheStorage.load(path_);
+  iter(xml->RootElement(), color_.c_str());
   XMLPrinter printer;
   xml->Print(&printer);
   auto cstr = printer.CStr();

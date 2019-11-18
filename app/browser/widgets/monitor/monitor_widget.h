@@ -9,6 +9,8 @@
 #include "browser/services/play/play_service.h"
 #include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/timeline/sequenceview.h"
+#include "browser/widgets/monitor/actions.h"
+#include "base/layout/action_bar.h"
 
 namespace nlive {
 
@@ -29,6 +31,9 @@ private:
 
   std::vector<sig2_conn_t> widget_connections_;
   SequenceView* sequence_view_;
+  
+  QSharedPointer<ActionContext> action_context_;
+  ActionBar* action_bar_;
 
   void handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget);
   void handleDidChangeSequenceView(timeline_widget::SequenceView* sequence_view);

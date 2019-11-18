@@ -17,7 +17,8 @@ SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
   side_view_->setFlexBasis(200)->setFlexShrink(0)->setFlexGrow(0);
   addChild(side_view_);
   addChild(scroll_view_);
-  sequence_playable_ = new SequencePlayable(this, sequence);
+  sequence_playable_ = QSharedPointer<SequencePlayable>(
+      new SequencePlayable(this, sequence));
 }
 
 SequenceView::~SequenceView() {

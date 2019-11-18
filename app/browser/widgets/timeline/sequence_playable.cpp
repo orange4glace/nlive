@@ -3,9 +3,9 @@
 namespace nlive {
 
 SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence) :
-    QObject(parent), sequence_(sequence), invalidated_(false),
+    sequence_(sequence), invalidated_(false),
     sequence_video_renderer_(nullptr), audio_sequence_renderer_(nullptr) {
-  invalidation_timer_ = new QTimer(this);
+  invalidation_timer_ = new QTimer();
 
   audio_sequence_renderer_ = new audio_renderer::SequenceRenderer(sequence);
 
@@ -25,6 +25,7 @@ SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> seq
 SequencePlayable::~SequencePlayable() {
   // if (sequence_video_renderer_) delete sequence_video_renderer_;
   if (audio_sequence_renderer_) delete audio_sequence_renderer_;
+  delete invalidation_timer_;
 }
 
 void SequencePlayable::setVideoRenderer(video_renderer::SequenceRenderer* renderer) {
