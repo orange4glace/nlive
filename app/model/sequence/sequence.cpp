@@ -19,16 +19,6 @@ Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time, int sample_rate) 
   undo_stack_(undo_stack), time_base_(1, base_time), sample_rate_(sample_rate), 
   current_time_(0), invalidated_(false), width_(1920), height_(1080) {
 
-  invalidateTimer_ = new QTimer();
-  connect(invalidateTimer_, &QTimer::timeout, this, [this]() {
-    if (invalidated_) {
-      invalidated_ = false;
-      doMakeDirty();
-    }
-  });
-  invalidateTimer_->setInterval(33);
-  invalidateTimer_->start();
-
 }
 
 QSharedPointer<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t timecode) {
@@ -47,10 +37,6 @@ QSharedPointer<audio_renderer::CommandBuffer> Sequence::renderAudio(int64_t star
     track->renderAudio(command_buffer, start_frame, end_frame);
   }
   return command_buffer;
-}
-
-void Sequence::doMakeDirty() {
-  onDirty();
 }
 
 void Sequence::doInvalidate() {
@@ -162,6 +148,10 @@ int64_t Sequence::current_time() const {
 
 int64_t Sequence::duration() const {
   return duration_;
+}
+
+int64_t Sequence::duration_in_seconds() const {
+  return Rational::rescale(duration_, time_base_, Rational(1, 60));
 }
 
 int Sequence::width() const {

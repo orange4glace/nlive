@@ -23,6 +23,8 @@ private:
 protected:
   inline Playable() : playing_(false) {}
 
+  sig2_t<void ()> stopSignal;
+
 public:
   virtual inline void beforePlayStartCallback() {}
   virtual inline void playStartCallback() {}

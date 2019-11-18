@@ -20,6 +20,7 @@ private:
   QMetaObject::Connection timer_conn_;
 
   QSharedPointer<Playable> current_playable_;
+  sig2_conn_t current_playable_stop_conn_;
 
   int64_t started_time_;
 

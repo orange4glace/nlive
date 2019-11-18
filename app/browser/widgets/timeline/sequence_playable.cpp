@@ -3,7 +3,7 @@
 namespace nlive {
 
 SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence) :
-    sequence_(sequence), invalidated_(false),
+    sequence_(sequence), invalidated_(false), tick_flag_(false),
     sequence_video_renderer_(nullptr), audio_sequence_renderer_(nullptr) {
   invalidation_timer_ = new QTimer();
 
@@ -17,6 +17,7 @@ SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> seq
     }
   });
   sequence->onInvalidate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type([this]() {
+    if (playing() && !tick_flag_) stopSignal();
     invalidated_ = true;
   })));
   invalidation_timer_->start();
@@ -52,7 +53,9 @@ void SequencePlayable::playingCallback(int64_t elapsed_time) {
   // qDebug() << elapsed_time << sequence_->base_time() << started_timecode_ << elapsed_timecode;
   int64_t timecode = started_timecode_ + elapsed_timecode;
   if (playing_timecode_ != timecode) {
+    tick_flag_ = true;
     sequence_->setCurrentTime(started_timecode_ + elapsed_timecode);
+    tick_flag_ = false;
     if (sequence_video_renderer_) sequence_video_renderer_->render();
     playing_timecode_ = timecode;
   }
@@ -60,6 +63,7 @@ void SequencePlayable::playingCallback(int64_t elapsed_time) {
 
 void SequencePlayable::playStopCallback() {
   audio_sequence_renderer_->stop();
+  invalidated_ = true;
 }
 
 }

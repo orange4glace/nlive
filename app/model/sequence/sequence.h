@@ -2,6 +2,7 @@
 #define NLIVE_SEQUENCE_H_
 
 #include <QObject>
+#include <QString>
 #include <QMetaObject>
 #include <QSharedPointer>
 #include <QTimer>
@@ -27,6 +28,7 @@ class Sequence : public QObject {
 
 private:
   std::string id_;
+  QString name_;
   sptr<IUndoStack> undo_stack_;
   Rational time_base_;
   int sample_rate_;
@@ -34,7 +36,6 @@ private:
   int64_t duration_;
 
   bool invalidated_;
-  QTimer* invalidateTimer_;
 
   int width_;
   int height_;
@@ -49,7 +50,6 @@ private:
 
   void handleDidAddClip(QSharedPointer<Track> track, QSharedPointer<Clip> clip);
 
-  void doMakeDirty();
   void doInvalidate();
 
 public:
@@ -71,11 +71,13 @@ public:
   void invalidate();
 
   const std::string& id();
+  inline const QString& name() { return name_; }
   const Rational& time_base() const;
   int base_time() const;
   inline int sample_rate() const { return sample_rate_; }
   int64_t current_time() const;
   int64_t duration() const;
+  int64_t duration_in_seconds() const;
   int width() const;
   int height() const;
   const std::vector<QSharedPointer<Track>>& tracks();
@@ -87,7 +89,6 @@ public:
   sig2_t<void (int64_t /*old_current_time*/)> onDidChangeCurrentTime;
   sig2_t<void (int64_t /*old_duration*/)> onDidChangeDuration;
   sig2_t<void ()> onInvalidate;
-  sig2_t<void ()> onDirty;
 
 };
 

@@ -8,6 +8,7 @@
 #include "model/sequence/sequence.h"
 #include "model/sequence/track.h"
 #include "model/sequence/clip.h"
+#include "model/storage/sequence_storage_item.h"
 
 #include "model/project/project.h"
 #include "model/effect/transform_effect.h"
@@ -88,7 +89,13 @@ MainWindow::MainWindow() {
 
   // Create Sequence mock data
   auto project = new Project();
-  auto sequence = project->createSequence();
+
+  auto root_storage = project->root_storage_directory();
+  auto sequence = QSharedPointer<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
+  auto sequence_storage_item = QSharedPointer<SequenceStorageItem>(
+    new SequenceStorageItem(root_storage, sequence));
+  root_storage->addItem(sequence_storage_item);
+
   sequence->setDuration(500);
   sequence->addTrack();
   auto track1 = sequence->addTrack();

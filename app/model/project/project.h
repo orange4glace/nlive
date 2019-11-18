@@ -5,10 +5,10 @@
 #include <QSharedPointer>
 
 #include "platform/undo/undo_stack.h"
+#include "model/storage/storage_directory.h"
 
 namespace nlive {
 
-class StorageDirectory;
 class Sequence;
 
 class Project : public QObject {

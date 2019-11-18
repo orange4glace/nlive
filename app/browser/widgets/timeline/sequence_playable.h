@@ -20,6 +20,9 @@ private:
   QTimer* invalidation_timer_;
   bool invalidated_;
 
+  sig2_conn_t stop_conn_;
+  bool tick_flag_;
+
   video_renderer::SequenceRenderer* sequence_video_renderer_;
   audio_renderer::SequenceRenderer* audio_sequence_renderer_;
 
