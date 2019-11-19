@@ -283,9 +283,10 @@ void AudioResourceRawConvertingService::process(QSharedPointer<AudioResource> re
     return;
   }
   processing_map_[path].push_back(resource);
-  auto task = new AudioResourceRawConvertingTask(resource);
-  task_service_->queueTask(task, [this, path](Task* task){
-    auto arrc_task = static_cast<AudioResourceRawConvertingTask*>(task);
+  auto task = QSharedPointer<AudioResourceRawConvertingTask>(
+    new AudioResourceRawConvertingTask(resource));
+  task_service_->queueTask(task, [this, path](QSharedPointer<Task> task){
+    auto arrc_task = task.staticCast<AudioResourceRawConvertingTask>();
     QSharedPointer<RawAudioResource> result = arrc_task->result;
     auto& vec = processing_map_[path];
     for (auto& v : vec) v->setRaw(result);

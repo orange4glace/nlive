@@ -1,9 +1,9 @@
 #ifndef NLIVE_TASK_H_
 #define NLIVE_TASK_H_
 
-#include <functional>
-
 #include <QObject>
+#include <functional>
+#include <mutex>
 
 namespace nlive {
 
@@ -13,26 +13,46 @@ class Task : public QObject {
 friend class TaskService;
 friend class RunnableTask;
 
-public:
-  inline Task() : callback_(nullptr) {};
+private:
+  std::function<void(QSharedPointer<Task>)> callback_;
+  std::mutex mutex_;
+  qreal progress_;
 
-  inline void start() {
-    run();
+private slots:
+  inline void finished(QSharedPointer<Task> task) {
+    Q_ASSERT(this == task);
+    if (callback_ != nullptr) callback_(task);
   }
 
 protected:
   virtual void run() = 0;
 
-private:
-  std::function<void(Task*)> callback_;
-
-private slots:
-  inline void finished(Task* task) {
-    Q_ASSERT(this == task);
-    if (callback_ != nullptr) callback_(task);
-    // Delete self
-    delete this;
+  inline void setProgress(qreal value) {
+    mutex_.lock();
+    progress_ = value;
+    mutex_.unlock();
+    emit onUpdateProgress(value);
   }
+
+public:
+  inline Task() : 
+    callback_(nullptr), progress_(0) {
+
+  };
+
+  inline void start() {
+    run();
+  }
+
+  inline qreal progress() {
+    mutex_.lock();
+    auto val = progress_;
+    mutex_.unlock();
+    return val; 
+  }
+
+signals:
+  void onUpdateProgress(qreal value);
 
 };
 

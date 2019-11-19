@@ -1,17 +1,20 @@
 #include "platform/task/runnable_task.h"
 
-#include "platform/task/task.h"
-
 #include <QMetaObject>
+#include <QThread>
+#include <QDebug>
+#include "platform/task/task.h"
 
 namespace nlive {
 
-RunnableTask::RunnableTask(Task* task) : task_(task) {
+RunnableTask::RunnableTask(QSharedPointer<Task> task) : task_(task) {
+  setAutoDelete(false);
 }
 
 void RunnableTask::run() {
   task_->start();
-  QMetaObject::invokeMethod(task_, "finished", Qt::QueuedConnection, Q_ARG(Task*, task_));
+  QMetaObject::invokeMethod(task_.get(), "finished", Qt::QueuedConnection, Q_ARG(QSharedPointer<Task>, task_));
+  QMetaObject::invokeMethod(this, "completed", Qt::QueuedConnection);
 }
 
 }

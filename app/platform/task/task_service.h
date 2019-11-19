@@ -3,6 +3,8 @@
 
 #include <functional>
 #include <QObject>
+#include <QSharedPointer>
+#include "base/common/sig.h"
 
 namespace nlive {
 
@@ -15,7 +17,11 @@ protected:
   inline ITaskService() {}
 
 public:
-  virtual void queueTask(Task* task, std::function<void(Task*)>&& callback) = 0;
+  virtual void queueTask(QSharedPointer<Task> task, std::function<void(QSharedPointer<Task>)>&& callback) = 0;
+  virtual std::vector<QSharedPointer<Task>>& tasks() = 0;
+
+  sig2_t<void (QSharedPointer<Task>)> onDidAddTask;
+  sig2_t<void (QSharedPointer<Task>)> onWillRemoveTask;
 
 };
 

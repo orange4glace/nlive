@@ -4,19 +4,21 @@
 #include "platform/task/task_service.h"
 #include <QThread>
 #include <QRunnable>
+#include <vector>
 
 namespace nlive {
 
-class TaskService : public ITaskService {
+class TaskService : public ITaskService, public Sig {
   Q_OBJECT
 
 private:
-  QThread* thread_;
+  std::vector<QSharedPointer<Task>> tasks_;
 
 public:
   TaskService();
 
-  void queueTask(Task* task, std::function<void(Task*)>&& callback) override;
+  void queueTask(QSharedPointer<Task> task, std::function<void(QSharedPointer<Task>)>&& callback) override;
+  std::vector<QSharedPointer<Task>>& tasks() override;
 
 };
 
