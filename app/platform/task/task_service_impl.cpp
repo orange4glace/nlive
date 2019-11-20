@@ -20,6 +20,7 @@ void TaskService::queueTask(QSharedPointer<Task> task, std::function<void(QShare
     onWillRemoveTask(task);
     tasks_.erase(std::remove(tasks_.begin(), tasks_.end(), task), tasks_.end());
     runnable_task->deleteLater();
+    onDidRemoveTask(task);
   }, Qt::QueuedConnection);
   QThreadPool::globalInstance()->start(runnable_task);
 }

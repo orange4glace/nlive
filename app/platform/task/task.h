@@ -4,10 +4,11 @@
 #include <QObject>
 #include <functional>
 #include <mutex>
+#include "base/common/sig.h"
 
 namespace nlive {
 
-class Task : public QObject {
+class Task : public QObject, public Sig {
   Q_OBJECT
 
 friend class TaskService;
@@ -15,7 +16,6 @@ friend class RunnableTask;
 
 private:
   std::function<void(QSharedPointer<Task>)> callback_;
-  std::mutex mutex_;
   qreal progress_;
 
 private slots:
@@ -28,10 +28,8 @@ protected:
   virtual void run() = 0;
 
   inline void setProgress(qreal value) {
-    mutex_.lock();
     progress_ = value;
-    mutex_.unlock();
-    emit onUpdateProgress(value);
+    onUpdateProgress(value);
   }
 
 public:
@@ -45,14 +43,10 @@ public:
   }
 
   inline qreal progress() {
-    mutex_.lock();
-    auto val = progress_;
-    mutex_.unlock();
-    return val; 
+    return progress_;
   }
 
-signals:
-  void onUpdateProgress(qreal value);
+  sig2_t<void (qreal/*value*/)> onUpdateProgress;
 
 };
 

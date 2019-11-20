@@ -22,6 +22,7 @@ public:
 
   sig2_t<void (QSharedPointer<Task>)> onDidAddTask;
   sig2_t<void (QSharedPointer<Task>)> onWillRemoveTask;
+  sig2_t<void (QSharedPointer<Task>)> onDidRemoveTask;
 
 };
 

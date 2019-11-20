@@ -6,9 +6,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    auto main_window = new nlive::MainWindow();
+    auto app_window = new nlive::MainWindow();
 
-    main_window->show();
+    app_window->show();
 
     return a.exec();
 }

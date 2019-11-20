@@ -89,6 +89,7 @@ protected:
       return;
     }
     dec_ctx = avcodec_alloc_context3(dec);
+    dec_ctx->thread_count = 0;
     ret = avcodec_parameters_to_context(dec_ctx, stream->codecpar);
     if (ret < 0) {
       spdlog::get(LOGGER_DEFAULT)->critical("[AudioResourceRawConvertingTask] Failed to avcodec_parameters_to_context path = {} result = {}", resource_path, ret);
@@ -115,6 +116,9 @@ protected:
     frame = av_frame_alloc();
     spdlog::get(LOGGER_DEFAULT)->info("[AudioResourceRawConvertingTask] Audio sample format = {} sample rate = {} path = {}", dec_ctx->sample_fmt, dec_ctx->sample_rate, resource_path);
     std::vector<uint8_t> buffer;
+    qreal last_progress = 0;
+    AVRational tb; tb.den = sample_rate; tb.num = 1;
+    int64_t estimated_total_frames = av_rescale_q(stream->duration, stream->time_base,tb);
     while (av_read_frame(fmt_ctx, pkt) >= 0) {
       if (pkt->stream_index == stream_index) {
         ret = avcodec_send_packet(dec_ctx, pkt);
@@ -141,6 +145,11 @@ protected:
             outstream.writeRawData((char*)frame->data[0], frame->nb_samples * bytes_per_sample * nb_channels);
           }
           nb_frames += frame->nb_samples;
+          qreal progress = nb_frames / (qreal)estimated_total_frames;
+          if (last_progress + 0.01 <= progress) {
+            last_progress = progress;
+            setProgress(progress);
+          }
         }
         else if (ret == AVERROR(EAGAIN)) {
           continue;

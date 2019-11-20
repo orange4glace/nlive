@@ -18,6 +18,7 @@
 #include "browser/widgets/project/project_widget.h"
 #include "browser/widgets/monitor/monitor_widget.h"
 #include "browser/widgets/effect_control/effect_control_widget.h"
+#include "browser/widgets/task_bar/task_bar.h"
 #include "browser/services/import/import_service_impl.h"
 #include "browser/services/memento/in_memory_memento_service.h"
 #include "browser/services/play/play_service.h"
@@ -38,29 +39,13 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QFuture>
+#include <QStatusBar>
 #include <QThreadPool>
 
 namespace nlive {
 
-namespace {
-
-class KD : public QDockWidget {
-
-public:
-  QWidget* q;
-  KD(QWidget* p) : QDockWidget(p) {}
-
-protected:
-  void resizeEvent(QResizeEvent* event) {
-    resize(width(), height());
-    q->setGeometry(rect());
-  }
-
-};
-
-}
-
-MainWindow::MainWindow() {
+MainWindow::MainWindow() :
+  QMainWindow() {
 
   qDebug() << "Main thread = " << thread() << "\n";
 
@@ -68,13 +53,11 @@ MainWindow::MainWindow() {
 
   registerLoggers();
 
-  // Initialize services
   ThemeService::Initialize();
   TimelineWidgetService::Initialize();
-
+  auto task_service = new QSharedPointer<ITaskService>(new TaskService());
   auto theme_service = ThemeService::instance();
   auto timeline_widget_service = TimelineWidgetService::instance();
-  auto task_service = new QSharedPointer<ITaskService>(new TaskService());
   auto resource_service = new ResourceService(*task_service);
   auto import_service = new ImportService(resource_service);
   auto memento_service = new QSharedPointer<IMementoService>(new InMemoryMementoService());
@@ -86,6 +69,13 @@ MainWindow::MainWindow() {
   // task_service->setParent(this);
   resource_service->setParent(this);
   import_service->setParent(this);
+
+  QStatusBar* status_bar = new QStatusBar(this);
+  auto t = new task_bar::TaskBar(this, *task_service, ThemeService::instance());
+  status_bar->addPermanentWidget(t, 1000);
+  setStatusBar(status_bar);
+  status_bar->show();
+  t->show();
 
   // Create Sequence mock data
   auto project = new Project();
