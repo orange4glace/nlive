@@ -15,6 +15,8 @@ namespace nlive {
 
 namespace timeline_widget {
 
+const std::string TimelineWidget::TYPE = "widget.Timeline";
+
 TimelineWidget::TimelineWidget(
   QWidget* parent,
   QSharedPointer<IThemeService> theme_service,

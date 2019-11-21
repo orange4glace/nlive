@@ -5,6 +5,7 @@
 #include <map>
 
 #include "platform/theme/themeservice.h"
+#include "platform/service/service_locator.h"
 
 class QWidget;
 
@@ -18,9 +19,12 @@ class StorageItemView;
 
 class StorageItemViewFactory {
 
+protected:
+  QSharedPointer<ServiceLocator> service_locator_;
+
 public:
-  StorageItemViewFactory();
-  virtual StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem>, QSharedPointer<IThemeService> theme_service) = 0;
+  StorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
+  virtual StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) = 0;
 
 };
 

@@ -11,6 +11,8 @@ namespace nlive {
 
 namespace monitor_widget {
 
+const std::string MonitorWidget::TYPE = "widget.Monitor";
+
 MonitorWidget::MonitorWidget(QWidget* parent,
   QSharedPointer<ITimelineWidgetService> timeline_widget_service,
   QSharedPointer<IThemeService> theme_service,

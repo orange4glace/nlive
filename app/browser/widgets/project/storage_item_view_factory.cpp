@@ -7,7 +7,10 @@ namespace project_widget {
 StorageItemViewFactory* StorageItemViewFactoryRegistry::default_factory_ = nullptr;
 std::map<std::string, StorageItemViewFactory*> StorageItemViewFactoryRegistry::factories_;
 
-StorageItemViewFactory::StorageItemViewFactory() {}
+StorageItemViewFactory::StorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) : 
+  service_locator_(service_locator) {
+
+}
 
 void StorageItemViewFactoryRegistry::registerDefaultFactory(StorageItemViewFactory* factory) {
   default_factory_ = factory;

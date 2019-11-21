@@ -20,21 +20,23 @@ namespace nlive {
 
 namespace project_widget {
 
-void ProjectWidget::Initialize() {
+const std::string ProjectWidget::TYPE = "widget.Project";
+
+void ProjectWidget::Initialize(QSharedPointer<ServiceLocator> service_locator) {
   // Register pre-defined views
-  StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory());
-  StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory());
-  StorageItemViewFactoryRegistry::registerFactory(AudioStorageItem::TYPE, new AudioStorageItemViewFactory());
-  StorageItemViewFactoryRegistry::registerFactory(SequenceStorageItem::TYPE, new SequenceStorageItemViewFactory());
+  StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory(service_locator));
+  StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory(service_locator));
+  StorageItemViewFactoryRegistry::registerFactory(AudioStorageItem::TYPE, new AudioStorageItemViewFactory(service_locator));
+  StorageItemViewFactoryRegistry::registerFactory(SequenceStorageItem::TYPE, new SequenceStorageItemViewFactory(service_locator));
 
 }
 
 ProjectWidget::ProjectWidget(QWidget* parent,
     QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IImportService> import_service) :
-  QDockWidget(parent),
-  theme_service_(theme_service),
-  import_service_(import_service),
+    QSharedPointer<IImportService> import_service,
+    QSharedPointer<ServiceLocator> service_locator) :
+  QDockWidget(parent), theme_service_(theme_service),
+  import_service_(import_service), service_locator_(service_locator),
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());
 

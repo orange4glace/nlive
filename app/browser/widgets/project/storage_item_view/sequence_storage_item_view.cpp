@@ -15,11 +15,12 @@ SequenceStorageItemView::SequenceStorageItemView(QWidget* parent, QSharedPointer
   title_view()->right_label_box()->setText(dur);
 }
 
-SequenceStorageItemViewFactory::SequenceStorageItemViewFactory() {}
-StorageItemView* SequenceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) {
+SequenceStorageItemViewFactory::SequenceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) :
+  StorageItemViewFactory(service_locator) {}
+StorageItemView* SequenceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item) {
   Q_ASSERT(item->type() == SequenceStorageItem::TYPE);
   QSharedPointer<SequenceStorageItem> vrsi = item.staticCast<SequenceStorageItem>();
-  return new SequenceStorageItemView(parent, vrsi, theme_service);
+  return new SequenceStorageItemView(parent, vrsi, service_locator_->getService<IThemeService>(IThemeService::ID));
 }
 
 }

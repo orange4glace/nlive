@@ -49,8 +49,7 @@ void SequencePlayable::playStartCallback() {
 }
 
 void SequencePlayable::playingCallback(int64_t elapsed_time) {
-  int64_t elapsed_timecode = elapsed_time / sequence_->base_time();
-  // qDebug() << elapsed_time << sequence_->base_time() << started_timecode_ << elapsed_timecode;
+  int64_t elapsed_timecode = elapsed_time * sequence_->base_time() / 1000;
   int64_t timecode = started_timecode_ + elapsed_timecode;
   if (playing_timecode_ != timecode) {
     tick_flag_ = true;

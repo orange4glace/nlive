@@ -19,8 +19,8 @@ public:
 class AudioStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  AudioStorageItemViewFactory();
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) override;
+  AudioStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
 
 };
 

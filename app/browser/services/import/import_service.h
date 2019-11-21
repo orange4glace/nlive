@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include "platform/service/service.h"
 
 namespace nlive {
 
 class StorageDirectory;
 
-class IImportService : public QObject {
+class IImportService : public IService {
 
 protected:
   inline IImportService() {}

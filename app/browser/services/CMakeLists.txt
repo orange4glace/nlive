@@ -1,3 +1,4 @@
+add_subdirectory(widgets)
 add_subdirectory(project)
 add_subdirectory(import)
 add_subdirectory(play)

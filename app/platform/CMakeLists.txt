@@ -1,4 +1,5 @@
 add_subdirectory(logger)
+add_subdirectory(service)
 add_subdirectory(theme)
 add_subdirectory(task)
 add_subdirectory(resource)

@@ -25,6 +25,8 @@ public:
 
   void import(QList<QFileInfo> urls, QSharedPointer<StorageDirectory> directory) override;
 
+  inline std::string service_id() const override { return "service.ImportService"; }
+
 };
 
 }

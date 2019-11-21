@@ -130,11 +130,12 @@ VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, QSha
   content_view()->setContentView(content_view_);
 }
 
-VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory() {}
-StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) {
+VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) :
+  StorageItemViewFactory(service_locator) {}
+StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item) {
   Q_ASSERT(item->type() == VideoResourceStorageItem::TYPE);
   QSharedPointer<VideoResourceStorageItem> vrsi = item.staticCast<VideoResourceStorageItem>();
-  return new VideoResourceStorageItemView(parent, vrsi, theme_service);
+  return new VideoResourceStorageItemView(parent, vrsi, service_locator_->getService<IThemeService>(IThemeService::ID));
 }
 
 }

@@ -62,8 +62,8 @@ public:
 class VideoResourceStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  VideoResourceStorageItemViewFactory();
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) override;
+  VideoResourceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
 
 };
 

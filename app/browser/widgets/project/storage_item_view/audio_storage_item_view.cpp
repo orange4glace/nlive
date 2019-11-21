@@ -14,11 +14,12 @@ AudioStorageItemView::AudioStorageItemView(QWidget* parent, QSharedPointer<Audio
   title_view()->right_label_box()->setText(dur);
 }
 
-AudioStorageItemViewFactory::AudioStorageItemViewFactory() {}
-StorageItemView* AudioStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) {
+AudioStorageItemViewFactory::AudioStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) :
+  StorageItemViewFactory(service_locator) {}
+StorageItemView* AudioStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item) {
   Q_ASSERT(item->type() == AudioStorageItem::TYPE);
   QSharedPointer<AudioStorageItem> vrsi = item.staticCast<AudioStorageItem>();
-  return new AudioStorageItemView(parent, vrsi, theme_service);
+  return new AudioStorageItemView(parent, vrsi, service_locator_->getService<IThemeService>(IThemeService::ID));
 }
 
 }

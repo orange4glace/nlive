@@ -51,7 +51,7 @@ void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item,
     spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] StorageItemViewFactory not found! expected factory type = {}", storage_item->type());
     return;
   }
-  auto view = factory->create(nullptr, storage_item, theme_service_);
+  auto view = factory->create(nullptr, storage_item);
   if (!view) {
     spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] View is null! item type = {}", storage_item->type());
     return;

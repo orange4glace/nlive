@@ -4,8 +4,8 @@
 #include <QDockWidget>
 #include <QSharedPointer>
 #include <QMetaObject>
+#include "browser/widgets/widget.h"
 #include "base/common/sig.h"
-
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
 #include "browser/services/memento/memento_service.h"
 
@@ -26,8 +26,11 @@ namespace effect_control {
 class EffectControlLayout;
 class SequenceView;
 
-class EffectControlWidget : public QDockWidget, public Sig {
+class EffectControlWidget : public QDockWidget, public Widget, public Sig {
   Q_OBJECT
+  
+public:
+  static const std::string TYPE;
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -55,6 +58,8 @@ public:
     QSharedPointer<IThemeService> theme_service,
     QSharedPointer<ITimelineWidgetService> timeline_widget_service,
     QSharedPointer<IMementoService> memento_service);
+
+  inline std::string name() const override { return TYPE; }
 
 };
 

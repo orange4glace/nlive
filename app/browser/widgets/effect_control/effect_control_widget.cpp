@@ -17,6 +17,8 @@ namespace nlive {
 
 namespace effect_control {
 
+const std::string EffectControlWidget::TYPE = "widget.EffectControl";
+
 void EffectControlWidget::Initialize() {
   // Register pre-defined views
   EffectViewFactoryRegistry::registerFactory(

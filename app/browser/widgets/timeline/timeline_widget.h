@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <QLayout>
 
+#include "browser/widgets/widget.h"
 #include "base/layout/fillparentbox.h"
 #include "base/common/sig.h"
 #include "browser/services/play/play_service.h"
@@ -19,8 +20,11 @@ namespace timeline_widget {
 
 class SequenceView;
 
-class TimelineWidget : public QDockWidget, public Sig {
+class TimelineWidget : public QDockWidget, public Widget, public Sig {
   Q_OBJECT;
+  
+public:
+  static const std::string TYPE;
 
 private:
   QSharedPointer<IThemeService> theme_service_;
@@ -45,6 +49,8 @@ public:
 
   QSharedPointer<Sequence> sequence();
   SequenceView* sequence_view();
+
+  inline std::string name() const override { return TYPE; }
   
   sig2_t<void (QSharedPointer<Sequence> sequence)> onDidChangeSequence;
 

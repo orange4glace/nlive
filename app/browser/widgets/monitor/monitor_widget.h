@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 #include <vector>
 
+#include "browser/widgets/widget.h"
 #include "base/common/sig.h"
 #include "browser/services/play/play_service.h"
 #include "browser/widgets/timeline/timeline_widget.h"
@@ -22,7 +23,10 @@ namespace monitor_widget {
 
 class SequenceView;
 
-class MonitorWidget : public QDockWidget, public Sig {
+class MonitorWidget : public QDockWidget, public Widget, public Sig {
+
+public:
+  static const std::string TYPE;
 
 private:
   QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
@@ -47,6 +51,8 @@ public:
     QSharedPointer<ITimelineWidgetService> timeline_widget_service,
     QSharedPointer<IThemeService> theme_service,
     QSharedPointer<PlayService> play_service);
+    
+  inline std::string name() const override { return TYPE; }
 
 };
 

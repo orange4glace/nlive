@@ -6,5 +6,6 @@ add_subdirectory(task_bar)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
+  browser/widgets/widget.h
   PARENT_SCOPE
 )

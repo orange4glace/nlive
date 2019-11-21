@@ -9,9 +9,11 @@ NullStorageItemView::NullStorageItemView(QWidget* parent, QSharedPointer<Storage
 
 }
 
-NullStorageItemViewFactory::NullStorageItemViewFactory() {}
-StorageItemView* NullStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) {
-  return new NullStorageItemView(parent, item, theme_service);
+NullStorageItemViewFactory::NullStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) :
+  StorageItemViewFactory(service_locator) {}
+StorageItemView* NullStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item) {
+  return new NullStorageItemView(parent, item,
+      service_locator_->getService<IThemeService>(IThemeService::ID));
 }
 
 }

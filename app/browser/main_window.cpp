@@ -44,14 +44,17 @@
 
 namespace nlive {
 
-MainWindow::MainWindow() :
-  QMainWindow() {
+MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
+  QMainWindow(), widgets_service_(widgets_service) {
 
   qDebug() << "Main thread = " << thread() << "\n";
 
   // auto at = new audio_renderer::TestRenderer(this);
 
   registerLoggers();
+
+  service_locator_ = QSharedPointer<ServiceLocator>(
+    new ServiceLocator());
 
   ThemeService::Initialize();
   TimelineWidgetService::Initialize();
@@ -66,9 +69,11 @@ MainWindow::MainWindow() :
   auto s_resource_service = new QSharedPointer<ResourceService>(resource_service);
   auto s_import_service = new QSharedPointer<ImportService>(import_service);
 
+  service_locator_->registerService(theme_service);
+  service_locator_->registerService(widgets_service);
+
   // task_service->setParent(this);
   resource_service->setParent(this);
-  import_service->setParent(this);
 
   QStatusBar* status_bar = new QStatusBar(this);
   auto t = new task_bar::TaskBar(this, *task_service, ThemeService::instance());
@@ -91,22 +96,26 @@ MainWindow::MainWindow() :
   auto track1 = sequence->addTrack();
   auto track2 = sequence->addTrack();
 
-  project_widget::ProjectWidget::Initialize();
-  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service);
+  project_widget::ProjectWidget::Initialize(service_locator_);
+  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service, service_locator_);
   addDockWidget(Qt::BottomDockWidgetArea, project_widget);
+  widgets_service->addWidget(project_widget);
   project_widget->setDirectory(project->root_storage_directory());
 
   auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service);
   timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
+  widgets_service->addWidget(timeline_widget);
 
   effect_control::EffectControlWidget::Initialize();
   auto effect_control_widget = new effect_control::EffectControlWidget(
     this, theme_service, timeline_widget_service, *memento_service);
   addDockWidget(Qt::TopDockWidgetArea, effect_control_widget);
+  widgets_service->addWidget(effect_control_widget);
 
   auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service, *play_service);
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
+  widgets_service->addWidget(monitor_widget);
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {

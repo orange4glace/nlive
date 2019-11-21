@@ -18,8 +18,8 @@ public:
 class NullStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  NullStorageItemViewFactory();
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) override;
+  NullStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
 
 };
 
