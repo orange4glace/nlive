@@ -83,7 +83,8 @@ MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
   t->show();
 
   // Create Sequence mock data
-  auto project = new Project();
+  auto sproject = new QSharedPointer<Project>(new Project());
+  auto project = *sproject;
 
   auto root_storage = project->root_storage_directory();
   auto sequence = QSharedPointer<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
@@ -103,7 +104,7 @@ MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
   project_widget->setDirectory(project->root_storage_directory());
 
   auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service);
-  timeline_widget->setSequence(sequence);
+  // timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
   widgets_service->addWidget(timeline_widget);
 

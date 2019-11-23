@@ -111,7 +111,7 @@ void RenderIO::run() {
   int buffer_size = render_state_->buffer()->bytes_per_slot();
   output_->setBufferSize(buffer_size);
   qDebug() << "Instantiate RenderDevice..";
-  device_ = new RenderDevice(nullptr, render_state_);
+  device_ = new RenderDevice(this, render_state_);
   device_->open(QIODevice::ReadOnly);
   qDebug() << "Instantiate RenderDevice OK";
   output_->start(device_);

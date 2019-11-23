@@ -7,7 +7,7 @@ const std::string SequenceStorageItem::TYPE = "nlive.StorageItem.SequenceStorage
 SequenceStorageItem::SequenceStorageItem(
   QSharedPointer<StorageItem> parent,
   QSharedPointer<Sequence> sequence) :
-  StorageItem(SequenceStorageItem::TYPE, sequence->name(), parent), sequence_(sequence) {
+  StorageItem(parent->project(), SequenceStorageItem::TYPE, sequence->name(), parent), sequence_(sequence) {
 
 }
 

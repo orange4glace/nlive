@@ -12,7 +12,7 @@ VideoResourceStorageItem::VideoResourceStorageItem(
   QString name,
   QSharedPointer<VideoResource> video_resource,
   QSharedPointer<AudioResource> audio_resource) :
-  StorageItem(VideoResourceStorageItem::TYPE, name, parent),
+  StorageItem(parent->project(), VideoResourceStorageItem::TYPE, name, parent),
   video_resource_(video_resource), audio_resource_(audio_resource) {
 
 }

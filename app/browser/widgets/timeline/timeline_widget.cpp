@@ -57,6 +57,7 @@ void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
     return;
   }
   sequence_view_ = new SequenceView(this, sequence, theme_service_, play_service_);
+  sequence_view_->show();
   sequence_view_->setGeometry(rect());
   onDidChangeSequence(sequence);
 }

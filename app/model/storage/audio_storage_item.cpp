@@ -11,7 +11,7 @@ AudioStorageItem::AudioStorageItem(
   QSharedPointer<StorageItem> parent,
   QString name,
   QSharedPointer<AudioResource> audio_resource) :
-  StorageItem(AudioStorageItem::TYPE, name, parent),
+  StorageItem(parent->project(), AudioStorageItem::TYPE, name, parent),
   audio_resource_(audio_resource) {
 
 }

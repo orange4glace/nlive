@@ -1,4 +1,5 @@
 #include "model/storage/storage_item.h"
+#include "model/project/project.h"
 
 #include <QDebug>
 #include "base/common/uuid.h"
@@ -6,11 +7,12 @@
 namespace nlive {
 
 StorageItem::StorageItem(
+  QSharedPointer<Project> project,
   std::string type,
   QString name,
   QSharedPointer<StorageItem> parent,
   std::string uuid) :
-  type_(type), name_(name), parent_(nullptr), uuid_(uuid) {
+  project_(project), type_(type), name_(name), parent_(nullptr), uuid_(uuid) {
 }
 
 void StorageItem::setParent(StorageItem* item) {

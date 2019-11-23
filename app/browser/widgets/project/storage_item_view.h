@@ -123,9 +123,13 @@ protected:
 
   void contentRectUpdated() override;
   void mousePressEvent(QMouseEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent* e) override;
+  
+  inline virtual void onMouseDoubleClick() {}
 
 public:
   StorageItemView(QWidget* parent, QSharedPointer<StorageItem>, QSharedPointer<IThemeService> theme_service);
+
 
   QSharedPointer<StorageItem> storage_item();
   inline StorageItemContentViewContainer* content_view() { return content_view_; }

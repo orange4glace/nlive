@@ -8,12 +8,16 @@
 namespace nlive {
 
 class StorageDirectory : public StorageItem {
-  Q_OBJECT
 
 private:
   std::vector<QSharedPointer<StorageItem>> items_;
 
 public:
+  StorageDirectory(
+    QSharedPointer<Project> project,
+    QString name,
+    QSharedPointer<StorageItem> parent = nullptr,
+    std::string uuid = std::string());
   StorageDirectory(
     QString name,
     QSharedPointer<StorageItem> parent = nullptr,
@@ -29,9 +33,8 @@ public:
   const std::vector<QSharedPointer<StorageItem>>& items();
   bool is_directory() const override;
 
-signals:
-  void onDidAddItem(QSharedPointer<StorageItem> item, int index);
-  void onWillRemoveItem(QSharedPointer<StorageItem> item, int index);
+  sig2_t<void (QSharedPointer<StorageItem> item, int index)> onDidAddItem;
+  sig2_t<void (QSharedPointer<StorageItem> item, int index)> onWillRemoveItem;
 
 };
 

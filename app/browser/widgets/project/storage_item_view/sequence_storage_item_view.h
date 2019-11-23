@@ -4,6 +4,7 @@
 #include "browser/widgets/project/storage_item_view.h"
 #include "browser/widgets/project/storage_item_view_factory.h"
 #include "model/storage/sequence_storage_item.h"
+#include "browser/services/widgets/widgets_service.h"
 
 namespace nlive {
 
@@ -11,8 +12,16 @@ namespace project_widget {
 
 class SequenceStorageItemView : public StorageItemView {
 
+private:
+  QSharedPointer<IWidgetsService> widgets_service_;
+  QSharedPointer<SequenceStorageItem> item_;
+
+protected:
+  void onMouseDoubleClick() override;
+
 public:
-  SequenceStorageItemView(QWidget* parent, QSharedPointer<SequenceStorageItem> item, QSharedPointer<IThemeService> theme_service);
+  SequenceStorageItemView(QWidget* parent, QSharedPointer<SequenceStorageItem> item,
+      QSharedPointer<IThemeService> theme_service, QSharedPointer<IWidgetsService> widgets_service);
 
 };
 

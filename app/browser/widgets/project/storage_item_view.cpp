@@ -139,6 +139,10 @@ void StorageItemView::mousePressEvent(QMouseEvent* event) {
   }
 }
 
+void StorageItemView::mouseDoubleClickEvent(QMouseEvent* e) {
+  onMouseDoubleClick();
+}
+
 void StorageItemView::contentRectUpdated() {
   auto cr = rect();
   cr.setHeight(height() - 20);

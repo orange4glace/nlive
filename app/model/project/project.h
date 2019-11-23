@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-
+#include <QEnableSharedFromThis>
 #include "platform/undo/undo_stack.h"
 #include "model/storage/storage_directory.h"
 
@@ -11,7 +11,7 @@ namespace nlive {
 
 class Sequence;
 
-class Project : public QObject {
+class Project : public QEnableSharedFromThis<Project> {
 
 private:
   QSharedPointer<StorageDirectory> root_storage_directory_;
@@ -21,8 +21,6 @@ public:
   Project();
 
   QSharedPointer<StorageDirectory> root_storage_directory();
-
-  QSharedPointer<Sequence> createSequence();
 
   inline sptr<IUndoStack> Project::undo_stack() { return undo_stack_; }
 

@@ -24,8 +24,6 @@ public:
 
   void setMainWindow(MainWindow* main_window);
 
-  inline std::string service_id() const override { return "service.WidgetsService"; }
-
 };
 
 }

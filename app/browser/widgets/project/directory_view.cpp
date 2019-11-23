@@ -37,12 +37,14 @@ DirectoryView::DirectoryView(
   int i = 0;
   for (auto item : storage_directory->items())
     addStorageItemView(item, i ++);
-  QObject::connect(storage_directory.get(), &StorageDirectory::onDidAddItem, this, [this](QSharedPointer<StorageItem> item, int index) {
+  storage_directory->onDidAddItem.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<StorageItem> item, int index)>::slot_type(
+    [this](QSharedPointer<StorageItem> item, int index) {
     addStorageItemView(item, index);
-  });
-  QObject::connect(storage_directory.get(), &StorageDirectory::onWillRemoveItem, this, [this](QSharedPointer<StorageItem> item, int index) {
+  })));
+  storage_directory->onWillRemoveItem.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<StorageItem> item, int index)>::slot_type(
+    [this](QSharedPointer<StorageItem> item, int index) {
     removeStorageItemView(item);
-  });
+  })));
 }
 
 void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item, int index) {

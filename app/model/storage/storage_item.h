@@ -4,26 +4,32 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
-
+#include "base/common/sig.h"
 #include "model/sequence/sequence.h"
 #include "model/common/rational.h"
 
 namespace nlive {
 
+// We have a circular dependency here. (Project <----> StorageItem)
+class Project;
 class Clip;
 
-class StorageItem : public QObject {
-  Q_OBJECT
+class StorageItem : public Sig {
 
 private:
   std::string uuid_;
   std::string type_;
   QString name_;
 
+  QSharedPointer<Project> project_;
   StorageItem* parent_;
 
 protected:
-  StorageItem(std::string type, QString name, QSharedPointer<StorageItem> parent = nullptr, std::string uuid = std::string());
+  StorageItem(
+    QSharedPointer<Project> project,
+    std::string type, QString name,
+    QSharedPointer<StorageItem> parent = nullptr,
+    std::string uuid = std::string());
   
 public:
   void setParent(StorageItem* item);
@@ -33,6 +39,7 @@ public:
   virtual QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) = 0;
 
   StorageItem* parent();
+  inline QSharedPointer<Project> project() { return project_; }
 
   std::string const& uuid() const;
   QString const& name() const;

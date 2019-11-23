@@ -22,6 +22,11 @@ Renderer::Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate
   requested_burst_command_buffer_ = nullptr;
 }
 
+Renderer::~Renderer() {
+  close();
+  wait();
+}
+
 void Renderer::run() {
   render_io_->start();
   while (true) {
@@ -42,6 +47,7 @@ void Renderer::run() {
     render_state_lock.unlock();
 
     std::unique_lock<std::mutex> state_lock(state_mutex_);
+    if (state_ == State::CLOSED) break;
     int writing_index;
     int next_producer_index;
     if (requested_burst_command_buffer_ != nullptr) {
@@ -67,6 +73,7 @@ void Renderer::run() {
       // Wait until render data arrived
       state_ = State::WAITING_DATA;
       state_cv_.wait(state_lock);
+      if (state_ == State::CLOSED) break;
       if (state_ == State::RESET) {
         state_ = State::IDLE;
         continue;
@@ -91,6 +98,7 @@ void Renderer::run() {
     buffer->copyFrom(writing_index, render_context_->data());
     slot_mutex.unlock();
     state_lock.lock();
+    if (state_ == State::CLOSED) break;
     if (state_ == State::RESET) {
       state_ = State::IDLE;
       continue;
@@ -101,33 +109,42 @@ void Renderer::run() {
     state_lock.unlock();
     render_context_->clearData();
   }
+  qDebug() << "[AudioRenderer] End of execution.";
 }
 
 void Renderer::reset() {
-    std::unique_lock<std::mutex> state_lock(state_mutex_);
-    auto& render_state_mutex = render_state_->state_mutex();
-    render_state_mutex.lock();
-    render_state_->reset();
-    render_state_mutex.unlock();
-    requested_burst_command_buffer_ = nullptr;
-    requested_command_buffer_ = nullptr;
-    state_ = State::RESET;
-    state_cv_.notify_one();
+  std::unique_lock<std::mutex> state_lock(state_mutex_);
+  auto& render_state_mutex = render_state_->state_mutex();
+  render_state_mutex.lock();
+  render_state_->reset();
+  render_state_mutex.unlock();
+  requested_burst_command_buffer_ = nullptr;
+  requested_command_buffer_ = nullptr;
+  state_ = State::RESET;
+  state_cv_.notify_one();
+}
+
+void Renderer::close() {
+  std::unique_lock<std::mutex> state_lock(state_mutex_);
+  state_ = State::CLOSED;
+  qDebug() << "[AudioRenderer] close!";
+  state_cv_.notify_all();
+  render_io_->exit();
 }
 
 void Renderer::sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer) {
-    std::unique_lock<std::mutex> state_lock(state_mutex_);
-    requested_burst_command_buffer_ = command_buffer;
-    state_ = State::DATA_AVAILABLE;
-    state_cv_.notify_one();
+  std::unique_lock<std::mutex> state_lock(state_mutex_);
+  requested_burst_command_buffer_ = command_buffer;
+  state_ = State::DATA_AVAILABLE;
+  state_cv_.notify_one();
 }
 
 void Renderer::sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index) {
-    std::unique_lock<std::mutex> state_lock(state_mutex_);
-    if (writing_index_ != index) return;
-    requested_command_buffer_ = command_buffer;
-    state_ = State::DATA_AVAILABLE;
-    state_cv_.notify_one();
+  std::unique_lock<std::mutex> state_lock(state_mutex_);
+  if (writing_index_ != index) return;
+  requested_command_buffer_ = command_buffer;
+  state_ = State::DATA_AVAILABLE;
+  state_cv_.notify_one();
 }
 
 int64_t Renderer::calculateFrameByIndex(int index) const {

@@ -30,7 +30,8 @@ private:
     IDLE,
     RESET,
     WAITING_DATA,
-    DATA_AVAILABLE
+    DATA_AVAILABLE,
+    CLOSED
   };
 
   int state_;
@@ -52,10 +53,12 @@ protected:
 public:
   Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate,
     int samples_per_channel, int kernels_per_slot, int slot_length);
+  ~Renderer();
   
   // void start();
   void reset();
   // void restart();
+  void close();
   void sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index);
   void sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer);
 

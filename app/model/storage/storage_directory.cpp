@@ -3,10 +3,18 @@
 namespace nlive {
 
 StorageDirectory::StorageDirectory(
+  QSharedPointer<Project> project,
   QString name,
   QSharedPointer<StorageItem> parent,
   std::string uuid) :
-  StorageItem("DIRECTORY", name, parent, uuid) {
+  StorageItem(project, "DIRECTORY", name, parent, uuid) {
+}
+
+StorageDirectory::StorageDirectory(
+  QString name,
+  QSharedPointer<StorageItem> parent,
+  std::string uuid) :
+  StorageItem(parent->project(), "DIRECTORY", name, parent, uuid) {
 }
 
 void StorageDirectory::addItem(QSharedPointer<StorageItem> item) {
