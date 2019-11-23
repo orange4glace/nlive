@@ -42,6 +42,7 @@ protected:
 
 public:
   RenderIO(QObject* parent, sptr<RenderState> render_state);
+  ~RenderIO();
 
 };
 

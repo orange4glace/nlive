@@ -54,20 +54,27 @@ public:
     QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_, iframe_);
     if (!video_frame) return;
 // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
-// qDebug() << "Decode = " <<  sec.count();  
-    uint8_t* buf = new uint8_t[width * height * 4];
-// sec = std::chrono::system_clock::now() - start;
-// qDebug() << "Allocate = " <<  sec.count();  
-    video_frame->scale((void*)buf);
+// qDebug() << "Decode = " <<  sec.count();
+    SwsKey sws_key;
+    sws_key.src_width = width;
+    sws_key.src_height = height;
+    sws_key.out_width = width;
+    sws_key.out_height = height;
+    sws_key.src_fmt = video_frame->pix_fmt();
+    auto sws_context = ctx->getSwsValue(sws_key);
+    auto frame = video_frame->frame();
+    int linesize[4] = { width * 4, 0, 0, 0 };
+    uint8_t* data[4] = { sws_context->out_data, 0, 0, 0 };
+    sws_scale(sws_context->context, frame->data, frame->linesize,
+      0, height, data, linesize);
 // sec = std::chrono::system_clock::now() - start;
 // qDebug() << "Scale = " <<  sec.count();  
     auto gf = ctx->gl()->functions();
     gf->glBindTexture(GL_TEXTURE_2D, rt.texture);
-    gf->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+    gf->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sws_context->out_data);
     gf->glBindTexture(GL_TEXTURE_2D, 0);
 // sec = std::chrono::system_clock::now() - start;
 // qDebug() << "PreEnd = " <<  sec.count();  
-    delete buf;
   }
 
 };

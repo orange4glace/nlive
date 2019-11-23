@@ -17,6 +17,7 @@ void VideoFrame::scale(void* out_data, AVPixelFormat dst_pix_fmt) {
   int linesize[4] = { width_ * 4, 0, 0, 0 };
   uint8_t* data[4] = { (uint8_t*)out_data, 0, 0, 0 };
   sws_scale(sws_ctx, frame_->data, frame_->linesize, 0, height_, data, linesize);
+  sws_freeContext(sws_ctx);
 }
 
 }

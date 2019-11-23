@@ -18,7 +18,6 @@ SequenceRendererView::SequenceRendererView(QWidget* widget, timeline_widget::Seq
 SequenceRendererView::~SequenceRendererView() {
   // TODO
   if (renderer_) {
-    timeline_widget_sequence_view_->sequence_playable()->setVideoRenderer(nullptr);
     delete renderer_;
   }
 }

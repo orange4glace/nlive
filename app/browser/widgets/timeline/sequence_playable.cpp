@@ -24,7 +24,6 @@ SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> seq
 }
 
 SequencePlayable::~SequencePlayable() {
-  // if (sequence_video_renderer_) delete sequence_video_renderer_;
   if (audio_sequence_renderer_) delete audio_sequence_renderer_;
   delete invalidation_timer_;
 }

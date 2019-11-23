@@ -57,8 +57,9 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timeline_widget::Timeli
 void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* timeline_widget_sequence_view) {
   if (sequence_view_ != nullptr) {
     // TODO
-    // delete sequence_view_;
+    delete sequence_view_;
   }
+  qDebug() << "DONE DELETE";
   sequence_view_ = nullptr;
   action_context_->setSequence(nullptr);
   action_context_->setSequencePlayable(nullptr);

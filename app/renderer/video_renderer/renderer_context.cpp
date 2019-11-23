@@ -18,6 +18,25 @@ RendererContext::RendererContext(QOpenGLContext* gl,
   front_buffer_index_(0), initialized_(false) {
   decoder_manager_ = QSharedPointer<DecoderManager>(new DecoderManager());
 }
+
+RendererContext::~RendererContext() {
+  for (auto& kv : sws_map_) {
+    sws_freeContext(kv.second.context);
+    delete kv.second.out_data;
+  }
+}
+
+SwsValue* RendererContext::getSwsValue(SwsKey& key) {
+  if (sws_map_.count(key)) return &sws_map_[key];
+  SwsValue val;
+  auto sws_ctx = sws_getContext(key.src_width, key.src_height, key.src_fmt,
+      key.out_width, key.out_height, AV_PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
+  uint8_t* out_data = new uint8_t[key.out_width * key.out_height * 4];
+  val.context = sws_ctx;
+  val.out_data = out_data;
+  sws_map_[key] = val;
+  return &sws_map_[key];
+}
   
 void RendererContext::initialize() { 
   if (initialized_) return;

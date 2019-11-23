@@ -15,15 +15,6 @@ namespace nlive {
 
 namespace audio_renderer {
 
-namespace {
-std::random_device rd;  //Will be used to obtain a seed for the random number engine
-std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-std::uniform_int_distribution<> dis(0, 7);
-int k = 0;
-
-}
-
-
 RenderDevice::RenderDevice(QObject* parent, sptr<RenderState> render_state) :
   QIODevice(parent), render_state_(render_state) {
   byte_index_ = 0;
@@ -95,6 +86,13 @@ qint64 RenderDevice::writeData(const char* data, qint64 max_size) {
 RenderIO::RenderIO(QObject* parent, sptr<RenderState> render_state) :
   QThread(parent), render_state_(render_state) {
 
+}
+
+RenderIO::~RenderIO() {
+  qDebug() << "About to destroy RenderIO";
+  device_->close();
+  delete device_;
+  delete output_;
 }
 
 void RenderIO::run() {

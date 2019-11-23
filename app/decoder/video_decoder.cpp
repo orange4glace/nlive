@@ -103,8 +103,8 @@ QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
     int decoded = pkt_->size;
     if (pkt_->stream_index == stream_index_) {
       ret = avcodec_send_packet(dec_ctx_, pkt_);
+      av_packet_unref(pkt_);
       if (ret < 0) {
-        av_free_packet(pkt_);
         return nullptr;
       }
 
@@ -113,14 +113,13 @@ QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
         if (iframe || pts <= frame_->pts) {
           frame = QSharedPointer<VideoFrame>(new VideoFrame(frame_, width_, height_, pix_fmt_));
           last_pts_ = pts;
-          av_free_packet(pkt_);
     // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
     // qDebug() << "d dt = " <<  sec.count();  
           return frame;
         }
       }
     }
-    av_free_packet(pkt_);
+    else av_packet_unref(pkt_);
   }
   return nullptr;
 }

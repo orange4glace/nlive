@@ -14,6 +14,7 @@ RendererView::RendererView(QWidget* parent, int width, int height) :
 
 RendererView::~RendererView() {
   if (renderer_ != nullptr) {
+    qDebug() << "[VideoRendererView] Closing renderer";
     renderer_->close();
     renderer_->wait();
   }

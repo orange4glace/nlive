@@ -35,6 +35,7 @@ SequenceRenderer::SequenceRenderer(
 }
 
 SequenceRenderer::~SequenceRenderer() {
+  renderer_->close();
   renderer_->wait();
 }
 

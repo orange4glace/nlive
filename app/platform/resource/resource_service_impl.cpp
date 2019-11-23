@@ -150,8 +150,10 @@ protected:
             last_progress = progress;
             setProgress(progress);
           }
+          av_packet_unref(pkt);
         }
         else if (ret == AVERROR(EAGAIN)) {
+          av_packet_unref(pkt);
           continue;
         }
         else {
@@ -162,6 +164,9 @@ protected:
           av_frame_free(&frame);
           return;
         }
+      }
+      else {
+        av_packet_unref(pkt);
       }
     }
     avcodec_free_context(&dec_ctx);

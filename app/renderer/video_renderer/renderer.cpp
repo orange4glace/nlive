@@ -33,8 +33,13 @@ Renderer::Renderer(
 }
 
 Renderer::~Renderer() {
+  qDebug() << "[VideoRenderer] Being destroy.";
   // TODO
   delete surface_;
+  renderer_ctx_ = nullptr;
+  sharing_ctx_ = nullptr;
+  delete gl_;
+  qDebug() << "[VideoRenderer] Renderer destroied";
 }
 
 void Renderer::run() {
@@ -85,7 +90,7 @@ void Renderer::run() {
 
     if (closed_) {
       command_buffer_mutex_.unlock();
-      return;
+      break;
     }
 
     // Got a CommandBuffer that can be rendered into surface
@@ -115,6 +120,7 @@ void Renderer::run() {
     
     emit onDidReadyData();
   }
+  qDebug() << "[VideoRenderer] Thread ended.";
 }
 
 void Renderer::render(QSharedPointer<CommandBuffer> command_buffer) {

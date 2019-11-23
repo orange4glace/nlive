@@ -27,6 +27,11 @@ public:
   void scale(void* out_data, 
       AVPixelFormat dst_pix_fmt = AV_PIX_FMT_RGB32);
 
+  inline AVFrame* frame() { return frame_; }
+  inline int width() { return width_; }
+  inline int height() { return height_; }
+  inline AVPixelFormat pix_fmt() { return pix_fmt_; }
+
 };
 
 }

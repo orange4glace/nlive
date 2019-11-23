@@ -13,6 +13,38 @@ namespace nlive {
 
 namespace video_renderer {
 
+struct SwsKey {
+  int src_width;
+  int src_height;
+  int out_width;
+  int out_height;
+  AVPixelFormat src_fmt;
+};
+
+// TODO : Create hash to compare
+struct SwsKeyCompare {
+  inline bool operator() (const SwsKey& a, const SwsKey& b) const {
+    if (a.src_width == b.src_width) {
+      if (a.src_height == b.src_height) {
+        if (a.out_width == b.out_width) {
+          if (a.out_height == b.out_height) {
+            return a.src_fmt < b.src_fmt;
+          }
+          return a.out_height < b.out_height;
+        }
+        return a.out_width < b.out_width;
+      }
+      return a.src_height < b.src_height;
+    }
+    return a.src_width < b.src_width;
+  }
+};
+
+struct SwsValue {
+  SwsContext* context;
+  uint8_t* out_data;
+};
+
 struct RenderTexture {
   int id;
   std::string name;
@@ -30,17 +62,17 @@ private:
   std::vector<RenderTexture> swap_buffers_;
   int front_buffer_index_;
 
-  std::map<std::string, GLuint> shaders_;
 
   QSharedPointer<RenderSharingContext> sharing_context_;
-
   QSharedPointer<DecoderManager> decoder_manager_;
+  std::map<SwsKey, SwsValue, SwsKeyCompare> sws_map_;
 
   bool initialized_;
 
 public:
   RendererContext(QOpenGLContext* gl, int width, int height,
       QSharedPointer<RenderSharingContext> sharing_context = nullptr);
+  ~RendererContext();
 
   void initialize();
 
@@ -57,6 +89,7 @@ public:
   // void blit(RenderTexture& rt);
   // int getProgram(const char* name);
   void swapRenderTextures();
+  SwsValue* getSwsValue(SwsKey& key);
 
   int width() const;
   int height() const;

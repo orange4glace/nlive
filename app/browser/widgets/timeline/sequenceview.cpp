@@ -7,6 +7,8 @@ namespace nlive {
 
 namespace timeline_widget {
 
+// TODO : This sometimes crashes.
+// This may be because of the montior_widget::SequenceView
 SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
   QSharedPointer<IThemeService> theme_service,
   QSharedPointer<PlayService> play_service) :

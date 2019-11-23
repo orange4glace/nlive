@@ -14,7 +14,7 @@ Renderer::Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate
   render_state_ = std::make_shared<RenderState>(
     nb_channels, bytes_per_sample, sample_rate, samples_per_channel,
     kernels_per_slot, slot_length);
-  render_io_ = std::make_shared<RenderIO>(this, render_state_);
+  render_io_ = std::make_shared<RenderIO>(nullptr, render_state_);
   render_context_ = QSharedPointer<RenderContext>(
     new RenderContext(ch_layout, sample_fmt, sample_rate,
         samples_per_channel));
