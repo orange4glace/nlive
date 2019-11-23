@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_CONTROL_TRANSFORM_EFFECT_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 
 #include "browser/widgets/effect_control/effect_view.h"
@@ -41,13 +41,13 @@ private:
 public:
   TransformEffectView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::TransformEffect> effect,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::TransformEffect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service);
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service);
 
 };
 
@@ -57,13 +57,13 @@ public:
   TransformEffectViewFactory();
   TransformEffectView* create(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) override;
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) override;
 
 };
 

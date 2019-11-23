@@ -1,7 +1,7 @@
 #ifndef NLIVE_MONITOR_WIDET_SEQUENCE_GIZMO_VIEW_H_
 #define NLIVE_MONITOR_WIDET_SEQUENCE_GIZMO_VIEW_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLWidget>
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLShaderProgram>
@@ -19,7 +19,7 @@ namespace monitor_widget {
 class SequenceGizmoView : public QWidget {
 
 private:
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   video_renderer::SequenceRenderer* sequence_renderer_;
 
   void scheduleRender();
@@ -27,7 +27,7 @@ private:
 protected:
 
 public:
-  SequenceGizmoView(QWidget* parent, QSharedPointer<Sequence> sequence);
+  SequenceGizmoView(QWidget* parent, sptr<Sequence> sequence);
 
 };
 

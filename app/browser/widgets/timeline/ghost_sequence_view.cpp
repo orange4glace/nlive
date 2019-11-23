@@ -15,7 +15,7 @@ namespace timeline_widget {
 GhostSequenceView::GhostSequenceView(
   QWidget* parent,
   SequenceScrollView* scroll_view,
-  QSharedPointer<Sequence> sequence) :
+  sptr<Sequence> sequence) :
   QWidget(parent),
   sequence_(sequence), scroll_view_(scroll_view), on_schedule_(false) {
     
@@ -34,12 +34,12 @@ GhostSequenceView::GhostSequenceView(
   for (auto track : sequence->tracks()) {
     addTrackListener(track);
   }
-  sequence->onDidAddTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
-    [this](QSharedPointer<Track> track, int index) {
+  sequence->onDidAddTrack.connect(sig2_t<void (sptr<Track>, int)>::slot_type(
+    [this](sptr<Track> track, int index) {
     addTrackListener(track);
   }).track(__sig_scope_));
-  sequence->onWillRemoveTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
-    [this](QSharedPointer<Track> track, int index) {
+  sequence->onWillRemoveTrack.connect(sig2_t<void (sptr<Track>, int)>::slot_type(
+    [this](sptr<Track> track, int index) {
     removeTrackListener(track);
   }).track(__sig_scope_));
 
@@ -152,27 +152,27 @@ GhostTrackView* GhostSequenceView::getGhostTrackView(int index) {
   return ghost_track_views_[index];
 }
 
-void GhostSequenceView::addTrackListener(QSharedPointer<Track> track) {
+void GhostSequenceView::addTrackListener(sptr<Track> track) {
   for (auto clip : track->clips()) {
     addMagnetTime(clip->start_time());
     addMagnetTime(clip->end_time());
   }
   std::vector<sig2_conn_t> connections;
   connections.push_back(track->onDidAddClip.connect(
-    sig2_t<void (QSharedPointer<Clip>)>::slot_type(
-      [this](QSharedPointer<Clip> clip) {
+    sig2_t<void (sptr<Clip>)>::slot_type(
+      [this](sptr<Clip> clip) {
       addMagnetTime(clip->start_time());
       addMagnetTime(clip->end_time());
     }).track(__sig_scope_)));
   connections.push_back(track->onWillRemoveClip.connect(
-    sig2_t<void (QSharedPointer<Clip>)>::slot_type(
-      [this](QSharedPointer<Clip> clip) {
+    sig2_t<void (sptr<Clip>)>::slot_type(
+      [this](sptr<Clip> clip) {
       deleteMagnetTime(clip->start_time());
       deleteMagnetTime(clip->end_time());
     }).track(__sig_scope_)));
   connections.push_back(track->onDidChangeClipTime.connect(
-    sig2_t<void (QSharedPointer<Clip>, int, int, int)>::slot_type(
-      [this](QSharedPointer<Clip> clip, int old_start_time, int old_end_time, int old_b_time) {
+    sig2_t<void (sptr<Clip>, int, int, int)>::slot_type(
+      [this](sptr<Clip> clip, int old_start_time, int old_end_time, int old_b_time) {
       deleteMagnetTime(old_start_time);
       deleteMagnetTime(old_end_time);
       addMagnetTime(clip->start_time());
@@ -181,7 +181,7 @@ void GhostSequenceView::addTrackListener(QSharedPointer<Track> track) {
   track_connections_.insert({ track, connections });
 }
 
-void GhostSequenceView::removeTrackListener(QSharedPointer<Track> track) {
+void GhostSequenceView::removeTrackListener(sptr<Track> track) {
   for (auto clip : track->clips()) {
     deleteMagnetTime(clip->start_time());
     deleteMagnetTime(clip->end_time());

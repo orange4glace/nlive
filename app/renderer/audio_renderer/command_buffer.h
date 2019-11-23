@@ -2,7 +2,7 @@
 #define NLIVE_AUDIO_RENDERER_COMMAND_BUFFER_H_
 
 #include <vector>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "renderer/audio_renderer/render_command.h"
 
@@ -13,13 +13,13 @@ namespace audio_renderer {
 class CommandBuffer {
 
 private:
-  std::vector<QSharedPointer<RenderCommand>> commands_;
+  std::vector<sptr<RenderCommand>> commands_;
 
 public:
   CommandBuffer();
-  void addCommand(QSharedPointer<RenderCommand> command);
+  void addCommand(sptr<RenderCommand> command);
 
-  const std::vector<QSharedPointer<RenderCommand>>& commands();
+  const std::vector<sptr<RenderCommand>>& commands();
 
 };
 

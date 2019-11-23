@@ -2,7 +2,7 @@
 #define NLIVE_AUDIO_RENDERER_SEQUENCE_RENDERER_H_
 
 #include <QObject>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "model/sequence/sequence.h"
 #include "renderer/audio_renderer/renderer.h"
@@ -14,8 +14,8 @@ namespace audio_renderer {
 class SequenceRenderer : public QObject, public Sig {
 
 private:
-  QSharedPointer<Renderer> renderer_;
-  QSharedPointer<Sequence> sequence_;
+  sptr<Renderer> renderer_;
+  sptr<Sequence> sequence_;
 
   int64_t base_frame_;
   bool playing_;
@@ -24,7 +24,7 @@ private:
 
 public:
   SequenceRenderer(
-    QSharedPointer<Sequence> sequence);
+    sptr<Sequence> sequence);
 
   void start();
   void stop();

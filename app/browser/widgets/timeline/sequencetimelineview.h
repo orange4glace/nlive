@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QCursor>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <set>
 #include <vector>
 
@@ -40,9 +40,9 @@ class SequenceTimelineView : public Div {
   Q_OBJECT
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   nlive::SequenceScrollView* scroll_view_;
 
   ManipulateState manipulate_state_;
@@ -58,7 +58,7 @@ private:
   QPoint last_mouse_pos_;
   int last_time_pos_;
   int last_track_index_;
-  std::vector<std::set<QSharedPointer<Clip>>> manipulate_target_clips_;
+  std::vector<std::set<sptr<Clip>>> manipulate_target_clips_;
 
   void handleClipHandleMousePress(QMouseEvent* event);
 
@@ -85,8 +85,8 @@ private:
 /*#endregion*/
   
 private slots:
-  void handleDidAddTrack(QSharedPointer<Track> track, int index);
-  void handleWillRemoveTrack(QSharedPointer<Track> track, int index);
+  void handleDidAddTrack(sptr<Track> track, int index);
+  void handleWillRemoveTrack(sptr<Track> track, int index);
 
 protected:
   void contentRectUpdated() override;
@@ -104,8 +104,8 @@ protected:
 public:
   SequenceTimelineView(
     SequenceScrollView* scroll_view,
-    QSharedPointer<Sequence> const sequence,
-    QSharedPointer<IThemeService> const themeService);
+    sptr<Sequence> const sequence,
+    sptr<IThemeService> const themeService);
 
   void blurAllClips();
 

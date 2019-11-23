@@ -2,7 +2,7 @@
 #define NLIVE_VIDEO_RENDERER_SEQUENCE_RENDERER_H_
 
 #include <QObject>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOffscreenSurface>
 
 #include "base/common/sig.h"
@@ -19,14 +19,14 @@ class SequenceRenderer : public QObject, public Sig {
   Q_OBJECT
 
 private:
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   QOpenGLContext* target_gl_;
 
-  QSharedPointer<Renderer> renderer_;
+  sptr<Renderer> renderer_;
 
 public:
   SequenceRenderer(
-    QSharedPointer<Sequence> sequence,
+    sptr<Sequence> sequence,
     QOpenGLContext* target_gl);
   ~SequenceRenderer();
 

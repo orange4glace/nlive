@@ -1,7 +1,7 @@
 #ifndef NLIVE_EFFECT_CONTROL_KEYFRAME_VIEW_H_
 #define NLIVE_EFFECT_CONTROL_KEYFRAME_VIEW_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QPainter>
 #include <QPainterPath>
 #include "base/layout/div.h"
@@ -15,9 +15,9 @@ template <class T>
 class KeyframeView : public Div {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<effect::Keyframe<T>> keyframe_;
+  sptr<effect::Keyframe<T>> keyframe_;
   bool active_;
 
 protected:
@@ -35,8 +35,8 @@ protected:
   }
 
 public:
-  KeyframeView(QWidget* parent, QSharedPointer<effect::Keyframe<T>> keyframe,
-    QSharedPointer<IThemeService> theme_service) :
+  KeyframeView(QWidget* parent, sptr<effect::Keyframe<T>> keyframe,
+    sptr<IThemeService> theme_service) :
     Div(parent), theme_service_(theme_service),
     keyframe_(keyframe) {
 
@@ -47,7 +47,7 @@ public:
     update();
   }
 
-  QSharedPointer<effect::Keyframe<T>> keyframe() { return keyframe_; }
+  sptr<effect::Keyframe<T>> keyframe() { return keyframe_; }
 
 };
 

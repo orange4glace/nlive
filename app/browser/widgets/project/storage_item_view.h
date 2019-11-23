@@ -2,7 +2,7 @@
 #define NLIVE_PROJECT_WIDGET_STORAGE_ITEM_VIEW_H_
 
 #include <QWidget>
-
+#include "base/common/memory.h"
 #include "base/layout/div.h"
 #include "base/layout/flex_layout.h"
 #include "base/ui/text_box.h"
@@ -19,7 +19,7 @@ namespace {
 class ScrubBar : public QWidget {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
   
   double value_;
 
@@ -27,7 +27,7 @@ protected:
   void paintEvent(QPaintEvent* e) override;
 
 public:
-  ScrubBar(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+  ScrubBar(QWidget* parent, sptr<IThemeService> theme_service);
   void setValue(double x);
 
 };
@@ -72,9 +72,9 @@ private:
   void doLayout();
 
 protected:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<StorageItem> storage_item_;
+  sptr<StorageItem> storage_item_;
 
   void contentRectUpdated() override;
   void enterEvent(QEvent* event) override;
@@ -82,7 +82,7 @@ protected:
   void leaveEvent(QEvent* event) override;
 
 public:
-  StorageItemContentViewContainer(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+  StorageItemContentViewContainer(QWidget* parent, sptr<IThemeService> theme_service);
   void setContentView(StorageItemContentView* content_view);
 
 
@@ -95,12 +95,12 @@ public:
 class StorageItemTitleView : public FlexLayout {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
   TextBox* left_label_box_;
   TextBox* right_label_box_;
 
 public:
-  StorageItemTitleView(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+  StorageItemTitleView(QWidget* parent, sptr<IThemeService> theme_service);
 
   inline TextBox* left_label_box() { return left_label_box_; }
   inline TextBox* right_label_box() { return right_label_box_; }
@@ -118,8 +118,8 @@ private:
   StorageItemTitleView* title_view_;
 
 protected:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<StorageItem> storage_item_;
+  sptr<IThemeService> theme_service_;
+  sptr<StorageItem> storage_item_;
 
   void contentRectUpdated() override;
   void mousePressEvent(QMouseEvent* event) override;
@@ -128,10 +128,10 @@ protected:
   inline virtual void onMouseDoubleClick() {}
 
 public:
-  StorageItemView(QWidget* parent, QSharedPointer<StorageItem>, QSharedPointer<IThemeService> theme_service);
+  StorageItemView(QWidget* parent, sptr<StorageItem>, sptr<IThemeService> theme_service);
 
 
-  QSharedPointer<StorageItem> storage_item();
+  sptr<StorageItem> storage_item();
   inline StorageItemContentViewContainer* content_view() { return content_view_; }
   inline StorageItemTitleView* title_view() { return title_view_; }
   

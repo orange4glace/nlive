@@ -9,18 +9,18 @@ namespace nlive {
 class SequenceStorageItem : public StorageItem {
 
 private:
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
 
 public:
   static const std::string TYPE;
 
   SequenceStorageItem(
-    QSharedPointer<StorageItem> parent,
-    QSharedPointer<Sequence> sequence);
+    sptr<StorageItem> parent,
+    sptr<Sequence> sequence);
 
-  QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) override;
+  sptr<Clip> cliperize(sptr<Sequence> sequence) override;
 
-  inline QSharedPointer<Sequence> sequence() { return sequence_; }
+  inline sptr<Sequence> sequence() { return sequence_; }
 
   inline bool is_directory() const { return false; }
 

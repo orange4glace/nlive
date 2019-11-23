@@ -11,15 +11,15 @@ namespace project_widget {
 class NullStorageItemView : public StorageItemView {
 
 public:
-  NullStorageItemView(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service);
+  NullStorageItemView(QWidget* parent, sptr<StorageItem> item, sptr<IThemeService> theme_service);
 
 };
 
 class NullStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  NullStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
+  NullStorageItemViewFactory(sptr<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, sptr<StorageItem> item) override;
 
 };
 

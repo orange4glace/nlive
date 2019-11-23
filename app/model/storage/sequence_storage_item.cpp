@@ -5,13 +5,13 @@ namespace nlive {
 const std::string SequenceStorageItem::TYPE = "nlive.StorageItem.SequenceStorageItem";
 
 SequenceStorageItem::SequenceStorageItem(
-  QSharedPointer<StorageItem> parent,
-  QSharedPointer<Sequence> sequence) :
+  sptr<StorageItem> parent,
+  sptr<Sequence> sequence) :
   StorageItem(parent->project(), SequenceStorageItem::TYPE, sequence->name(), parent), sequence_(sequence) {
 
 }
 
-QSharedPointer<Clip> SequenceStorageItem::cliperize(QSharedPointer<Sequence> sequence) {
+sptr<Clip> SequenceStorageItem::cliperize(sptr<Sequence> sequence) {
   // TODO : implement
   return nullptr;
 }

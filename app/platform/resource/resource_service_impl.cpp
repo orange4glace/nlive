@@ -41,7 +41,7 @@ struct AudioMetadata {
 class AudioResourceRawConvertingTask : public Task {
 
 private:
-  QSharedPointer<AudioResource> resource_;
+  sptr<AudioResource> resource_;
 
 protected:
   void run() override {
@@ -175,7 +175,7 @@ protected:
     av_frame_free(&frame);
 
     AVSampleFormat packed_sample_format = av_get_packed_sample_fmt(sample_format);
-    result = QSharedPointer<RawAudioResource>(
+    result = sptr<RawAudioResource>(
       new RawAudioResource(raw_path, ch_layout, packed_sample_format, sample_rate, nb_frames));
     spdlog::get(LOGGER_DEFAULT)->info("[AudioResourceRawConvertingTask] "
       "End task. path = {}, ch_layout = {}, nb_channels = {}, sample_format = {}, "
@@ -183,12 +183,12 @@ protected:
   }
 
 public:
-  AudioResourceRawConvertingTask(QSharedPointer<AudioResource> resource) :
+  AudioResourceRawConvertingTask(sptr<AudioResource> resource) :
     resource_(resource) {
 
   }
 
-  QSharedPointer<RawAudioResource> result;
+  sptr<RawAudioResource> result;
 
 };
 
@@ -282,10 +282,10 @@ AudioMetadata* findBestAudioMetadata(QString path) {
 }
 
 
-AudioResourceRawConvertingService::AudioResourceRawConvertingService(QSharedPointer<ITaskService> task_service) :
+AudioResourceRawConvertingService::AudioResourceRawConvertingService(sptr<ITaskService> task_service) :
   task_service_(task_service) {}
 
-void AudioResourceRawConvertingService::process(QSharedPointer<AudioResource> resource) {
+void AudioResourceRawConvertingService::process(sptr<AudioResource> resource) {
   auto& path = resource->path();
   if (processed_map_.count(path)) {
     auto raw = processed_map_[path];
@@ -297,11 +297,11 @@ void AudioResourceRawConvertingService::process(QSharedPointer<AudioResource> re
     return;
   }
   processing_map_[path].push_back(resource);
-  auto task = QSharedPointer<AudioResourceRawConvertingTask>(
+  auto task = sptr<AudioResourceRawConvertingTask>(
     new AudioResourceRawConvertingTask(resource));
-  task_service_->queueTask(task, [this, path](QSharedPointer<Task> task){
-    auto arrc_task = task.staticCast<AudioResourceRawConvertingTask>();
-    QSharedPointer<RawAudioResource> result = arrc_task->result;
+  task_service_->queueTask(task, [this, path](sptr<Task> task){
+    auto arrc_task = std::static_pointer_cast<AudioResourceRawConvertingTask>(task);
+    sptr<RawAudioResource> result = arrc_task->result;
     auto& vec = processing_map_[path];
     for (auto& v : vec) v->setRaw(result);
     processing_map_.erase(path);
@@ -310,16 +310,16 @@ void AudioResourceRawConvertingService::process(QSharedPointer<AudioResource> re
 }
 
 
-ResourceService::ResourceService(QSharedPointer<ITaskService> task_service) :
+ResourceService::ResourceService(sptr<ITaskService> task_service) :
   task_service_(task_service),
   audio_resource_raw_converting_service_(task_service) {
   
 }
 
-QSharedPointer<VideoResource> ResourceService::loadBestVideoResource(QString path) {
+sptr<VideoResource> ResourceService::loadBestVideoResource(QString path) {
   VideoMetadata* metadata = findBestVideoMetadata(path);
   if (metadata) {
-    QSharedPointer<VideoResource> resource = QSharedPointer<VideoResource>(
+    sptr<VideoResource> resource = sptr<VideoResource>(
       new VideoResource(path.toStdString(),
           Rational::fromAVRational(metadata->time_base),
           Rational::fromAVRational(metadata->frame_rate),
@@ -331,10 +331,10 @@ QSharedPointer<VideoResource> ResourceService::loadBestVideoResource(QString pat
   return nullptr;
 }
 
-QSharedPointer<AudioResource> ResourceService::loadBestAudioResource(QString path) {
+sptr<AudioResource> ResourceService::loadBestAudioResource(QString path) {
   AudioMetadata* metadata = findBestAudioMetadata(path);
   if (metadata) {
-    QSharedPointer<AudioResource> resource = QSharedPointer<AudioResource>(
+    sptr<AudioResource> resource = sptr<AudioResource>(
       new AudioResource(path.toStdString(),
           Rational::fromAVRational(metadata->time_base),
           metadata->sample_rate,

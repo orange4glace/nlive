@@ -52,7 +52,7 @@ private:
 
   std::map<SwrKey, SwrValue, SwrKeyCompare> swr_map_;
 
-  QSharedPointer<DecoderManager> decoder_manager_;
+  sptr<DecoderManager> decoder_manager_;
 
   SwrValue* getSwrValue(SwrKey& key);
 
@@ -74,7 +74,7 @@ public:
   inline int buffer_size() const { return buffer_size_; }
   inline int bytes_per_sample() { return bytes_per_sample_; }
   inline uint8_t* data() { return data_; }
-  inline QSharedPointer<DecoderManager> decoder_manager() { return decoder_manager_; }
+  inline sptr<DecoderManager> decoder_manager() { return decoder_manager_; }
 
 };
 

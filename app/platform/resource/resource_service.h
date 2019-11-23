@@ -1,7 +1,7 @@
 #ifndef NLIVE_RESOURCE_SERVICE_H_
 #define NLIVE_RESOURCE_SERVICE_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <functional>
 #include <QObject>
 #include "model/resource/resource.h"
@@ -17,8 +17,8 @@ protected:
   inline IResourceService() {}
 
 public:
-  virtual QSharedPointer<VideoResource> loadBestVideoResource(QString path) = 0;
-  virtual QSharedPointer<AudioResource> loadBestAudioResource(QString path) = 0;
+  virtual sptr<VideoResource> loadBestVideoResource(QString path) = 0;
+  virtual sptr<AudioResource> loadBestAudioResource(QString path) = 0;
 
 };
 

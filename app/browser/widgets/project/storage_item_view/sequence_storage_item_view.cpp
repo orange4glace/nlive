@@ -8,11 +8,11 @@ namespace nlive {
 
 namespace project_widget {
 
-SequenceStorageItemView::SequenceStorageItemView(QWidget* parent, QSharedPointer<SequenceStorageItem> item,
-    QSharedPointer<IThemeService> theme_service, QSharedPointer<IWidgetsService> widgets_service) :
+SequenceStorageItemView::SequenceStorageItemView(QWidget* parent, sptr<SequenceStorageItem> item,
+    sptr<IThemeService> theme_service, sptr<IWidgetsService> widgets_service) :
   StorageItemView(parent, item, theme_service), widgets_service_(widgets_service),
   item_(item) {
-  QSharedPointer<SequenceStorageItem> asi = item.staticCast<SequenceStorageItem>();
+  sptr<SequenceStorageItem> asi = std::static_pointer_cast<SequenceStorageItem>(item);
   auto sequence = asi->sequence();
   QString dur = QString::fromStdString(datetime::secondsToHHmmss(sequence->duration_in_seconds()));
   title_view()->left_label_box()->setText(item->name());
@@ -27,11 +27,11 @@ void SequenceStorageItemView::onMouseDoubleClick() {
   timeline_widget->setSequence(item_->sequence());
 }
 
-SequenceStorageItemViewFactory::SequenceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator) :
+SequenceStorageItemViewFactory::SequenceStorageItemViewFactory(sptr<ServiceLocator> service_locator) :
   StorageItemViewFactory(service_locator) {}
-StorageItemView* SequenceStorageItemViewFactory::create(QWidget* parent, QSharedPointer<StorageItem> item) {
+StorageItemView* SequenceStorageItemViewFactory::create(QWidget* parent, sptr<StorageItem> item) {
   Q_ASSERT(item->type() == SequenceStorageItem::TYPE);
-  QSharedPointer<SequenceStorageItem> vrsi = item.staticCast<SequenceStorageItem>();
+  sptr<SequenceStorageItem> vrsi = std::static_pointer_cast<SequenceStorageItem>(item);
   return new SequenceStorageItemView(parent, vrsi,
       service_locator_->getService<IThemeService>(IThemeService::ID),
       service_locator_->getService<IWidgetsService>(IWidgetsService::ID));

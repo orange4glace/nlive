@@ -2,7 +2,7 @@
 #define NLIVE_VIDEO_RENDERER_RENDERER_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOffscreenSurface>
 #include <QOpenGLWidget>
 
@@ -23,7 +23,7 @@ private:
   int width_, height_;
   bool initialized_;
 
-  QSharedPointer<Renderer> renderer_;
+  sptr<Renderer> renderer_;
 
   GLuint vert_shader_;
   GLuint frag_shader_;
@@ -45,7 +45,7 @@ public:
   ~RendererView();
 
 public slots:
-  void render(QSharedPointer<CommandBuffer> command_buffer);
+  void render(sptr<CommandBuffer> command_buffer);
 
 signals:
   void onDidReadyData();

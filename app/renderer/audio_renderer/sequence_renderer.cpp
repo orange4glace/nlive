@@ -5,9 +5,9 @@ namespace nlive {
 namespace audio_renderer {
 
 SequenceRenderer::SequenceRenderer(
-  QSharedPointer<Sequence> sequence) :
+  sptr<Sequence> sequence) :
   sequence_(sequence), playing_(false) {
-  renderer_ = QSharedPointer<Renderer>(
+  renderer_ = sptr<Renderer>(
     new Renderer(AV_CH_LAYOUT_STEREO, AV_SAMPLE_FMT_FLT, sequence->sample_rate(),
     sequence->sample_rate() / 30, 1, 8));
   connect(renderer_.get(), &Renderer::onRenderRequest, this, [this](int index, int64_t start_frame, int64_t end_frame) {

@@ -1,7 +1,7 @@
 #ifndef NLIVE_VIDEO_TRANFORM_BLIT_RENDER_COMMAND_H_
 #define NLIVE_VIDEO_TRANFORM_BLIT_RENDER_COMMAND_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLFunctions>
 #include <iostream>
 #include <stdint.h>
@@ -26,12 +26,12 @@ public:
 
   }
 
-  inline void render(QSharedPointer<RendererContext> ctx) {
+  inline void render(sptr<RendererContext> ctx) {
     auto gf = ctx->gl()->functions();
     auto rt = ctx->getTemporaryRenderTexture("clip");
     auto back_rt = ctx->getBackRenderTexture();
     auto sharing_ctx = ctx->sharing_context();
-    auto texture_shader = qSharedPointerCast<TextureShaderProgram>(
+    auto texture_shader = std::static_pointer_cast<TextureShaderProgram>(
         sharing_ctx->getShaderProgram("texture_shader"));
 
     gf->glBindFramebuffer(GL_FRAMEBUFFER, back_rt.framebuffer);

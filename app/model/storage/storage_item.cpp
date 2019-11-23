@@ -7,10 +7,10 @@
 namespace nlive {
 
 StorageItem::StorageItem(
-  QSharedPointer<Project> project,
+  sptr<Project> project,
   std::string type,
   QString name,
-  QSharedPointer<StorageItem> parent,
+  sptr<StorageItem> parent,
   std::string uuid) :
   project_(project), type_(type), name_(name), parent_(nullptr), uuid_(uuid) {
 }

@@ -7,12 +7,14 @@
 namespace nlive {
 
 Project::Project() {
-  StorageDirectory* root_dir = new StorageDirectory(sharedFromThis(), "root", nullptr);
-  root_storage_directory_ = QSharedPointer<StorageDirectory>(root_dir);
+  // https://forum.libcinder.org/topic/solution-calling-shared-from-this-in-the-constructor
+  auto wptr = std::shared_ptr<Project>( this, [](Project*){} );
+  StorageDirectory* root_dir = new StorageDirectory(shared_from_this(), "root", nullptr);
+  root_storage_directory_ = sptr<StorageDirectory>(root_dir);
   // undo_stack_ = new QUndoStack(this);
 }
 
-QSharedPointer<StorageDirectory> Project::root_storage_directory() {
+sptr<StorageDirectory> Project::root_storage_directory() {
   return root_storage_directory_;
 }
 

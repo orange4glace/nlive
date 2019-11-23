@@ -1,7 +1,7 @@
 #ifndef NLIVE_EFFECT_CONTROL_EFFECT_VIEW_FACTORY_H_
 #define NLIVE_EFFECT_CONTROL_EFFECT_VIEW_FACTORY_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <string>
 #include <map>
 
@@ -33,13 +33,13 @@ public:
   EffectViewFactory();
   virtual EffectView* create(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) = 0;
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) = 0;
 
 };
 

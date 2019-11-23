@@ -31,14 +31,14 @@ void EffectControlWidget::Initialize() {
 
 EffectControlWidget::EffectControlWidget(
   QWidget* parent,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-  QSharedPointer<IMementoService> memento_service) :
+  sptr<IThemeService> theme_service,
+  sptr<ITimelineWidgetService> timeline_widget_service,
+  sptr<IMementoService> memento_service) :
   QDockWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   timeline_widget_service_(timeline_widget_service),
   target_timeline_widget_(nullptr),
   sequence_view_(nullptr) {
-  layout_params_ = QSharedPointer<EffectControlLayout>(new EffectControlLayout(0.5));
+  layout_params_ = sptr<EffectControlLayout>(new EffectControlLayout(0.5));
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
     sig2_t<void (timeline_widget::TimelineWidget*)>::slot_type(
     [this](timeline_widget::TimelineWidget* widget) {
@@ -59,8 +59,8 @@ void EffectControlWidget::setTargetTimelineWidget(timeline_widget::TimelineWidge
   setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
   timeline_widget_connection_.disconnect();
   timeline_widget_connection_ = timeline_widget->onDidChangeSequence.connect(
-    sig2_t<void (QSharedPointer<Sequence> sequence)>::slot_type(
-      [this, timeline_widget](QSharedPointer<Sequence> sequence) {
+    sig2_t<void (sptr<Sequence> sequence)>::slot_type(
+      [this, timeline_widget](sptr<Sequence> sequence) {
       this->setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
     }));
 }

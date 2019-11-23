@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_H_
 
 #include <string>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QDebug>
 #include "base/common/sig.h"
 #include "base/common/uuid.h"
@@ -24,13 +24,13 @@ public:
     qDebug() << QString::fromStdString(id_);
   }
 
-  inline virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) {}
+  inline virtual void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) {}
 
   const std::string& id() const { return id_; }
   const std::string& type() const { return type_; }
 
   template <class T>
-  void connectProperty(QSharedPointer<T> property) {
+  void connectProperty(sptr<T> property) {
     property->onDidUpdate.connect(
       sig2_t<void (void)>::slot_type([this] {
       onDidUpdate();
@@ -43,11 +43,11 @@ public:
 
 struct EffectCompare {
   using is_transparent = void;
-  inline bool operator() (const QSharedPointer<Effect>& a, const QSharedPointer<Effect>& b) const
+  inline bool operator() (const sptr<Effect>& a, const sptr<Effect>& b) const
   { return a.get() < b.get(); }
-  inline bool operator() (const QSharedPointer<Effect>& a, const Effect* b) const
+  inline bool operator() (const sptr<Effect>& a, const Effect* b) const
   { return a.get() < b; }
-  inline bool operator() (const Effect* a, const QSharedPointer<Effect>& b) const
+  inline bool operator() (const Effect* a, const sptr<Effect>& b) const
   { return a < b.get(); }
 };
 

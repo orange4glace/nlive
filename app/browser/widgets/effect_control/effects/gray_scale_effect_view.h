@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_CONTROL_GRAY_SCALE_EFFECT_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 
 #include "platform/logger/logger.h"
@@ -23,13 +23,13 @@ private:
 public:
   inline GrayScaleEffectView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::GrayScaleEffect> effect,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::GrayScaleEffect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) :
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) :
     EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service, memento_service) {
     scale_property_view_ =
         new ScalarPropertyView(this, layout_params, sequence, clip, effect->scale(),
@@ -46,19 +46,19 @@ public:
   inline GrayScaleEffectViewFactory() {}
   inline GrayScaleEffectView* create(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) override {
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) override {
   if (effect->type() != effect::GrayScaleEffect::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
       "[ScalarEffectViewFactory] Effect type not match! expected = {}, got = {}", effect::TransformEffect::TYPE, effect->type());
     return nullptr;
   }
-  QSharedPointer<effect::GrayScaleEffect> gray_scale_effect = effect.staticCast<effect::GrayScaleEffect>();
+  sptr<effect::GrayScaleEffect> gray_scale_effect = std::static_pointer_cast<effect::GrayScaleEffect>(effect);
   return new GrayScaleEffectView(parent, layout_params, sequence,
     clip, gray_scale_effect, sequence_scroll_view, theme_service, memento_service);
   }

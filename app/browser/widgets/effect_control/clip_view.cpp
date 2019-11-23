@@ -18,12 +18,12 @@ namespace effect_control {
 
 ClipView::ClipView(
   QWidget* parent,
-  QSharedPointer<EffectControlLayout> layout_params,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<Clip> clip,
+  sptr<EffectControlLayout> layout_params,
+  sptr<Sequence> sequence,
+  sptr<Clip> clip,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<IMementoService> memento_service) :
+  sptr<IThemeService> theme_service,
+  sptr<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   layout_params_(layout_params),
   sequence_(sequence), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
@@ -43,7 +43,7 @@ ClipView::ClipView(
   }
 }
 
-void ClipView::addEffectView(QSharedPointer<effect::Effect> effect, int index) {
+void ClipView::addEffectView(sptr<effect::Effect> effect, int index) {
   auto factory = EffectViewFactoryRegistry::getFactory(effect->type());
   if (!factory) {
     spdlog::get(LOGGER_DEFAULT)->warn("[EffectControl_ClipView] EffectViewFactory not found! expected factory type = {}", effect->type());

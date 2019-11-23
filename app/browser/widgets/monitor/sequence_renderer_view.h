@@ -1,7 +1,7 @@
 #ifndef NLIVE_MONITOR_WIDET_SEQUENCE_RENDERER_VIEW_H_
 #define NLIVE_MONITOR_WIDET_SEQUENCE_RENDERER_VIEW_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLWidget>
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLShaderProgram>
@@ -22,10 +22,10 @@ class SequenceRendererView : public QOpenGLWidget, protected QOpenGLFunctions {
 
 private:
   video_renderer::SequenceRenderer* renderer_;
-  QSharedPointer<PlayService> play_service_;
+  sptr<PlayService> play_service_;
 
   timeline_widget::SequenceView* timeline_widget_sequence_view_;
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
 
   void scheduleRender();
 
@@ -36,7 +36,7 @@ protected:
 
 public:
   SequenceRendererView(QWidget* parent, timeline_widget::SequenceView* timeline_widget_sequence_view,
-    QSharedPointer<PlayService> play_service);
+    sptr<PlayService> play_service);
   ~SequenceRendererView();
 
 };

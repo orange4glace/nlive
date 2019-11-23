@@ -20,11 +20,11 @@ class StorageItemView;
 class StorageItemViewFactory {
 
 protected:
-  QSharedPointer<ServiceLocator> service_locator_;
+  sptr<ServiceLocator> service_locator_;
 
 public:
-  StorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
-  virtual StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) = 0;
+  StorageItemViewFactory(sptr<ServiceLocator> service_locator);
+  virtual StorageItemView* create(QWidget* widget, sptr<StorageItem> item) = 0;
 
 };
 

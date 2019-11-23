@@ -14,13 +14,13 @@ namespace effect_control {
 
 TransformEffectView::TransformEffectView(
   QWidget* parent,
-  QSharedPointer<EffectControlLayout> layout_params,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<Clip> clip,
-  QSharedPointer<effect::TransformEffect> effect,
+  sptr<EffectControlLayout> layout_params,
+  sptr<Sequence> sequence,
+  sptr<Clip> clip,
+  sptr<effect::TransformEffect> effect,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<IMementoService> memento_service) :
+  sptr<IThemeService> theme_service,
+  sptr<IMementoService> memento_service) :
   EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service, memento_service) {
   position_property_view_ =
       new Vector2PropertyView(this, layout_params, sequence, clip, effect->position(),
@@ -35,19 +35,19 @@ TransformEffectView::TransformEffectView(
 TransformEffectViewFactory::TransformEffectViewFactory() {}
 TransformEffectView* TransformEffectViewFactory::create(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) {
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) {
   if (effect->type() != effect::TransformEffect::TYPE) {
     spdlog::get(LOGGER_DEFAULT)->warn(
       "[TransformEffectViewFactory] Effect type not match! expected = {}, got = {}", effect::TransformEffect::TYPE, effect->type());
     return nullptr;
   }
-  QSharedPointer<effect::TransformEffect> transform_effect = effect.staticCast<effect::TransformEffect>();
+  sptr<effect::TransformEffect> transform_effect = std::static_pointer_cast<effect::TransformEffect>(effect);
   return new TransformEffectView(parent, layout_params, sequence,
     clip, transform_effect, sequence_scroll_view, theme_service, memento_service);
 }

@@ -8,11 +8,11 @@ CommandBuffer::CommandBuffer() {
   
 }
 
-void CommandBuffer::addCommand(QSharedPointer<RenderCommand> command) {
+void CommandBuffer::addCommand(sptr<RenderCommand> command) {
   commands_.push_back(command);
 }
 
-const std::vector<QSharedPointer<RenderCommand>>& CommandBuffer::commands() {
+const std::vector<sptr<RenderCommand>>& CommandBuffer::commands() {
   return commands_;
 }
 

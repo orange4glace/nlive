@@ -12,7 +12,7 @@
 namespace nlive {
 
 /*#region Indicator*/
-SequenceScrollView::Indicator::Indicator(QWidget* parent, QSharedPointer<IThemeService> theme_service) :
+SequenceScrollView::Indicator::Indicator(QWidget* parent, sptr<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service) {
   setAttribute(Qt::WA_TransparentForMouseEvents);
 }
@@ -28,8 +28,8 @@ void SequenceScrollView::Indicator::paintEvent(QPaintEvent* event) {
 SequenceScrollView::SequenceScrollView(
   QWidget* const parent,
   QWidget* const content_widget,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<IThemeService> theme_service) :
+  sptr<Sequence> sequence,
+  sptr<IThemeService> theme_service) :
   Div(parent),
   theme_service_(theme_service),
   sequence_(sequence),

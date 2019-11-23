@@ -2,7 +2,7 @@
 #define NLIVE_TIMELINE_WIDGET_H_
 
 #include <QDockWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QLayout>
 
 #include "browser/widgets/widget.h"
@@ -27,11 +27,11 @@ public:
   static const std::string TYPE;
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<PlayService> play_service_;
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
+  sptr<IThemeService> theme_service_;
+  sptr<PlayService> play_service_;
+  sptr<ITimelineWidgetService> timeline_widget_service_;
 
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   SequenceView* sequence_view_;
 
 protected:
@@ -41,18 +41,18 @@ protected:
 public:
   TimelineWidget(
     QWidget* parent,
-    QSharedPointer<IThemeService> themeService,
-    QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-    QSharedPointer<PlayService> play_service);
+    sptr<IThemeService> themeService,
+    sptr<ITimelineWidgetService> timeline_widget_service,
+    sptr<PlayService> play_service);
 
-  void setSequence(QSharedPointer<Sequence> sequence);
+  void setSequence(sptr<Sequence> sequence);
 
-  QSharedPointer<Sequence> sequence();
+  sptr<Sequence> sequence();
   SequenceView* sequence_view();
 
   inline std::string name() const override { return TYPE; }
   
-  sig2_t<void (QSharedPointer<Sequence> sequence)> onDidChangeSequence;
+  sig2_t<void (sptr<Sequence> sequence)> onDidChangeSequence;
 
 };
 

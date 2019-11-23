@@ -3,34 +3,34 @@
 namespace nlive {
 
 StorageDirectory::StorageDirectory(
-  QSharedPointer<Project> project,
+  sptr<Project> project,
   QString name,
-  QSharedPointer<StorageItem> parent,
+  sptr<StorageItem> parent,
   std::string uuid) :
   StorageItem(project, "DIRECTORY", name, parent, uuid) {
 }
 
 StorageDirectory::StorageDirectory(
   QString name,
-  QSharedPointer<StorageItem> parent,
+  sptr<StorageItem> parent,
   std::string uuid) :
   StorageItem(parent->project(), "DIRECTORY", name, parent, uuid) {
 }
 
-void StorageDirectory::addItem(QSharedPointer<StorageItem> item) {
+void StorageDirectory::addItem(sptr<StorageItem> item) {
   if (hasItem(item)) return;
   items_.push_back(item);
   emit onDidAddItem(item, items_.size() - 1);
 }
 
-void StorageDirectory::removeItem(QSharedPointer<StorageItem> item) {
+void StorageDirectory::removeItem(sptr<StorageItem> item) {
   int index = getItemIndex(item);
   if (index == -1) return;
   emit onWillRemoveItem(item, index);
   items_.erase(items_.begin() + index);
 }
 
-int StorageDirectory::getItemIndex(QSharedPointer<StorageItem> item) const {
+int StorageDirectory::getItemIndex(sptr<StorageItem> item) const {
   // TODO : logN query
   int i = 0;
   for (auto it : items_) {
@@ -40,16 +40,16 @@ int StorageDirectory::getItemIndex(QSharedPointer<StorageItem> item) const {
   return -1;
 }
 
-bool StorageDirectory::hasItem(QSharedPointer<StorageItem> item) const {
+bool StorageDirectory::hasItem(sptr<StorageItem> item) const {
   return getItemIndex(item) != -1;
 }
 
-QSharedPointer<Clip> StorageDirectory::cliperize(QSharedPointer<Sequence> sequence) {
+sptr<Clip> StorageDirectory::cliperize(sptr<Sequence> sequence) {
   // TODO
   return nullptr;
 }
 
-const std::vector<QSharedPointer<StorageItem>>& StorageDirectory::items() {
+const std::vector<sptr<StorageItem>>& StorageDirectory::items() {
   return items_;
 }
 

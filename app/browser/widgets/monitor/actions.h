@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QObject>
 #include <QAction>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "model/sequence/sequence.h"
 #include "browser/widgets/timeline/sequence_playable.h"
@@ -17,8 +17,8 @@ namespace monitor_widget {
 class ActionContext : public Sig {
 
 private:
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<SequencePlayable> sequence_playable_;
+  sptr<Sequence> sequence_;
+  sptr<SequencePlayable> sequence_playable_;
 
 public:
   inline ActionContext() {
@@ -26,28 +26,28 @@ public:
     sequence_playable_ = nullptr;
   }
 
-  inline void setSequence(QSharedPointer<Sequence> sequence) {
+  inline void setSequence(sptr<Sequence> sequence) {
     sequence_ = sequence;
     onDidChangeSequence(sequence);
   }
 
-  inline void setSequencePlayable(QSharedPointer<SequencePlayable> playable) {
+  inline void setSequencePlayable(sptr<SequencePlayable> playable) {
     sequence_playable_ = playable;
     onDidChangeSequencePlayable(playable);
   }
 
-  sig2_t<void (QSharedPointer<Sequence>)> onDidChangeSequence;
-  sig2_t<void (QSharedPointer<SequencePlayable>)> onDidChangeSequencePlayable;
+  sig2_t<void (sptr<Sequence>)> onDidChangeSequence;
+  sig2_t<void (sptr<SequencePlayable>)> onDidChangeSequencePlayable;
 
 };
 
 class Action : public QAction, public Sig {
 
 protected:
-  QSharedPointer<ActionContext> context_;
+  sptr<ActionContext> context_;
 
 public:
-  inline Action(QObject* parent, QSharedPointer<ActionContext> context) :
+  inline Action(QObject* parent, sptr<ActionContext> context) :
     QAction(parent), context_(context) {
 
   }
@@ -57,17 +57,17 @@ public:
 class PlayPauseAction : public Action {
 
 private:
-  QSharedPointer<PlayService> play_service_;
-  QSharedPointer<SequencePlayable> playable_;
+  sptr<PlayService> play_service_;
+  sptr<SequencePlayable> playable_;
 
 public:
   inline PlayPauseAction(QObject* parent,
-    QSharedPointer<ActionContext> context,
-    QSharedPointer<PlayService> play_service) :
+    sptr<ActionContext> context,
+    sptr<PlayService> play_service) :
     Action(parent, context), play_service_(play_service), playable_(nullptr) {
     setEnabled(playable_ != nullptr);
     context->onDidChangeSequencePlayable.connect(SIG2_TRACK(
-      sig2_t<void (QSharedPointer<SequencePlayable>)>::slot_type([this](QSharedPointer<SequencePlayable> playable) {
+      sig2_t<void (sptr<SequencePlayable>)>::slot_type([this](sptr<SequencePlayable> playable) {
         playable_ = playable;
         setEnabled(playable_ != nullptr);
       })

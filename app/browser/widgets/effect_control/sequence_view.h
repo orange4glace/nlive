@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_CONTROL_SEQUENCE_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 #include "base/common/sig.h"
 #include "base/ui/solid_box.h"
@@ -29,20 +29,20 @@ class SequenceView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<IMementoService> memento_service_;
-  QSharedPointer<EffectControlLayout> layout_params_;
+  sptr<IThemeService> theme_service_;
+  sptr<IMementoService> memento_service_;
+  sptr<EffectControlLayout> layout_params_;
   timeline_widget::SequenceView* timeline_widget_sequence_view_;
   SequenceScrollView* sequence_scroll_view_;
 
-  QSharedPointer<Clip> clip_;
+  sptr<Clip> clip_;
   ClipView* clip_view_;
 
   SolidBox* form_background_;
   SolidBox* timeline_background_;
 
   void handleDidChangeFocusedClips();
-  void createClipView(QSharedPointer<Clip> clip);
+  void createClipView(sptr<Clip> clip);
   void clearClipView();
 
 protected:
@@ -52,10 +52,10 @@ protected:
 public:
   SequenceView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
+    sptr<EffectControlLayout> layout,
     timeline_widget::SequenceView* timeline_widget_sequence_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service);
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service);
 
 };
 

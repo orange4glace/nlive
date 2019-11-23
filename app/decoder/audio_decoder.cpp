@@ -4,15 +4,15 @@
 
 namespace nlive {
 
-AudioDecoder::AudioDecoder(QSharedPointer<RawAudioResource> resource) :
+AudioDecoder::AudioDecoder(sptr<RawAudioResource> resource) :
   resource_(resource), file_(QString::fromStdString(resource->path())) {
   file_.open(QIODevice::ReadOnly);
 
-  frame_ = QSharedPointer<AudioFrame>(new AudioFrame(
+  frame_ = sptr<AudioFrame>(new AudioFrame(
     resource->nb_channels(), resource->bytes_per_sample()));
 }
 
-QSharedPointer<AudioFrame> AudioDecoder::decode(int64_t start_frame, int64_t end_frame) {
+sptr<AudioFrame> AudioDecoder::decode(int64_t start_frame, int64_t end_frame) {
   int64_t a_start_frame = std::max(0LL, start_frame);
   int64_t start_byte = a_start_frame * resource_->bytes_per_sample() * resource_->nb_channels();
   int64_t end_byte = end_frame * resource_->bytes_per_sample() * resource_->nb_channels();

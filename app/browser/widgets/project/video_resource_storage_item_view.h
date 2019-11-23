@@ -23,7 +23,7 @@ protected:
   void paintEvent(QPaintEvent* e) override;
 
 public:
-  VideoResourceStorageItemThumbnailView(QWidget* parent, QSharedPointer<VideoResourceStorageItem> item);
+  VideoResourceStorageItemThumbnailView(QWidget* parent, sptr<VideoResourceStorageItem> item);
   ~VideoResourceStorageItemThumbnailView();
 
 };
@@ -31,7 +31,7 @@ public:
 class VideoResourceStorageItemContentView : public StorageItemContentView {
 
 private:
-  QSharedPointer<StorageItem> item_;
+  sptr<StorageItem> item_;
   VideoResourceStorageItemThumbnailView* thumbnail_view_;
   video_renderer::RendererView* renderer_view_;
 
@@ -45,7 +45,7 @@ protected:
   void onScrubEnd() override;
 
 public:
-  VideoResourceStorageItemContentView(QWidget* parent, QSharedPointer<VideoResourceStorageItem> item);
+  VideoResourceStorageItemContentView(QWidget* parent, sptr<VideoResourceStorageItem> item);
 
 };
 
@@ -55,15 +55,15 @@ private:
   VideoResourceStorageItemContentView* content_view_;
 
 public:
-  VideoResourceStorageItemView(QWidget* parent, QSharedPointer<VideoResourceStorageItem> item, QSharedPointer<IThemeService> theme_service);
+  VideoResourceStorageItemView(QWidget* parent, sptr<VideoResourceStorageItem> item, sptr<IThemeService> theme_service);
 
 };
 
 class VideoResourceStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  VideoResourceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
+  VideoResourceStorageItemViewFactory(sptr<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, sptr<StorageItem> item) override;
 
 };
 

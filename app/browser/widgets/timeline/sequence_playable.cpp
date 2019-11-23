@@ -2,7 +2,7 @@
 
 namespace nlive {
 
-SequencePlayable::SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence) :
+SequencePlayable::SequencePlayable(QObject* parent, sptr<Sequence> sequence) :
     sequence_(sequence), invalidated_(false), tick_flag_(false),
     sequence_video_renderer_(nullptr), audio_sequence_renderer_(nullptr) {
   invalidation_timer_ = new QTimer();

@@ -1,7 +1,7 @@
 #ifndef NLIVE_VIDEO_RESOUCE_H_
 #define NLIVE_VIDEO_RESOUCE_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <string>
 #include <mutex>
 

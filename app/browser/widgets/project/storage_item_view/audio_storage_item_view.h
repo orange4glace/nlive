@@ -12,15 +12,15 @@ namespace project_widget {
 class AudioStorageItemView : public StorageItemView {
 
 public:
-  AudioStorageItemView(QWidget* parent, QSharedPointer<AudioStorageItem> item, QSharedPointer<IThemeService> theme_service);
+  AudioStorageItemView(QWidget* parent, sptr<AudioStorageItem> item, sptr<IThemeService> theme_service);
 
 };
 
 class AudioStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  AudioStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
+  AudioStorageItemViewFactory(sptr<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, sptr<StorageItem> item) override;
 
 };
 

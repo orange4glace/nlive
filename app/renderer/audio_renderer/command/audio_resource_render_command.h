@@ -14,22 +14,22 @@ namespace audio_renderer {
 class AudioResourceRenderCommand : public RenderCommand {
 
 private:
-  QSharedPointer<AudioResource> resource_;
-  QSharedPointer<RawAudioResource> raw_resource_;
+  sptr<AudioResource> resource_;
+  sptr<RawAudioResource> raw_resource_;
   int out_sample_rate_;
   int clip_id_;
   int64_t start_frame_;
   int64_t end_frame_;
 
 public:
-  inline AudioResourceRenderCommand(QSharedPointer<AudioResource> resource, 
+  inline AudioResourceRenderCommand(sptr<AudioResource> resource, 
       int out_sample_rate, int clip_id, int64_t start_frame, int64_t end_frame) :
       resource_(resource), out_sample_rate_(out_sample_rate), clip_id_(clip_id), 
       start_frame_(start_frame), end_frame_(end_frame) {
     raw_resource_ = resource_->raw();
   }
 
-  inline void render(QSharedPointer<RenderContext> ctx) override {
+  inline void render(sptr<RenderContext> ctx) override {
     if (!raw_resource_) return;
     int resampled_start_frame = start_frame_ * raw_resource_->sample_rate() / out_sample_rate_;
     int resampled_end_frame = end_frame_ * raw_resource_->sample_rate() / out_sample_rate_;

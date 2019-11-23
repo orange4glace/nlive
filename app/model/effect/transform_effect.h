@@ -1,7 +1,7 @@
 #ifndef NLIVE_TRANSFORM_EFFECT_H_
 #define NLIVE_TRANSFORM_EFFECT_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "model/effect/effect.h"
 #include "model/effect/property.h"
@@ -14,16 +14,16 @@ namespace effect {
 class TransformEffect : public Effect {
 
 private:
-  QSharedPointer<Property<value::Vector2>> position_;
-  QSharedPointer<Property<value::Vector2>> scale_;
+  sptr<Property<value::Vector2>> position_;
+  sptr<Property<value::Vector2>> scale_;
 
 public:
   static const std::string TYPE;
 
   TransformEffect();
 
-  QSharedPointer<Property<value::Vector2>> position();
-  QSharedPointer<Property<value::Vector2>> scale();
+  sptr<Property<value::Vector2>> position();
+  sptr<Property<value::Vector2>> scale();
 
 };
 

@@ -14,15 +14,15 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 private:
-  QSharedPointer<ServiceLocator> service_locator_;
-  QSharedPointer<IWidgetsService> widgets_service_;
+  sptr<ServiceLocator> service_locator_;
+  sptr<IWidgetsService> widgets_service_;
   task_bar::TaskBar* task_bar_;
 
 protected:
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  MainWindow(QSharedPointer<IWidgetsService> widgets_service);
+  MainWindow(sptr<IWidgetsService> widgets_service);
 
 };
 

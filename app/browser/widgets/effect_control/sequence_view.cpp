@@ -15,10 +15,10 @@ namespace effect_control {
 
 SequenceView::SequenceView(
   QWidget* parent,
-  QSharedPointer<EffectControlLayout> layout,
+  sptr<EffectControlLayout> layout,
   timeline_widget::SequenceView* timeline_widget_sequence_view,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<IMementoService> memento_service) :
+  sptr<IThemeService> theme_service,
+  sptr<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   layout_params_(layout),
   timeline_widget_sequence_view_(timeline_widget_sequence_view),
@@ -54,10 +54,10 @@ void SequenceView::handleDidChangeFocusedClips() {
   createClipView(clip);
 }
 
-void SequenceView::createClipView(QSharedPointer<Clip> clip) {
+void SequenceView::createClipView(sptr<Clip> clip) {
   clearClipView();
   clip_ = clip;
-  qDebug() << "[SequenceView] createClipView " << clip << ", # of effects = " << clip->effects().size() << "\n";
+  qDebug() << "[SequenceView] createClipView " << clip.get() << ", # of effects = " << clip->effects().size() << "\n";
   auto sequence = timeline_widget_sequence_view_->sequence();
   clip_view_ = new ClipView(this, layout_params_, sequence, clip, sequence_scroll_view_,
     theme_service_, memento_service_);

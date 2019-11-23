@@ -23,10 +23,10 @@ Renderer::Renderer(
   gl_->create();
   gl_->functions()->initializeOpenGLFunctions();
 
-  sharing_ctx_ = QSharedPointer<RenderSharingContext>(
+  sharing_ctx_ = sptr<RenderSharingContext>(
     new RenderSharingContext(gl_));
   sharing_ctx_->initialize();
-  renderer_ctx_ = QSharedPointer<RendererContext>(
+  renderer_ctx_ = sptr<RendererContext>(
     new RendererContext(gl_, width, height, sharing_ctx_));
 
   gl_->moveToThread(this);
@@ -94,7 +94,7 @@ void Renderer::run() {
     }
 
     // Got a CommandBuffer that can be rendered into surface
-    QSharedPointer<CommandBuffer> command_buffer = current_command_buffer_;
+    sptr<CommandBuffer> command_buffer = current_command_buffer_;
     current_command_buffer_ = nullptr;
     command_buffer_mutex_.unlock();
 
@@ -123,7 +123,7 @@ void Renderer::run() {
   qDebug() << "[VideoRenderer] Thread ended.";
 }
 
-void Renderer::render(QSharedPointer<CommandBuffer> command_buffer) {
+void Renderer::render(sptr<CommandBuffer> command_buffer) {
   command_buffer_mutex_.lock();
   if (closed_) {
     command_buffer_mutex_.unlock();

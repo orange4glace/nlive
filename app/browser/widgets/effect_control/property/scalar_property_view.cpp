@@ -8,13 +8,13 @@ namespace effect_control {
 
 ScalarPropertyView::ScalarPropertyView(
   QWidget* parent,
-  QSharedPointer<EffectControlLayout> layout_params,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<Clip> clip,
-  QSharedPointer<effect::Property<effect::value::Scalar>> property,
+  sptr<EffectControlLayout> layout_params,
+  sptr<Sequence> sequence,
+  sptr<Clip> clip,
+  sptr<effect::Property<effect::value::Scalar>> property,
   QString label,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service) :
+  sptr<IThemeService> theme_service) :
   PropertyView<effect::value::Scalar>(
     parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();

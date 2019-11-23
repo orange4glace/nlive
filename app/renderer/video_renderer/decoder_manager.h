@@ -3,7 +3,7 @@
 
 #include <map>
 #include <vector>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "model/resource/video_resource.h"
 #include "decoder/video_decoder.h"
@@ -16,8 +16,8 @@ class DecoderManager;
 
 class VideoDecoderRef {
   private:
-    QSharedPointer<VideoDecoder> decoder_;
-    QSharedPointer<VideoResource> resource_;
+    sptr<VideoDecoder> decoder_;
+    sptr<VideoResource> resource_;
     int referer_;
     int freq_;
 
@@ -25,15 +25,15 @@ class VideoDecoderRef {
 
   public:
     inline VideoDecoderRef(
-      QSharedPointer<VideoDecoder> decoder, 
-      QSharedPointer<VideoResource> resource,
+      sptr<VideoDecoder> decoder, 
+      sptr<VideoResource> resource,
       int referer) : decoder_(decoder), resource_(resource), referer_(referer),
       freq_(0) {
 
     }
 
-    inline QSharedPointer<VideoDecoder> decoder() { return decoder_; }
-    inline QSharedPointer<VideoResource> resource() { return resource_; }
+    inline sptr<VideoDecoder> decoder() { return decoder_; }
+    inline sptr<VideoResource> resource() { return resource_; }
     inline int referer() const { return referer_; }
     inline int freq() const { return freq_; }
 };
@@ -41,15 +41,15 @@ class VideoDecoderRef {
 class DecoderManager {
 
 private:
-  std::vector<QSharedPointer<VideoDecoderRef>> decoder_refs_;
+  std::vector<sptr<VideoDecoderRef>> decoder_refs_;
   
 public:
   DecoderManager();
 
-  QSharedPointer<VideoDecoderRef> acquireDecoder(
-      QSharedPointer<VideoResource> resource, int referer);
+  sptr<VideoDecoderRef> acquireDecoder(
+      sptr<VideoResource> resource, int referer);
 
-  void releaseDecoder(QSharedPointer<VideoDecoderRef> decoder_ref);
+  void releaseDecoder(sptr<VideoDecoderRef> decoder_ref);
 
 };
 

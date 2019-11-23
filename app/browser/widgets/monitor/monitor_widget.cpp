@@ -14,15 +14,15 @@ namespace monitor_widget {
 const std::string MonitorWidget::TYPE = "widget.Monitor";
 
 MonitorWidget::MonitorWidget(QWidget* parent,
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<PlayService> play_service) :
+  sptr<ITimelineWidgetService> timeline_widget_service,
+  sptr<IThemeService> theme_service,
+  sptr<PlayService> play_service) :
   QDockWidget(parent),
   timeline_widget_service_(timeline_widget_service), play_service_(play_service),
   theme_service_(theme_service),
   sequence_view_(nullptr) {
 
-  action_context_ = QSharedPointer<ActionContext>(new ActionContext());
+  action_context_ = sptr<ActionContext>(new ActionContext());
   action_bar_ = new ActionBar(this, theme_service);
   action_bar_->setIconSize(QSize(20, 20));
 
@@ -47,7 +47,7 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timeline_widget::Timeli
   action_context_->setSequencePlayable(nullptr);
   if (timeline_widget != nullptr) {
     handleDidChangeSequenceView(timeline_widget->sequence_view());
-    auto conn = timeline_widget->onDidChangeSequence.connect(sig2_t<void (QSharedPointer<Sequence> sequence)>::slot_type([this, timeline_widget](QSharedPointer<Sequence> sequence) {
+    auto conn = timeline_widget->onDidChangeSequence.connect(sig2_t<void (sptr<Sequence> sequence)>::slot_type([this, timeline_widget](sptr<Sequence> sequence) {
       handleDidChangeSequenceView(timeline_widget->sequence_view());
     }));
     widget_connections_.push_back(conn);

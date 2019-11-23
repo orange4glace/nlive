@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include "base/common/memory.h"
 #include "platform/service/service.h"
 
 namespace nlive {
@@ -15,7 +16,7 @@ protected:
   inline IImportService() {}
 
 public:
-  virtual void import(QList<QFileInfo> urls, QSharedPointer<StorageDirectory> directory) = 0;
+  virtual void import(QList<QFileInfo> urls, sptr<StorageDirectory> directory) = 0;
 
 };
 

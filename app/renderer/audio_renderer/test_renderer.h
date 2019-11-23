@@ -34,9 +34,9 @@ public:
     // QTimer* t = new QTimer(this);
     // t->setInterval(1000);
     // connect(t, &QTimer::timeout, this, [this]() {
-    //   QSharedPointer<CommandBuffer> rb = QSharedPointer<CommandBuffer>(
+    //   sptr<CommandBuffer> rb = sptr<CommandBuffer>(
     //     new CommandBuffer());
-    //   QSharedPointer<NoiseRenderCommand> nrc2 = QSharedPointer<NoiseRenderCommand>(
+    //   sptr<NoiseRenderCommand> nrc2 = sptr<NoiseRenderCommand>(
     //     new NoiseRenderCommand());
     //   rb->addCommand(nrc2);
     //   renderer_->sendBurstRenderCommandBuffer(rb);
@@ -45,16 +45,16 @@ public:
 
     renderer_ = new Renderer(AV_CH_LAYOUT_STEREO, AV_SAMPLE_FMT_FLT, 48000, 48000, 1, 8);
     connect(renderer_, &Renderer::onRenderRequest, this, [this, buffer](int index, int start_frame, int end_frame) {
-      QSharedPointer<CommandBuffer> rb = QSharedPointer<CommandBuffer>(
+      sptr<CommandBuffer> rb = sptr<CommandBuffer>(
         new CommandBuffer());
       int offset = index * renderer_->render_context()->bytes_per_channel();
       int length = renderer_->render_context()->bytes_per_channel();
       int start_sample = Rational::rescale(44100, start_frame, renderer_->sample_rate());
       int end_sample = Rational::rescale(44100, end_frame, renderer_->sample_rate());
       qDebug() << "[TestAudioRenderer]" << start_frame << end_frame << start_sample << end_sample;
-      QSharedPointer<PCMRenderCommand> nrc1 = QSharedPointer<PCMRenderCommand>(
+      sptr<PCMRenderCommand> nrc1 = sptr<PCMRenderCommand>(
         new PCMRenderCommand(AV_CH_LAYOUT_STEREO, AV_SAMPLE_FMT_S16, 44100, end_sample - start_sample, (uint8_t*)buffer, start_sample * 4));
-      QSharedPointer<NoiseRenderCommand> nrc2 = QSharedPointer<NoiseRenderCommand>(
+      sptr<NoiseRenderCommand> nrc2 = sptr<NoiseRenderCommand>(
         new NoiseRenderCommand());
       rb->addCommand(nrc1);
       // rb->addCommand(nrc2);

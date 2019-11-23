@@ -1,7 +1,7 @@
 #ifndef NLIVE_STORAGE_DIRECTORY_H_
 #define NLIVE_STORAGE_DIRECTORY_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 #include <boost/serialization/base_object.hpp>
 #include "model/storage/storage_item.h"
@@ -11,7 +11,7 @@ namespace nlive {
 class StorageDirectory : public StorageItem {
 
 private:
-  std::vector<QSharedPointer<StorageItem>> items_;
+  std::vector<sptr<StorageItem>> items_;
 
 public:
   // friend class boost::serialization::access;
@@ -21,27 +21,27 @@ public:
   // }
 
   StorageDirectory(
-    QSharedPointer<Project> project,
+    sptr<Project> project,
     QString name,
-    QSharedPointer<StorageItem> parent = nullptr,
+    sptr<StorageItem> parent = nullptr,
     std::string uuid = std::string());
   StorageDirectory(
     QString name,
-    QSharedPointer<StorageItem> parent = nullptr,
+    sptr<StorageItem> parent = nullptr,
     std::string uuid = std::string());
   
-  void addItem(QSharedPointer<StorageItem> item);
-  void removeItem(QSharedPointer<StorageItem> item);
-  int getItemIndex(QSharedPointer<StorageItem> item) const;
-  bool hasItem(QSharedPointer<StorageItem> item) const;
+  void addItem(sptr<StorageItem> item);
+  void removeItem(sptr<StorageItem> item);
+  int getItemIndex(sptr<StorageItem> item) const;
+  bool hasItem(sptr<StorageItem> item) const;
 
-  QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) override;
+  sptr<Clip> cliperize(sptr<Sequence> sequence) override;
 
-  const std::vector<QSharedPointer<StorageItem>>& items();
+  const std::vector<sptr<StorageItem>>& items();
   bool is_directory() const override;
 
-  sig2_t<void (QSharedPointer<StorageItem> item, int index)> onDidAddItem;
-  sig2_t<void (QSharedPointer<StorageItem> item, int index)> onWillRemoveItem;
+  sig2_t<void (sptr<StorageItem> item, int index)> onDidAddItem;
+  sig2_t<void (sptr<StorageItem> item, int index)> onWillRemoveItem;
 
 };
 

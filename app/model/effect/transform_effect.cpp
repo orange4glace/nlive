@@ -10,20 +10,20 @@ const std::string TransformEffect::TYPE = "nlive.effect.TransformEffect";
 
 TransformEffect::TransformEffect() :
   Effect(TransformEffect::TYPE) {
-  position_ = QSharedPointer<Property<value::Vector2>>(
+  position_ = sptr<Property<value::Vector2>>(
     new Property<value::Vector2>(value::Vector2(0, 0)));
-  scale_ = QSharedPointer<Property<value::Vector2>>(
+  scale_ = sptr<Property<value::Vector2>>(
     new Property<value::Vector2>(value::Vector2(0, 0)));
 
   connectProperty(position_);
   connectProperty(scale_);
 }
 
-QSharedPointer<Property<value::Vector2>> TransformEffect::position() {
+sptr<Property<value::Vector2>> TransformEffect::position() {
   return position_;
 }
 
-QSharedPointer<Property<value::Vector2>> TransformEffect::scale() {
+sptr<Property<value::Vector2>> TransformEffect::scale() {
   return scale_;
 }
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <QOpenGLContext>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "renderer/video_renderer/render_sharing_context.h"
 #include "renderer/video_renderer/decoder_manager.h"
 
@@ -63,15 +63,15 @@ private:
   int front_buffer_index_;
 
 
-  QSharedPointer<RenderSharingContext> sharing_context_;
-  QSharedPointer<DecoderManager> decoder_manager_;
+  sptr<RenderSharingContext> sharing_context_;
+  sptr<DecoderManager> decoder_manager_;
   std::map<SwsKey, SwsValue, SwsKeyCompare> sws_map_;
 
   bool initialized_;
 
 public:
   RendererContext(QOpenGLContext* gl, int width, int height,
-      QSharedPointer<RenderSharingContext> sharing_context = nullptr);
+      sptr<RenderSharingContext> sharing_context = nullptr);
   ~RendererContext();
 
   void initialize();
@@ -93,8 +93,8 @@ public:
 
   int width() const;
   int height() const;
-  QSharedPointer<RenderSharingContext> sharing_context();
-  QSharedPointer<DecoderManager> decoder_manager();
+  sptr<RenderSharingContext> sharing_context();
+  sptr<DecoderManager> decoder_manager();
   bool initialized() const;
   
   QOpenGLContext* gl();

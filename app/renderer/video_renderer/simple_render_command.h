@@ -1,7 +1,7 @@
 #ifndef NLIVE_SIMPLE_RENDER_COMMAND_H_
 #define NLIVE_SIMPLE_RENDER_COMMAND_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLFunctions>
 #include <stdint.h>
 
@@ -72,7 +72,7 @@ public:
     if (buffer_ && !is_external_buffer_) delete buffer_;
   }
 
-  inline void render(QSharedPointer<RendererContext> ctx) {
+  inline void render(sptr<RendererContext> ctx) {
     QOpenGLContext* gl = ctx->gl();
     initialize(gl);
     auto glf = gl->functions();

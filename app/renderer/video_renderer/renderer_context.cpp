@@ -13,10 +13,10 @@ namespace {
 
 RendererContext::RendererContext(QOpenGLContext* gl,
     int width, int height,
-    QSharedPointer<RenderSharingContext> sharing_context) :
+    sptr<RenderSharingContext> sharing_context) :
   gl_(gl), width_(width), height_(height), sharing_context_(sharing_context),
   front_buffer_index_(0), initialized_(false) {
-  decoder_manager_ = QSharedPointer<DecoderManager>(new DecoderManager());
+  decoder_manager_ = sptr<DecoderManager>(new DecoderManager());
 }
 
 RendererContext::~RendererContext() {
@@ -143,11 +143,11 @@ int RendererContext::height() const {
   return height_;
 }
 
-QSharedPointer<RenderSharingContext> RendererContext::sharing_context() {
+sptr<RenderSharingContext> RendererContext::sharing_context() {
   return sharing_context_;
 }
 
-QSharedPointer<DecoderManager> RendererContext::decoder_manager() {
+sptr<DecoderManager> RendererContext::decoder_manager() {
   return decoder_manager_;
 }
 

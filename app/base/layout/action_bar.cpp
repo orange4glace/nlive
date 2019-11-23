@@ -10,7 +10,7 @@ enum ActionBarItemViewState { Unchecked, Checked, Pressed, };
 }
 
 ActionBarItemView::ActionBarItemView(QWidget* parent, QAction* action,
-  QString svg_path, QSharedPointer<IThemeService> theme_service) :
+  QString svg_path, sptr<IThemeService> theme_service) :
   QPushButton(parent), action_(action) {
 
   connect(this, &QPushButton::pressed, [this]() {
@@ -58,7 +58,7 @@ void ActionBarItemView::paintEvent(QPaintEvent* e) {
   }
 }
 
-ActionBar::ActionBar(QWidget* parent, QSharedPointer<IThemeService> theme_service) :
+ActionBar::ActionBar(QWidget* parent, sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), icon_size_(20, 20) {
 
 }

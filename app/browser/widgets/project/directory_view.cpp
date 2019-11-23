@@ -24,9 +24,9 @@ namespace project_widget {
 
 DirectoryView::DirectoryView(
   QWidget* parent,
-  QSharedPointer<StorageDirectory> storage_directory,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<IImportService> import_service) :
+  sptr<StorageDirectory> storage_directory,
+  sptr<IThemeService> theme_service,
+  sptr<IImportService> import_service) :
   theme_service_(theme_service),
   import_service_(import_service),
   Div(parent), storage_directory_(storage_directory) {
@@ -37,17 +37,17 @@ DirectoryView::DirectoryView(
   int i = 0;
   for (auto item : storage_directory->items())
     addStorageItemView(item, i ++);
-  storage_directory->onDidAddItem.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<StorageItem> item, int index)>::slot_type(
-    [this](QSharedPointer<StorageItem> item, int index) {
+  storage_directory->onDidAddItem.connect(SIG2_TRACK(sig2_t<void (sptr<StorageItem> item, int index)>::slot_type(
+    [this](sptr<StorageItem> item, int index) {
     addStorageItemView(item, index);
   })));
-  storage_directory->onWillRemoveItem.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<StorageItem> item, int index)>::slot_type(
-    [this](QSharedPointer<StorageItem> item, int index) {
+  storage_directory->onWillRemoveItem.connect(SIG2_TRACK(sig2_t<void (sptr<StorageItem> item, int index)>::slot_type(
+    [this](sptr<StorageItem> item, int index) {
     removeStorageItemView(item);
   })));
 }
 
-void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item, int index) {
+void DirectoryView::addStorageItemView(sptr<StorageItem> storage_item, int index) {
   auto factory = StorageItemViewFactoryRegistry::getFactory(storage_item->type());
   if (!factory) {
     spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] StorageItemViewFactory not found! expected factory type = {}", storage_item->type());
@@ -63,7 +63,7 @@ void DirectoryView::addStorageItemView(QSharedPointer<StorageItem> storage_item,
   grid_layout_->addWidget(view);
 }
 
-void DirectoryView::removeStorageItemView(QSharedPointer<StorageItem> storage_item) {
+void DirectoryView::removeStorageItemView(sptr<StorageItem> storage_item) {
   int i = 0;
   for (auto it : view_items_) {
     if (it.first == storage_item) break;
@@ -79,7 +79,7 @@ void DirectoryView::removeStorageItemView(QSharedPointer<StorageItem> storage_it
   delete view;
 }
 
-StorageItemView* DirectoryView::getStorageItemView(QSharedPointer<StorageItem> storage_item) {
+StorageItemView* DirectoryView::getStorageItemView(sptr<StorageItem> storage_item) {
   for (auto it : view_items_)
     if (it.first == storage_item) return it.second;
   spdlog::get(LOGGER_DEFAULT)->warn("[DirectoryView] getStorageItemView is null! item type = {}", storage_item->type());
@@ -108,7 +108,7 @@ void DirectoryView::dragEnterEvent(QDragEnterEvent* event) {
   }
 }
 
-QSharedPointer<StorageDirectory> DirectoryView::storage_directory() {
+sptr<StorageDirectory> DirectoryView::storage_directory() {
   return storage_directory_;
 }
 

@@ -1,7 +1,7 @@
 #ifndef NLIVE_VIDEO_DECODER_H_
 #define NLIVE_VIDEO_DECODER_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <stdint.h>
 #include <string>
 #include <mutex>
@@ -43,7 +43,7 @@ private:
   int64_t last_pts_;
 
   int doSeek(int64_t pts);
-  QSharedPointer<VideoFrame> doDecode(int64_t timestamp, bool iframe);
+  sptr<VideoFrame> doDecode(int64_t timestamp, bool iframe);
 
   void initialize();
 
@@ -54,7 +54,7 @@ public:
   void open();
   void close();
 
-  QSharedPointer<VideoFrame> decode(int64_t timestamp, bool iframe = false);
+  sptr<VideoFrame> decode(int64_t timestamp, bool iframe = false);
 
 };
 

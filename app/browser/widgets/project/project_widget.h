@@ -2,7 +2,7 @@
 #define NLIVE_PROJECT_WIDGET_H_
 
 #include <QDockWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "browser/widgets/widget.h"
 #include "base/layout/flex_layout.h"
 #include "base/layout/fillparentbox.h"
@@ -25,11 +25,11 @@ public:
   static const std::string TYPE;
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<IImportService> import_service_;
-  QSharedPointer<ServiceLocator> service_locator_;
+  sptr<IThemeService> theme_service_;
+  sptr<IImportService> import_service_;
+  sptr<ServiceLocator> service_locator_;
 
-  QSharedPointer<StorageDirectory> directory_;
+  sptr<StorageDirectory> directory_;
 
   FillParentBox* container_;
   FlexLayout* outer_view_;
@@ -40,14 +40,14 @@ protected:
   void resizeEvent(QResizeEvent* event) override;
 
 public:
-  static void Initialize(QSharedPointer<ServiceLocator> service_locator);
+  static void Initialize(sptr<ServiceLocator> service_locator);
 
   ProjectWidget(QWidget* parent,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IImportService> import_service,
-    QSharedPointer<ServiceLocator> service_locator);
+    sptr<IThemeService> theme_service,
+    sptr<IImportService> import_service,
+    sptr<ServiceLocator> service_locator);
 
-  void setDirectory(QSharedPointer<StorageDirectory> directory);
+  void setDirectory(sptr<StorageDirectory> directory);
 
   inline std::string name() const override { return TYPE; }
 

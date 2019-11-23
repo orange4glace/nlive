@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QLayout>
 
 namespace nlive {
@@ -16,16 +16,16 @@ namespace timeline_widget {
 class TrackSideView : public QWidget {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<Track> track_;
+  sptr<Track> track_;
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
   void paintEvent(QPaintEvent* event) override;
 
 public:
-  TrackSideView(QWidget* parent, QSharedPointer<Track> track, QSharedPointer<IThemeService> theme_service);
+  TrackSideView(QWidget* parent, sptr<Track> track, sptr<IThemeService> theme_service);
   
 
 };

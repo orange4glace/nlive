@@ -2,7 +2,7 @@
 #define NLIVE_VIDEO_RESOURCE_STORAGE_ITEM_RENDERER_H_
 
 #include <QOpenGLContext>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QImage>
 #include <mutex>
 
@@ -24,7 +24,7 @@ protected:
   void paintEvent(QPaintEvent* e) override;
 
 public:
-  VideoResourceStorageItemThumbnailView(QWidget* parent, QSharedPointer<VideoResourceStorageItem> item);
+  VideoResourceStorageItemThumbnailView(QWidget* parent, sptr<VideoResourceStorageItem> item);
   ~VideoResourceStorageItemThumbnailView();
 
 };
@@ -32,16 +32,16 @@ public:
 class VideoResourceStorageItemRenderer {
 
 private:
-  QSharedPointer<VideoResourceStorageItem> item_;
+  sptr<VideoResourceStorageItem> item_;
   QOpenGLContext* target_gl_;
 
-  QSharedPointer<video_renderer::Renderer> renderer_;
+  sptr<video_renderer::Renderer> renderer_;
 
   std::mutex mutex_;
 
 public:
   VideoResourceStorageItemRenderer(
-    QSharedPointer<VideoResourceStorageItem> item,
+    sptr<VideoResourceStorageItem> item,
     QOpenGLContext* target_gl);
 
   void open();

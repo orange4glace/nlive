@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "model/effect/property.h"
 #include "platform/theme/themeservice.h"
@@ -31,12 +31,12 @@ private:
   }
 
 protected:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
   
-  QSharedPointer<EffectControlLayout> layout_params_;
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
-  QSharedPointer<effect::Property<T>> property_;
+  sptr<EffectControlLayout> layout_params_;
+  sptr<Sequence> sequence_;
+  sptr<Clip> clip_;
+  sptr<effect::Property<T>> property_;
 
   PropertyFormView<effect::Property<T>>* form_view_;
   PropertyTimelineView<T>* timeline_view_;
@@ -48,13 +48,13 @@ protected:
 public:
   PropertyView(
     QWidget* widget,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Property<T>> property,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Property<T>> property,
     QString label,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service) :
+    sptr<IThemeService> theme_service) :
   QWidget(widget), theme_service_(theme_service),
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
   property_(property), sequence_scroll_view_(sequence_scroll_view) {
@@ -92,7 +92,7 @@ public:
     return QSize(-1, 20);
   }
 
-  QSharedPointer<effect::Property<T>>* property() {
+  sptr<effect::Property<T>>* property() {
     return property_;
   }
 

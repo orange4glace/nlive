@@ -1,6 +1,6 @@
 #include "model/resource/audio_resource.h"
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QDebug>
 #include <QString>
 #include <cstdlib>
@@ -21,9 +21,8 @@ AudioResource::AudioResource(std::string path, Rational time_base, int sample_ra
 
 }
 
-void AudioResource::setRaw(QSharedPointer<RawAudioResource> raw) {
+void AudioResource::setRaw(sptr<RawAudioResource> raw) {
   raw_ = raw;
-  qDebug() << "Raw audio set" << raw;
 }
 
 }

@@ -9,9 +9,9 @@ namespace timeline_widget {
 
 // TODO : This sometimes crashes.
 // This may be because of the montior_widget::SequenceView
-SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<PlayService> play_service) :
+SequenceView::SequenceView(QWidget* parent, sptr<Sequence> sequence,
+  sptr<IThemeService> theme_service,
+  sptr<PlayService> play_service) :
   FlexLayout(parent), sequence_(sequence), play_service_(play_service) {
   side_view_ = new SequenceSideView(this, sequence, theme_service);
   scroll_view_ = new SequenceScrollView(this, nullptr, sequence, theme_service);
@@ -19,7 +19,7 @@ SequenceView::SequenceView(QWidget* parent, QSharedPointer<Sequence> sequence,
   side_view_->setFlexBasis(200)->setFlexShrink(0)->setFlexGrow(0);
   addChild(side_view_);
   addChild(scroll_view_);
-  sequence_playable_ = QSharedPointer<SequencePlayable>(
+  sequence_playable_ = sptr<SequencePlayable>(
       new SequencePlayable(this, sequence));
 }
 

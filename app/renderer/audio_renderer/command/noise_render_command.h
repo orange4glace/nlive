@@ -10,7 +10,7 @@ namespace audio_renderer {
 class NoiseRenderCommand : public RenderCommand {
 
 public:
-  inline void render(QSharedPointer<RenderContext> ctx) override {
+  inline void render(sptr<RenderContext> ctx) override {
     auto data = (float*)ctx->data();
     int z = 0;
     for (int i = 0; i < ctx->nb_channels(); i ++) {

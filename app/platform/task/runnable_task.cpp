@@ -7,13 +7,13 @@
 
 namespace nlive {
 
-RunnableTask::RunnableTask(QSharedPointer<Task> task) : task_(task) {
+RunnableTask::RunnableTask(sptr<Task> task) : task_(task) {
   setAutoDelete(false);
 }
 
 void RunnableTask::run() {
   task_->start();
-  QMetaObject::invokeMethod(task_.get(), "finished", Qt::QueuedConnection, Q_ARG(QSharedPointer<Task>, task_));
+  QMetaObject::invokeMethod(task_.get(), "finished", Qt::QueuedConnection, Q_ARG(sptr<Task>, task_));
   QMetaObject::invokeMethod(this, "completed", Qt::QueuedConnection);
 }
 

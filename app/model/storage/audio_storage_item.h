@@ -1,7 +1,7 @@
 #ifndef NLIVE_AUDIO_STORAGE_ITEM_H_
 #define NLIVE_AUDIO_STORAGE_ITEM_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "model/resource/video_resource.h"
 #include "model/resource/audio_resource.h"
@@ -12,19 +12,19 @@ namespace nlive {
 class AudioStorageItem : public StorageItem {
 
 private:
-  QSharedPointer<AudioResource> audio_resource_;
+  sptr<AudioResource> audio_resource_;
 
 public:
   static const std::string TYPE;
 
   AudioStorageItem(
-    QSharedPointer<StorageItem> parent,
+    sptr<StorageItem> parent,
     QString name,
-    QSharedPointer<AudioResource> audio_resource);
+    sptr<AudioResource> audio_resource);
 
-  QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) override;
+  sptr<Clip> cliperize(sptr<Sequence> sequence) override;
 
-  QSharedPointer<AudioResource> audio_resource();
+  sptr<AudioResource> audio_resource();
 
   inline bool is_directory() const { return false; }
 

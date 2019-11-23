@@ -2,7 +2,7 @@
 #define NLIVE_TIMELINE_WIDGET_TRACK_TIMELINE_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <set>
 #include <map>
 #include <iostream>
@@ -25,19 +25,19 @@ class TrackTimelineView : public QWidget, public Sig {
 
 private:
   SequenceScrollView* scrollView_;
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<Track> track_;
+  sptr<Track> track_;
 
   std::set<ClipView*> clip_views_;
   std::set<ClipView*> focused_clip_views_;
-  std::map<QSharedPointer<Clip>, ClipView*, ClipStartCompare> clip_to_view_map_;
+  std::map<sptr<Clip>, ClipView*, ClipStartCompare> clip_to_view_map_;
 
   void doLayout();
 
 private slots:
-  void handleDidAddClip(QSharedPointer<Clip> track);
-  void handleWillRemoveClip(QSharedPointer<Clip> track);
+  void handleDidAddClip(sptr<Clip> track);
+  void handleWillRemoveClip(sptr<Clip> track);
 
 
 protected:
@@ -46,13 +46,13 @@ protected:
 public:
   TrackTimelineView(
     QWidget* const parent,
-    QSharedPointer<Track> const track,
+    sptr<Track> const track,
     SequenceScrollView* const scrollView,
-    QSharedPointer<IThemeService> const themeService);
+    sptr<IThemeService> const themeService);
 
   void updateClipViews();
 
-  ClipView* const getClipView(QSharedPointer<Clip> clip);
+  ClipView* const getClipView(sptr<Clip> clip);
   void blurAllClips();
 
   const std::set<ClipView*>& clip_views();

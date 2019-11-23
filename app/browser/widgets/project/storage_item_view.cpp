@@ -14,7 +14,7 @@ namespace nlive {
 
 namespace project_widget {
 
-ScrubBar::ScrubBar(QWidget* parent, QSharedPointer<IThemeService> theme_service) : QWidget(parent), theme_service_(theme_service) {
+ScrubBar::ScrubBar(QWidget* parent, sptr<IThemeService> theme_service) : QWidget(parent), theme_service_(theme_service) {
   value_ = 0;
 }
 
@@ -32,7 +32,7 @@ void ScrubBar::setValue(double x) {
 
 
 
-StorageItemContentViewContainer::StorageItemContentViewContainer(QWidget* parent, QSharedPointer<IThemeService> theme_service) :
+StorageItemContentViewContainer::StorageItemContentViewContainer(QWidget* parent, sptr<IThemeService> theme_service) :
   Div(parent) {
   content_view_ = nullptr;
   scrub_bar_ = new ScrubBar(this, theme_service);
@@ -97,7 +97,7 @@ void StorageItemContentViewContainer::setContentView(StorageItemContentView* con
 
 
 
-StorageItemTitleView::StorageItemTitleView(QWidget* parent, QSharedPointer<IThemeService> theme_service) :
+StorageItemTitleView::StorageItemTitleView(QWidget* parent, sptr<IThemeService> theme_service) :
   FlexLayout(parent), theme_service_(theme_service) {
   left_label_box_ = new TextBox(this, "", Qt::AlignBottom);
   right_label_box_ = new TextBox(this, "", Qt::AlignBottom | Qt::AlignRight);
@@ -121,7 +121,7 @@ StorageItemTitleView::StorageItemTitleView(QWidget* parent, QSharedPointer<IThem
 
 
 
-StorageItemView::StorageItemView(QWidget* parent, QSharedPointer<StorageItem> item, QSharedPointer<IThemeService> theme_service) :
+StorageItemView::StorageItemView(QWidget* parent, sptr<StorageItem> item, sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), storage_item_(item) {
   content_view_ = new StorageItemContentViewContainer(this, theme_service);
   title_view_ = new StorageItemTitleView(this, theme_service);
@@ -152,7 +152,7 @@ void StorageItemView::contentRectUpdated() {
   title_view_->setGeometry(tr);
 }
 
-QSharedPointer<StorageItem> StorageItemView::storage_item() {
+sptr<StorageItem> StorageItemView::storage_item() {
   return storage_item_;
 }
 

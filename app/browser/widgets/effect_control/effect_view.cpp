@@ -16,11 +16,11 @@ namespace effect_control {
 
 EffectViewHeader::EffectViewHeader(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
-    QSharedPointer<IThemeService> theme_service) :
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
+    sptr<IThemeService> theme_service) :
   FlexLayout(parent), theme_service_(theme_service),
   layout_(layout), clip_(clip), effect_(effect) {
   auto& theme = theme_service_->getTheme();
@@ -57,13 +57,13 @@ QSize EffectViewHeader::sizeHint() const {
 
 EffectView::EffectView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service) :
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
   opened_(true), layout_(layout), clip_(clip), effect_(effect), 
   sequence_scroll_view_(sequence_scroll_view) {

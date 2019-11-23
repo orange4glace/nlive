@@ -29,7 +29,7 @@ public:
     int bytes_per_sample_ = av_get_bytes_per_sample((AVSampleFormat)sample_fmt);
   }
 
-  inline void render(QSharedPointer<RenderContext> ctx) override {
+  inline void render(sptr<RenderContext> ctx) override {
     uint8_t** out_data = ctx->resample(ch_layout_, sample_fmt_, sample_rate_, const_cast<const uint8_t**>(&data_pointer_), samples_);
     auto data = ctx->data();
     // qDebug() << data_pointer_[0] << out_data[0][12799] << ctx->buffer_size();

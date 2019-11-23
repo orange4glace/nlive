@@ -20,15 +20,15 @@ template <class T>
 class PropertyTimelineView : public Div {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<EffectControlLayout> layout_params_;
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
-  QSharedPointer<effect::Property<T>> property_;
+  sptr<IThemeService> theme_service_;
+  sptr<EffectControlLayout> layout_params_;
+  sptr<Sequence> sequence_;
+  sptr<Clip> clip_;
+  sptr<effect::Property<T>> property_;
   SequenceScrollView* sequence_scroll_view_;
-  std::map<QSharedPointer<effect::Keyframe<T>>, KeyframeView<T>*> keyframe_view_map_;
+  std::map<sptr<effect::Keyframe<T>>, KeyframeView<T>*> keyframe_view_map_;
 
-  void doCreateKeyframeView(QSharedPointer<effect::Keyframe<T>> keyframe) {
+  void doCreateKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
     KeyframeView<T>* kf_view = new KeyframeView<T>(this, keyframe, theme_service_);
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 0);
     keyframe_view_map_[keyframe] = kf_view;
@@ -60,12 +60,12 @@ private:
 public:
   PropertyTimelineView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Property<T>> property,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Property<T>> property,
     SequenceScrollView* sequence_scroll_view,  
-    QSharedPointer<IThemeService> theme_service) :
+    sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
   property_(property), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   
@@ -78,8 +78,8 @@ public:
     auto kf = kfp.second;
     doCreateKeyframeView(kf);
   }
-  property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<effect::Keyframe<T>>)>::slot_type(
-    [this](QSharedPointer<effect::Keyframe<T>> keyframe) {
+  property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (sptr<effect::Keyframe<T>>)>::slot_type(
+    [this](sptr<effect::Keyframe<T>> keyframe) {
     doCreateKeyframeView(keyframe);
   })));
   clip->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(

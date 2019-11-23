@@ -1,7 +1,7 @@
 #ifndef NLIVE_MENU_BAR_H_
 #define NLIVE_MENU_BAR_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "platform/service/service_locator.h"
 
 namespace nlive {
@@ -9,10 +9,10 @@ namespace nlive {
 class MenuBar {
 
 private:
-  QSharedPointer<ServiceLocator> service_locator_;
+  sptr<ServiceLocator> service_locator_;
 
 public:
-  MenuBar(QSharedPointer<ServiceLocator> service_locator);
+  MenuBar(sptr<ServiceLocator> service_locator);
 
 };
 

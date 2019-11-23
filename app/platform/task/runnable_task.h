@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QRunnable>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 namespace nlive {
 
@@ -14,13 +14,13 @@ class RunnableTask : public QObject, public QRunnable {
   Q_OBJECT
 
 private:
-  QSharedPointer<Task> task_;
+  sptr<Task> task_;
 
 public:
-  RunnableTask(QSharedPointer<Task> task);
+  RunnableTask(sptr<Task> task);
   void run() override;
 
-  inline QSharedPointer<Task> task() {
+  inline sptr<Task> task() {
     return task_;
   }
 

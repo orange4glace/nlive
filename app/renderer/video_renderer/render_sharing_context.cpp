@@ -14,14 +14,14 @@ RenderSharingContext::RenderSharingContext(QOpenGLContext* gl) :
 }
 
 void RenderSharingContext::initialize() {
-  QSharedPointer<TextureShaderProgram> texture_shader =
-    QSharedPointer<TextureShaderProgram>(new TextureShaderProgram(gl_));
-  QSharedPointer<SolidShaderProgram> solid_shader =
-    QSharedPointer<SolidShaderProgram>(new SolidShaderProgram(gl_));
-  QSharedPointer<MirrorShaderProgram> mirror_shader =
-    QSharedPointer<MirrorShaderProgram>(new MirrorShaderProgram(gl_));
-  QSharedPointer<GrayScaleShaderProgram> gray_scale_shader =
-    QSharedPointer<GrayScaleShaderProgram>(new GrayScaleShaderProgram(gl_));
+  sptr<TextureShaderProgram> texture_shader =
+    sptr<TextureShaderProgram>(new TextureShaderProgram(gl_));
+  sptr<SolidShaderProgram> solid_shader =
+    sptr<SolidShaderProgram>(new SolidShaderProgram(gl_));
+  sptr<MirrorShaderProgram> mirror_shader =
+    sptr<MirrorShaderProgram>(new MirrorShaderProgram(gl_));
+  sptr<GrayScaleShaderProgram> gray_scale_shader =
+    sptr<GrayScaleShaderProgram>(new GrayScaleShaderProgram(gl_));
   registerShaderProgram("texture_shader", texture_shader);
   registerShaderProgram("solid_shader", solid_shader);
   registerShaderProgram("mirror_shader", mirror_shader);
@@ -29,11 +29,11 @@ void RenderSharingContext::initialize() {
 }
 
 void RenderSharingContext::registerShaderProgram(
-    std::string name, QSharedPointer<ShaderProgram> program) {
+    std::string name, sptr<ShaderProgram> program) {
   shaders_.insert(make_pair(name, program));
 }
 
-QSharedPointer<ShaderProgram> RenderSharingContext::getShaderProgram(std::string name) {
+sptr<ShaderProgram> RenderSharingContext::getShaderProgram(std::string name) {
   Q_ASSERT(shaders_.count(name));
   return shaders_[name];
 }

@@ -7,8 +7,8 @@ namespace nlive {
 
 namespace task_bar {
 
-ProgressBar::ProgressBar(QWidget* parent, QSharedPointer<Task> task,
-    QSharedPointer<IThemeService> theme_service) :
+ProgressBar::ProgressBar(QWidget* parent, sptr<Task> task,
+    sptr<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service), task_(task), progress_(0) {
   
   qDebug() << "Hello Progressbar";

@@ -2,7 +2,7 @@
 #define NLIVE_MONITOR_WIDGET_H_
 
 #include <QDockWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 
 #include "browser/widgets/widget.h"
@@ -29,14 +29,14 @@ public:
   static const std::string TYPE;
 
 private:
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service_;
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<PlayService> play_service_;
+  sptr<ITimelineWidgetService> timeline_widget_service_;
+  sptr<IThemeService> theme_service_;
+  sptr<PlayService> play_service_;
 
   std::vector<sig2_conn_t> widget_connections_;
   SequenceView* sequence_view_;
   
-  QSharedPointer<ActionContext> action_context_;
+  sptr<ActionContext> action_context_;
   ActionBar* action_bar_;
 
   void handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget);
@@ -48,9 +48,9 @@ protected:
 
 public:
   MonitorWidget(QWidget* parent,
-    QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<PlayService> play_service);
+    sptr<ITimelineWidgetService> timeline_widget_service,
+    sptr<IThemeService> theme_service,
+    sptr<PlayService> play_service);
     
   inline std::string name() const override { return TYPE; }
 

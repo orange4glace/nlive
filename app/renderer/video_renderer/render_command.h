@@ -11,7 +11,7 @@ namespace video_renderer {
 class RenderCommand {
 
 public:
-  virtual void render(QSharedPointer<RendererContext> ctx) = 0;
+  virtual void render(sptr<RendererContext> ctx) = 0;
 
 };
 

@@ -2,11 +2,11 @@
 
 namespace nlive {
 
-QSharedPointer<TimelineWidgetService> TimelineWidgetService::instance_ = nullptr;
+sptr<TimelineWidgetService> TimelineWidgetService::instance_ = nullptr;
 
 void TimelineWidgetService::Initialize() {
   TimelineWidgetService::instance_ = 
-    QSharedPointer<TimelineWidgetService>(new TimelineWidgetService());
+    sptr<TimelineWidgetService>(new TimelineWidgetService());
 }
 
 TimelineWidgetService::TimelineWidgetService() :

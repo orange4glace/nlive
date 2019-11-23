@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "base/ui/text_box.h"
 #include "model/effect/property.h"
@@ -37,10 +37,10 @@ template <class T>
 class PropertyAnimateToggleButton : public QPushButton, public Sig {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
   bool animated_;
-  QSharedPointer<T> property_;
+  sptr<T> property_;
 
   void handleClick() {
     property_->setAnimated(!property_->animated());
@@ -69,11 +69,11 @@ protected:
 public:
   PropertyAnimateToggleButton(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<T> property,
-    QSharedPointer<IThemeService> theme_service) :
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<T> property,
+    sptr<IThemeService> theme_service) :
   QPushButton(parent), theme_service_(theme_service), property_(property) {
     animated_ = property->animated();
 
@@ -136,11 +136,11 @@ private:
   }
 
 protected:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<EffectControlLayout> layout_params_;
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
-  QSharedPointer<T> property_;
+  sptr<IThemeService> theme_service_;
+  sptr<EffectControlLayout> layout_params_;
+  sptr<Sequence> sequence_;
+  sptr<Clip> clip_;
+  sptr<T> property_;
 
   bool event(QEvent* event) override {
     switch (event->type()) {
@@ -158,12 +158,12 @@ protected:
 public:
   PropertyFormView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout_params,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<T> property,
+    sptr<EffectControlLayout> layout_params,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<T> property,
     QString label,
-    QSharedPointer<IThemeService> theme_service) :
+    sptr<IThemeService> theme_service) :
     theme_service_(theme_service),
     QWidget(parent), layout_params_(layout_params),
     sequence_(sequence), clip_(clip), property_(property),

@@ -2,7 +2,7 @@
 #define NILVE_EFFECT_PROPERTY_H_
 
 #include <QObject>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <stdint.h>
 #include <map>
 #include <string>
@@ -20,7 +20,7 @@ class Property {
 private:
   std::string type_;
   T default_value_;
-  std::map<int64_t, QSharedPointer<Keyframe<T>>> keyframes_;
+  std::map<int64_t, sptr<Keyframe<T>>> keyframes_;
 
   bool animatable_;
   bool animated_;
@@ -35,7 +35,7 @@ private:
   void doCreateKeyframe(int64_t time, T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it == keyframes_.end());
-    auto kf = QSharedPointer<Keyframe<T>>(new Keyframe<T>(time, value));
+    auto kf = sptr<Keyframe<T>>(new Keyframe<T>(time, value));
     keyframes_.insert(make_pair(time, kf));
     onDidUpdate();
     onDidAddKeyframe(kf);
@@ -44,7 +44,7 @@ private:
   void doUpdateKeyframe(int64_t time, T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it != keyframes_.end());
-    QSharedPointer<Keyframe<T>> kf = match_it->second;
+    sptr<Keyframe<T>> kf = match_it->second;
     kf->setValue(value);
     onDidUpdate();
   }
@@ -76,7 +76,7 @@ public:
     }
     auto next = keyframes_.lower_bound(time);
     if (next == keyframes_.end()) {
-      QSharedPointer<Keyframe<T>> kf = (*(keyframes_.rbegin())).second;
+      sptr<Keyframe<T>> kf = (*(keyframes_.rbegin())).second;
       return kf->value();
     }
     if (next == keyframes_.begin()) {
@@ -103,7 +103,7 @@ public:
     onDidUpdate();
   }
 
-  std::map<int64_t, QSharedPointer<Keyframe<T>>> const& keyframes() {
+  std::map<int64_t, sptr<Keyframe<T>>> const& keyframes() {
     return keyframes_;
   }
 
@@ -126,9 +126,9 @@ public:
   sig2_t<void (bool)> onDidChangeAnimated;
   sig2_t<void (bool)> onDidChangeAnimatable;
   sig2_t<void (void)> onDidUpdate;
-  sig2_t<void (QSharedPointer<Keyframe<T>>)> onDidAddKeyframe;
-  sig2_t<void (QSharedPointer<Keyframe<T>>)> onWillRemoveKeyframe;
-  sig2_t<void (QSharedPointer<Keyframe<T>>)> onDidChangeKeyframeTime;
+  sig2_t<void (sptr<Keyframe<T>>)> onDidAddKeyframe;
+  sig2_t<void (sptr<Keyframe<T>>)> onWillRemoveKeyframe;
+  sig2_t<void (sptr<Keyframe<T>>)> onDidChangeKeyframeTime;
 
 };
 

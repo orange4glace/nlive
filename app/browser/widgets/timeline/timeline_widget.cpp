@@ -19,9 +19,9 @@ const std::string TimelineWidget::TYPE = "widget.Timeline";
 
 TimelineWidget::TimelineWidget(
   QWidget* parent,
-  QSharedPointer<IThemeService> theme_service,
-  QSharedPointer<ITimelineWidgetService> timeline_widget_service,
-  QSharedPointer<PlayService> play_service) :
+  sptr<IThemeService> theme_service,
+  sptr<ITimelineWidgetService> timeline_widget_service,
+  sptr<PlayService> play_service) :
   QDockWidget(parent),
   theme_service_(theme_service), play_service_(play_service),
   timeline_widget_service_(timeline_widget_service),
@@ -46,7 +46,7 @@ void TimelineWidget::focusInEvent(QFocusEvent* event) {
   timeline_widget_service_->setCurrentWidget(this);
 }
 
-void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
+void TimelineWidget::setSequence(sptr<Sequence> sequence) {
   if (sequence_ != nullptr) {
     sequence_ = nullptr;
     delete sequence_view_;
@@ -62,7 +62,7 @@ void TimelineWidget::setSequence(QSharedPointer<Sequence> sequence) {
   onDidChangeSequence(sequence);
 }
 
-QSharedPointer<Sequence> TimelineWidget::sequence() {
+sptr<Sequence> TimelineWidget::sequence() {
   return sequence_;
 }
 

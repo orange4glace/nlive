@@ -21,18 +21,18 @@ Sequence::Sequence(sptr<IUndoStack> undo_stack, int base_time, int sample_rate) 
 
 }
 
-QSharedPointer<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t timecode) {
-  QSharedPointer<video_renderer::CommandBuffer> command_buffer =
-    QSharedPointer<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
+sptr<video_renderer::CommandBuffer> Sequence::renderVideo(int64_t timecode) {
+  sptr<video_renderer::CommandBuffer> command_buffer =
+    sptr<video_renderer::CommandBuffer>(new video_renderer::CommandBuffer());
   for (auto track : tracks_) {
     track->render(command_buffer, timecode);
   }
   return command_buffer;
 }
 
-QSharedPointer<audio_renderer::CommandBuffer> Sequence::renderAudio(int64_t start_frame, int64_t end_frame) {
-  QSharedPointer<audio_renderer::CommandBuffer> command_buffer =
-    QSharedPointer<audio_renderer::CommandBuffer>(new audio_renderer::CommandBuffer());
+sptr<audio_renderer::CommandBuffer> Sequence::renderAudio(int64_t start_frame, int64_t end_frame) {
+  sptr<audio_renderer::CommandBuffer> command_buffer =
+    sptr<audio_renderer::CommandBuffer>(new audio_renderer::CommandBuffer());
   for (auto track : tracks_) {
     track->renderAudio(command_buffer, start_frame, end_frame);
   }
@@ -44,16 +44,16 @@ void Sequence::doInvalidate() {
   invalidated_ = true;
 }
 
-QSharedPointer<Track> Sequence::addTrack() {
+sptr<Track> Sequence::addTrack() {
   return doAddTrack();
 }
 
-QSharedPointer<Track> Sequence::doAddTrack() {
-  QSharedPointer<Track> track = QSharedPointer<Track>(new Track(undo_stack_, time_base_, sample_rate_));
+sptr<Track> Sequence::doAddTrack() {
+  sptr<Track> track = sptr<Track>(new Track(undo_stack_, time_base_, sample_rate_));
   tracks_.push_back(track);
   std::vector<sig2_conn_t> connections;
-  connections.push_back(track->onDidAddClip.connect(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
-    [this, track] (QSharedPointer<Clip> clip) {
+  connections.push_back(track->onDidAddClip.connect(sig2_t<void (sptr<Clip>)>::slot_type(
+    [this, track] (sptr<Clip> clip) {
     handleDidAddClip(track, clip);
   })));
   connections.push_back(track->onInvalidate.connect(sig2_t<void (void)>::slot_type(
@@ -65,7 +65,7 @@ QSharedPointer<Track> Sequence::doAddTrack() {
   return track;
 }
 
-void Sequence::handleDidAddClip(QSharedPointer<Track> track, QSharedPointer<Clip> clip) {
+void Sequence::handleDidAddClip(sptr<Track> track, sptr<Clip> clip) {
   if (clip->end_time() > duration_) {
     doSetDuration(clip->end_time() + Rational::rescale(5000, Rational(1, 1000), time_base_));
   }
@@ -82,7 +82,7 @@ void Sequence::doRemoveTrackAt(int index) {
   //     "[Sequence] Failed to doRemoveTrackAt. Track ID = {}, index = {}", id_, index);
   //   return;
   // }
-  QSharedPointer<Track> track = tracks_[index];
+  sptr<Track> track = tracks_[index];
   onWillRemoveTrack(track, index);
   auto connections = track_connections_.find(track);
   Q_ASSERT(connections != track_connections_.end());
@@ -105,7 +105,7 @@ void Sequence::doSetDuration(int64_t value) {
   onDidChangeDuration(old);
 }
 
-QSharedPointer<Track> Sequence::getTrackAt(int index) {
+sptr<Track> Sequence::getTrackAt(int index) {
   Q_ASSERT (0 <= index && index < tracks_.size());
   return tracks_[index];
 }
@@ -122,7 +122,7 @@ void Sequence::setDuration(int64_t value) {
   doSetDuration(value);
 } 
 
-int64_t Sequence::getClipBTimecodeOffset(QSharedPointer<Clip> clip) const {
+int64_t Sequence::getClipBTimecodeOffset(sptr<Clip> clip) const {
   return current_time_ - clip->start_time() + clip->b_time();
 }
 
@@ -162,7 +162,7 @@ int Sequence::height() const {
   return height_;
 }
 
-const std::vector<QSharedPointer<Track>>& Sequence::tracks() {
+const std::vector<sptr<Track>>& Sequence::tracks() {
   return tracks_;
 }
 

@@ -1,6 +1,6 @@
 #include "model/resource/raw_audio_resource.h"
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QString>
 #include <cstdlib>
 #include "platform/logger/logger.h"

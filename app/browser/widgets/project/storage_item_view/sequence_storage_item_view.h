@@ -13,23 +13,23 @@ namespace project_widget {
 class SequenceStorageItemView : public StorageItemView {
 
 private:
-  QSharedPointer<IWidgetsService> widgets_service_;
-  QSharedPointer<SequenceStorageItem> item_;
+  sptr<IWidgetsService> widgets_service_;
+  sptr<SequenceStorageItem> item_;
 
 protected:
   void onMouseDoubleClick() override;
 
 public:
-  SequenceStorageItemView(QWidget* parent, QSharedPointer<SequenceStorageItem> item,
-      QSharedPointer<IThemeService> theme_service, QSharedPointer<IWidgetsService> widgets_service);
+  SequenceStorageItemView(QWidget* parent, sptr<SequenceStorageItem> item,
+      sptr<IThemeService> theme_service, sptr<IWidgetsService> widgets_service);
 
 };
 
 class SequenceStorageItemViewFactory : public StorageItemViewFactory {
 
 public:
-  SequenceStorageItemViewFactory(QSharedPointer<ServiceLocator> service_locator);
-  StorageItemView* create(QWidget* widget, QSharedPointer<StorageItem> item) override;
+  SequenceStorageItemViewFactory(sptr<ServiceLocator> service_locator);
+  StorageItemView* create(QWidget* widget, sptr<StorageItem> item) override;
 
 };
 

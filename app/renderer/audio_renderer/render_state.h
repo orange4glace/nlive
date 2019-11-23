@@ -2,7 +2,7 @@
 #define NLIVE_AUDIO_RENDERER_RENDER_STATE_H_
 
 #include <QElapsedTimer>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <mutex>
 #include <condition_variable>
 #include <vector>

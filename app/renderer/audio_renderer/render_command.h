@@ -1,7 +1,7 @@
 #ifndef NLIVE_AUDIO_RENDERER_RENDER_COMMAND_H_
 #define NLIVE_AUDIO_RENDERER_RENDER_COMMAND_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLContext>
 #include "renderer/audio_renderer/render_context.h"
 
@@ -12,7 +12,7 @@ namespace audio_renderer {
 class RenderCommand {
 
 public:
-  virtual void render(QSharedPointer<RenderContext> ctx) = 0;
+  virtual void render(sptr<RenderContext> ctx) = 0;
 
 };
 

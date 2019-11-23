@@ -21,11 +21,11 @@ namespace {
 }
 
 SequenceRenderer::SequenceRenderer(
-  QSharedPointer<Sequence> sequence,
+  sptr<Sequence> sequence,
   QOpenGLContext* target_gl) :
   sequence_(sequence),
   target_gl_(target_gl) {
-  renderer_ = QSharedPointer<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
+  renderer_ = sptr<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
   
   connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
     emit onDidReadyData();

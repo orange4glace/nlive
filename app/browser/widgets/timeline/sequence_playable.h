@@ -1,7 +1,7 @@
 #ifndef NLIVE_MONTIOR_WIDGET_SEQUENCE_PLAYABLE_H_
 #define NLIVE_MONTIOR_WIDGET_SEQUENCE_PLAYABLE_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QObject>
 #include <QTimer>
 #include "base/common/sig.h"
@@ -16,7 +16,7 @@ namespace nlive {
 class SequencePlayable : public Playable {
 
 private:
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   QTimer* invalidation_timer_;
   bool invalidated_;
 
@@ -32,7 +32,7 @@ private:
   void onInvalidate();
 
 public:
-  SequencePlayable(QObject* parent, QSharedPointer<Sequence> sequence);
+  SequencePlayable(QObject* parent, sptr<Sequence> sequence);
   ~SequencePlayable();
 
   void setVideoRenderer(video_renderer::SequenceRenderer* renderer);

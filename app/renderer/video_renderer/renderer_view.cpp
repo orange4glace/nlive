@@ -20,7 +20,7 @@ RendererView::~RendererView() {
   }
 }
 
-void RendererView::render(QSharedPointer<CommandBuffer> command_buffer) {
+void RendererView::render(sptr<CommandBuffer> command_buffer) {
   if (!initialized_) return;
   renderer_->render(command_buffer);
 }
@@ -72,7 +72,7 @@ void RendererView::initializeGL() {
 
   gf->glGenTextures(1, &tex_);
 
-  renderer_ = QSharedPointer<Renderer>(new Renderer(context(), width_, height_));
+  renderer_ = sptr<Renderer>(new Renderer(context(), width_, height_));
   connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
     update();
   });

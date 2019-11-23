@@ -22,7 +22,7 @@ namespace project_widget {
 
 const std::string ProjectWidget::TYPE = "widget.Project";
 
-void ProjectWidget::Initialize(QSharedPointer<ServiceLocator> service_locator) {
+void ProjectWidget::Initialize(sptr<ServiceLocator> service_locator) {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory(service_locator));
   StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory(service_locator));
@@ -32,9 +32,9 @@ void ProjectWidget::Initialize(QSharedPointer<ServiceLocator> service_locator) {
 }
 
 ProjectWidget::ProjectWidget(QWidget* parent,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IImportService> import_service,
-    QSharedPointer<ServiceLocator> service_locator) :
+    sptr<IThemeService> theme_service,
+    sptr<IImportService> import_service,
+    sptr<ServiceLocator> service_locator) :
   QDockWidget(parent), theme_service_(theme_service),
   import_service_(import_service), service_locator_(service_locator),
   directory_view_(nullptr) {
@@ -59,7 +59,7 @@ ProjectWidget::ProjectWidget(QWidget* parent,
 
 }
 
-void ProjectWidget::setDirectory(QSharedPointer<StorageDirectory> directory) {
+void ProjectWidget::setDirectory(sptr<StorageDirectory> directory) {
   if (directory_ == directory) return;
   if (directory_ != nullptr) {
     // Clean up

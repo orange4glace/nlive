@@ -5,7 +5,7 @@
 #include <QEvent>
 #include <QPushButton>
 #include <QMouseEvent>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 #include "base/layout/div.h"
 #include "base/ui/svg_sprite.h"
@@ -30,7 +30,7 @@ protected:
 
 public:
   ActionBarItemView(QWidget* parent, QAction* action, QString svg_path,
-    QSharedPointer<IThemeService> theme_service);
+    sptr<IThemeService> theme_service);
 
   void setSize(int width, int height);
 
@@ -41,7 +41,7 @@ public:
 class ActionBar : public Div {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
   std::vector<ActionBarItemView*> items_;
   QSize icon_size_;
@@ -52,7 +52,7 @@ protected:
   void contentRectUpdated() override;
 
 public:
-  ActionBar(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+  ActionBar(QWidget* parent, sptr<IThemeService> theme_service);
 
   void setIconSize(QSize size);
   void addAction(QAction* action, QString svg_path);

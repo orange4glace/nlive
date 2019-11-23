@@ -2,7 +2,7 @@
 #define NLIVE_STORAGE_ITEM_H_
 
 #include <QObject>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QString>
 #include <boost/serialization/serialization.hpp>
 #include "base/common/sig.h"
@@ -28,14 +28,14 @@ private:
   std::string type_;
   QString name_;
 
-  QSharedPointer<Project> project_;
+  sptr<Project> project_;
   StorageItem* parent_;
 
 protected:
   StorageItem(
-    QSharedPointer<Project> project,
+    sptr<Project> project,
     std::string type, QString name,
-    QSharedPointer<StorageItem> parent = nullptr,
+    sptr<StorageItem> parent = nullptr,
     std::string uuid = std::string());
   
 public:
@@ -43,10 +43,10 @@ public:
   QString getAbsoluteNamePath() const;
   std::string getAbsolutePath() const;
 
-  virtual QSharedPointer<Clip> cliperize(QSharedPointer<Sequence> sequence) = 0;
+  virtual sptr<Clip> cliperize(sptr<Sequence> sequence) = 0;
 
   StorageItem* parent();
-  inline QSharedPointer<Project> project() { return project_; }
+  inline sptr<Project> project() { return project_; }
 
   std::string const& uuid() const;
   QString const& name() const;

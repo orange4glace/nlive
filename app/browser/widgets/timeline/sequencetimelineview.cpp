@@ -25,8 +25,8 @@ namespace timeline_widget {
 
 SequenceTimelineView::SequenceTimelineView(
   SequenceScrollView* scroll_view,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<IThemeService> const theme_service) :
+  sptr<Sequence> sequence,
+  sptr<IThemeService> const theme_service) :
   Div(scroll_view), theme_service_(theme_service), sequence_(sequence),
   scroll_view_(scroll_view), manipulate_state_(ManipulateState::IDLE),
   ghost_sequence_view_(nullptr) {
@@ -39,12 +39,12 @@ SequenceTimelineView::SequenceTimelineView(
 
   auto tracks = sequence->tracks();
   for (int i = 0; i < tracks.size(); i ++) handleDidAddTrack(tracks[i], i);
-  sequence->onDidAddTrack.connect(sig2_t<void (QSharedPointer<Track>, int)>::slot_type(
+  sequence->onDidAddTrack.connect(sig2_t<void (sptr<Track>, int)>::slot_type(
     boost::bind(&SequenceTimelineView::handleDidAddTrack, this, _1, _2)
   ).track(__sig_scope_));
 }
 
-void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int index) {
+void SequenceTimelineView::handleDidAddTrack(sptr<Track> track, int index) {
   // Create and add Track view
   auto view = new TrackTimelineView(this, track, scroll_view_, theme_service_);
   track_views_.emplace(track_views_.begin() + index, view);
@@ -62,7 +62,7 @@ void SequenceTimelineView::handleDidAddTrack(QSharedPointer<Track> track, int in
   });
 }
 
-void SequenceTimelineView::handleWillRemoveTrack(QSharedPointer<Track> track, int index) {
+void SequenceTimelineView::handleWillRemoveTrack(sptr<Track> track, int index) {
   // Delete Track view
   auto track_view = track_views_[index];
   track_view->blurAllClips();

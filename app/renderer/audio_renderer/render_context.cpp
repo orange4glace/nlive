@@ -18,7 +18,7 @@ RenderContext::RenderContext(int64_t ch_layout, AVSampleFormat sample_fmt,
   bytes_per_channel_ = samples_per_channel_ * bytes_per_sample_;
   buffer_size_ = nb_channels_ * bytes_per_channel_;
   data_ = new uint8_t[buffer_size_];
-  decoder_manager_ = QSharedPointer<DecoderManager>(new DecoderManager());
+  decoder_manager_ = sptr<DecoderManager>(new DecoderManager());
   clearData();
 }
 

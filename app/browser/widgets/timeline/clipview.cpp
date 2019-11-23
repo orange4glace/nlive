@@ -19,10 +19,10 @@ namespace timeline_widget {
 
 ClipView::ClipView(
   QWidget* const parent,
-  QSharedPointer<Track> track,
-  QSharedPointer<Clip> clip,
+  sptr<Track> track,
+  sptr<Clip> clip,
   SequenceScrollView* const scrollView,
-  QSharedPointer<IThemeService> const theme_service) : 
+  sptr<IThemeService> const theme_service) : 
   theme_service_(theme_service),
   QWidget(parent), track_(track), clip_(clip), focused_(false), scrollView_(scrollView),
   left_handle_inner_(this), left_handle_outer_(this),
@@ -120,7 +120,7 @@ ClipViewHandle ClipView::testHandle(QPoint&& point) const {
   return ClipViewHandle::NONE;
 }
 
-QSharedPointer<Clip> ClipView::clip() {
+sptr<Clip> ClipView::clip() {
   return clip_;
 }
 

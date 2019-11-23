@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_CONTROL_EFFECT_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 #include "base/common/sig.h"
 #include "base/layout/flex_layout.h"
@@ -25,10 +25,10 @@ namespace {
 class EffectViewHeader : public FlexLayout {
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<EffectControlLayout> layout_;
-  QSharedPointer<Clip> clip_;
-  QSharedPointer<effect::Effect> effect_;
+  sptr<IThemeService> theme_service_;
+  sptr<EffectControlLayout> layout_;
+  sptr<Clip> clip_;
+  sptr<effect::Effect> effect_;
   SequenceScrollView* sequence_scroll_view_;
 
   SvgButton* arrow_button_;
@@ -41,11 +41,11 @@ protected:
 public:
   EffectViewHeader(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
-    QSharedPointer<IThemeService> theme_service);
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
+    sptr<IThemeService> theme_service);
 
   void setOpened(bool value);
 
@@ -69,11 +69,11 @@ private:
   void doPaint();
 
 protected:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<IMementoService> memento_service_;
-  QSharedPointer<EffectControlLayout> layout_;
-  QSharedPointer<Clip> clip_;
-  QSharedPointer<effect::Effect> effect_;
+  sptr<IThemeService> theme_service_;
+  sptr<IMementoService> memento_service_;
+  sptr<EffectControlLayout> layout_;
+  sptr<Clip> clip_;
+  sptr<effect::Effect> effect_;
   SequenceScrollView* sequence_scroll_view_;
 
   bool event(QEvent* event) override;
@@ -81,13 +81,13 @@ protected:
 public:
   EffectView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Effect> effect,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Effect> effect,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service);
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service);
 
   void insertPropertyView(QWidget* view, int index);
 

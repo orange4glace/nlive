@@ -1,7 +1,7 @@
 #ifndef NLIVE_GRAY_SCALEEFFECT_H_
 #define NLIVE_GRAY_SCALEEFFECT_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "model/effect/effect.h"
 #include "model/effect/property.h"
@@ -14,16 +14,16 @@ namespace effect {
 class GrayScaleEffect : public Effect {
 
 private:
-  QSharedPointer<Property<value::Scalar>> scale_;
+  sptr<Property<value::Scalar>> scale_;
 
 public:
   static const std::string TYPE;
 
   GrayScaleEffect();
 
-  void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) override;
+  void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) override;
 
-  QSharedPointer<Property<value::Scalar>> scale();
+  sptr<Property<value::Scalar>> scale();
 
 };
 

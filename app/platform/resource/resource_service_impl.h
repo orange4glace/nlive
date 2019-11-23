@@ -15,13 +15,13 @@ namespace nlive {
 class AudioResourceRawConvertingService {
 
 private:
-  QSharedPointer<ITaskService> task_service_;
-  std::map<std::string, std::vector<QSharedPointer<AudioResource>>> processing_map_;
-  std::map<std::string, QSharedPointer<RawAudioResource>> processed_map_;
+  sptr<ITaskService> task_service_;
+  std::map<std::string, std::vector<sptr<AudioResource>>> processing_map_;
+  std::map<std::string, sptr<RawAudioResource>> processed_map_;
 
 public:
-  AudioResourceRawConvertingService(QSharedPointer<ITaskService> task_service);
-  void process(QSharedPointer<AudioResource> resource);
+  AudioResourceRawConvertingService(sptr<ITaskService> task_service);
+  void process(sptr<AudioResource> resource);
 
 };
 
@@ -30,16 +30,16 @@ public:
 class ResourceService : public IResourceService {
 
 private:
-  QSharedPointer<ITaskService> task_service_;
+  sptr<ITaskService> task_service_;
   AudioResourceRawConvertingService audio_resource_raw_converting_service_;
 
-  std::map<QString, QSharedPointer<Resource>> resources_;
+  std::map<QString, sptr<Resource>> resources_;
 
 public:
-  ResourceService(QSharedPointer<ITaskService> task_service);
+  ResourceService(sptr<ITaskService> task_service);
 
-  QSharedPointer<VideoResource> loadBestVideoResource(QString path) override;
-  QSharedPointer<AudioResource> loadBestAudioResource(QString path) override;
+  sptr<VideoResource> loadBestVideoResource(QString path) override;
+  sptr<AudioResource> loadBestAudioResource(QString path) override;
 
 };
 

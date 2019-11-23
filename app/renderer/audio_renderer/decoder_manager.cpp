@@ -10,9 +10,9 @@ DecoderManager::DecoderManager() {
 
 }
 
-QSharedPointer<AudioDecoderRef> DecoderManager::acquireDecoder(
-    QSharedPointer<RawAudioResource> resource, int referer) {
-  QSharedPointer<AudioDecoderRef> ret = nullptr;
+sptr<AudioDecoderRef> DecoderManager::acquireDecoder(
+    sptr<RawAudioResource> resource, int referer) {
+  sptr<AudioDecoderRef> ret = nullptr;
   int min_freq = 1;
   int idx = -1;
   int i = 0;
@@ -37,13 +37,13 @@ QSharedPointer<AudioDecoderRef> DecoderManager::acquireDecoder(
     decoder_refs_.erase(decoder_refs_.begin() + idx);
     return ret;
   }
-  auto decoder = QSharedPointer<AudioDecoder>(new AudioDecoder(resource));
-  ret = QSharedPointer<AudioDecoderRef>(new AudioDecoderRef(decoder, resource, referer));
+  auto decoder = sptr<AudioDecoder>(new AudioDecoder(resource));
+  ret = sptr<AudioDecoderRef>(new AudioDecoderRef(decoder, resource, referer));
   return ret;
 }
 
 void DecoderManager::releaseDecoder(
-    QSharedPointer<AudioDecoderRef> decoder_ref) {
+    sptr<AudioDecoderRef> decoder_ref) {
   decoder_refs_.push_back(decoder_ref);
 }
 

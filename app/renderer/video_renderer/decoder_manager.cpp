@@ -10,9 +10,9 @@ DecoderManager::DecoderManager() {
 
 }
 
-QSharedPointer<VideoDecoderRef> DecoderManager::acquireDecoder(
-    QSharedPointer<VideoResource> resource, int referer) {
-  QSharedPointer<VideoDecoderRef> ret = nullptr;
+sptr<VideoDecoderRef> DecoderManager::acquireDecoder(
+    sptr<VideoResource> resource, int referer) {
+  sptr<VideoDecoderRef> ret = nullptr;
   int min_freq = 1;
   int idx = -1;
   int i = 0;
@@ -37,13 +37,13 @@ QSharedPointer<VideoDecoderRef> DecoderManager::acquireDecoder(
     decoder_refs_.erase(decoder_refs_.begin() + idx);
     return ret;
   }
-  auto decoder = QSharedPointer<VideoDecoder>(new VideoDecoder(resource->path()));
-  ret = QSharedPointer<VideoDecoderRef>(new VideoDecoderRef(decoder, resource, referer));
+  auto decoder = sptr<VideoDecoder>(new VideoDecoder(resource->path()));
+  ret = sptr<VideoDecoderRef>(new VideoDecoderRef(decoder, resource, referer));
   return ret;
 }
 
 void DecoderManager::releaseDecoder(
-    QSharedPointer<VideoDecoderRef> decoder_ref) {
+    sptr<VideoDecoderRef> decoder_ref) {
   decoder_refs_.push_back(decoder_ref);
 }
 

@@ -2,7 +2,7 @@
 #define NLIVE_SERVICE_LOCATOR_H_
 
 #include <map>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "platform/service/service.h"
 #include "platform/logger/logger.h"
 
@@ -11,7 +11,7 @@ namespace nlive {
 class ServiceLocator {
 
 private:
-  std::map<std::string, QSharedPointer<IService>> service_map_;
+  std::map<std::string, sptr<IService>> service_map_;
 
 public:
   inline ServiceLocator() {
@@ -19,17 +19,17 @@ public:
   }
 
   template <typename T>
-  QSharedPointer<T> getService(std::string service_id) {
+  sptr<T> getService(std::string service_id) {
     if (service_map_.count(service_id) == 0) {
       spdlog::get(LOGGER_DEFAULT)->critical(
         "[ServiceLocator] Can not find service {}!", service_id);
       exit(-1);
     }
-    return service_map_[service_id].staticCast<T>();
+    return std::static_pointer_cast<T>(service_map_[service_id]);
   }
 
   template <typename T>
-  void registerService(QSharedPointer<T> service) {
+  void registerService(sptr<T> service) {
     auto service_id = service->service_id();
     if (service_map_.count(service_id) > 0) {
       spdlog::get(LOGGER_DEFAULT)->critical(

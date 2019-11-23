@@ -3,7 +3,7 @@
 
 #include <map>
 #include <vector>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "model/resource/raw_audio_resource.h"
 #include "decoder/audio_decoder.h"
@@ -16,8 +16,8 @@ class DecoderManager;
 
 class AudioDecoderRef {
   private:
-    QSharedPointer<AudioDecoder> decoder_;
-    QSharedPointer<RawAudioResource> resource_;
+    sptr<AudioDecoder> decoder_;
+    sptr<RawAudioResource> resource_;
     int referer_;
     int freq_;
 
@@ -25,15 +25,15 @@ class AudioDecoderRef {
 
   public:
     inline AudioDecoderRef(
-      QSharedPointer<AudioDecoder> decoder, 
-      QSharedPointer<RawAudioResource> resource,
+      sptr<AudioDecoder> decoder, 
+      sptr<RawAudioResource> resource,
       int referer) : decoder_(decoder), resource_(resource), referer_(referer),
       freq_(0) {
 
     }
 
-    inline QSharedPointer<AudioDecoder> decoder() { return decoder_; }
-    inline QSharedPointer<RawAudioResource> resource() { return resource_; }
+    inline sptr<AudioDecoder> decoder() { return decoder_; }
+    inline sptr<RawAudioResource> resource() { return resource_; }
     inline int referer() const { return referer_; }
     inline int freq() const { return freq_; }
 };
@@ -41,15 +41,15 @@ class AudioDecoderRef {
 class DecoderManager {
 
 private:
-  std::vector<QSharedPointer<AudioDecoderRef>> decoder_refs_;
+  std::vector<sptr<AudioDecoderRef>> decoder_refs_;
   
 public:
   DecoderManager();
 
-  QSharedPointer<AudioDecoderRef> acquireDecoder(
-      QSharedPointer<RawAudioResource> resource, int referer);
+  sptr<AudioDecoderRef> acquireDecoder(
+      sptr<RawAudioResource> resource, int referer);
 
-  void releaseDecoder(QSharedPointer<AudioDecoderRef> decoder_ref);
+  void releaseDecoder(sptr<AudioDecoderRef> decoder_ref);
 
 };
 

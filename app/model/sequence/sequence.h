@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QMetaObject>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QTimer>
 #include <map>
 #include <vector>
@@ -40,33 +40,33 @@ private:
   int width_;
   int height_;
 
-  std::vector<QSharedPointer<Track>> tracks_;
-  std::map<QSharedPointer<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
+  std::vector<sptr<Track>> tracks_;
+  std::map<sptr<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
 
-  QSharedPointer<Track> doAddTrack();
+  sptr<Track> doAddTrack();
   void doRemoveTrackAt(int index);
   void doSetCurrentTime(int64_t value);
   void doSetDuration(int64_t value);
 
-  void handleDidAddClip(QSharedPointer<Track> track, QSharedPointer<Clip> clip);
+  void handleDidAddClip(sptr<Track> track, sptr<Clip> clip);
 
   void doInvalidate();
 
 public:
   Sequence(sptr<IUndoStack> undo_stack, int base_time, int sample_rate);
 
-  QSharedPointer<Track> addTrack();
+  sptr<Track> addTrack();
   void removeTrackAt(int index);
-  QSharedPointer<Track> getTrackAt(int index);
+  sptr<Track> getTrackAt(int index);
 
   void setTimeBase(Rational time_base);
   void setCurrentTime(int64_t value);
   void setDuration(int64_t value);
 
-  int64_t getClipBTimecodeOffset(QSharedPointer<Clip> clip) const;
+  int64_t getClipBTimecodeOffset(sptr<Clip> clip) const;
 
-  QSharedPointer<video_renderer::CommandBuffer> renderVideo(int64_t timecode);
-  QSharedPointer<audio_renderer::CommandBuffer> renderAudio(int64_t start_frame, int64_t end_frame);
+  sptr<video_renderer::CommandBuffer> renderVideo(int64_t timecode);
+  sptr<audio_renderer::CommandBuffer> renderAudio(int64_t start_frame, int64_t end_frame);
 
   void invalidate();
 
@@ -80,12 +80,12 @@ public:
   int64_t duration_in_seconds() const;
   int width() const;
   int height() const;
-  const std::vector<QSharedPointer<Track>>& tracks();
+  const std::vector<sptr<Track>>& tracks();
   int track_size() const;
   sptr<IUndoStack> undo_stack();
 
-  sig2_t<void (QSharedPointer<Track> track, int /*index*/)> onDidAddTrack;
-  sig2_t<void (QSharedPointer<Track>, int /*index*/)> onWillRemoveTrack;
+  sig2_t<void (sptr<Track> track, int /*index*/)> onDidAddTrack;
+  sig2_t<void (sptr<Track>, int /*index*/)> onWillRemoveTrack;
   sig2_t<void (int64_t /*old_current_time*/)> onDidChangeCurrentTime;
   sig2_t<void (int64_t /*old_duration*/)> onDidChangeDuration;
   sig2_t<void ()> onInvalidate;

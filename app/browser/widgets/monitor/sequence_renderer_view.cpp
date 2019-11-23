@@ -9,7 +9,7 @@ namespace nlive {
 namespace monitor_widget {
 
 SequenceRendererView::SequenceRendererView(QWidget* widget, timeline_widget::SequenceView* timeline_widget_sequence_view,
-  QSharedPointer<PlayService> play_service) :
+  sptr<PlayService> play_service) :
   QOpenGLWidget(widget), play_service_(play_service),
   timeline_widget_sequence_view_(timeline_widget_sequence_view),
   sequence_(timeline_widget_sequence_view->sequence()), renderer_(nullptr) {

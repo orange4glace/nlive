@@ -3,7 +3,7 @@
 
 #include <map>
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QMetaObject>
 #include <QTimer>
 #include "base/common/sig.h"
@@ -29,13 +29,13 @@ public:
   };
 
 private:
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
   std::vector<GhostTrackView*> ghost_track_views_;
 
   SequenceScrollView* scroll_view_;
 
   std::map<int, int> magnet_times_;
-  std::map<QSharedPointer<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
+  std::map<sptr<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
 
   ManipulationState manipulation_state_;
 
@@ -72,15 +72,15 @@ private:
 
   void addGhostTrackView();
 
-  void addTrackListener(QSharedPointer<Track> track);
-  void removeTrackListener(QSharedPointer<Track> track);
+  void addTrackListener(sptr<Track> track);
+  void removeTrackListener(sptr<Track> track);
 
 protected:
   void paintEvent(QPaintEvent* event) override;
   void resizeEvent(QResizeEvent* event) override;
 
 public:
-  GhostSequenceView(QWidget* parent, SequenceScrollView* scroll_view, QSharedPointer<Sequence> sequence);
+  GhostSequenceView(QWidget* parent, SequenceScrollView* scroll_view, sptr<Sequence> sequence);
 
   int getClosestDeltaTime(int time) const;
   void addMagnetTime(int time);

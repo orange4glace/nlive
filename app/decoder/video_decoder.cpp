@@ -88,10 +88,10 @@ int VideoDecoder::doSeek(int64_t pts) {
   return 0;
 }
 
-QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
+sptr<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
     std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
   std::lock_guard<std::mutex> lock(mutex_);
-  QSharedPointer<VideoFrame> frame = nullptr;
+  sptr<VideoFrame> frame = nullptr;
   if (iframe || last_pts_ == AV_NOPTS_VALUE
    || last_pts_ >= pts
    || last_pts_ + 50000 < pts) {
@@ -111,7 +111,7 @@ QSharedPointer<VideoFrame> VideoDecoder::doDecode(int64_t pts, bool iframe) {
       ret = avcodec_receive_frame(dec_ctx_, frame_);
       if (ret >= 0) {
         if (iframe || pts <= frame_->pts) {
-          frame = QSharedPointer<VideoFrame>(new VideoFrame(frame_, width_, height_, pix_fmt_));
+          frame = sptr<VideoFrame>(new VideoFrame(frame_, width_, height_, pix_fmt_));
           last_pts_ = pts;
     // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
     // qDebug() << "d dt = " <<  sec.count();  
@@ -140,7 +140,7 @@ void VideoDecoder::close() {
   }
 }
 
-QSharedPointer<VideoFrame> VideoDecoder::decode(int64_t timestamp, bool iframe) {
+sptr<VideoFrame> VideoDecoder::decode(int64_t timestamp, bool iframe) {
   return doDecode(timestamp, iframe);
 }
 

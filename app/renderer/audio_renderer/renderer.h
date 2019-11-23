@@ -4,7 +4,7 @@
 extern "C" {
   #include <libswresample/swresample.h>
 }
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QThread>
 #include <queue>
 #include <mutex>
@@ -38,14 +38,14 @@ private:
   int sample_rate_;
   int samples_per_channel_;
   sptr<RenderState> render_state_;
-  QSharedPointer<RenderContext> render_context_;
+  sptr<RenderContext> render_context_;
   sptr<RenderIO> render_io_;
   std::mutex state_mutex_;
   std::condition_variable state_cv_;
 
   int writing_index_;
-  QSharedPointer<CommandBuffer> requested_command_buffer_;
-  QSharedPointer<CommandBuffer> requested_burst_command_buffer_;
+  sptr<CommandBuffer> requested_command_buffer_;
+  sptr<CommandBuffer> requested_burst_command_buffer_;
 
 protected:
   void run() override;
@@ -59,12 +59,12 @@ public:
   void reset();
   // void restart();
   void close();
-  void sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index);
-  void sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer);
+  void sendRenderCommandBuffer(sptr<CommandBuffer> command_buffer, int index);
+  void sendBurstRenderCommandBuffer(sptr<CommandBuffer> command_buffer);
 
   int64_t calculateFrameByIndex(int index) const;
 
-  inline QSharedPointer<RenderContext> render_context() { return render_context_; }
+  inline sptr<RenderContext> render_context() { return render_context_; }
 
   inline int sample_rate() const { return sample_rate_; }
 

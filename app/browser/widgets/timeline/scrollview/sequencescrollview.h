@@ -17,16 +17,16 @@ class SequenceScrollView : public Div {
 private:
   class Indicator : public QWidget {
     private:
-      QSharedPointer<IThemeService> theme_service_;
+      sptr<IThemeService> theme_service_;
     protected:
       void paintEvent(QPaintEvent* event) override;
     public:
-      Indicator(QWidget* parent, QSharedPointer<IThemeService> theme_service);
+      Indicator(QWidget* parent, sptr<IThemeService> theme_service);
   };
 
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
-  QSharedPointer<Sequence> sequence_;
+  sptr<Sequence> sequence_;
 
   QWidget* content_widget_;
   SequenceScrollViewScrollbar scrollbar_;
@@ -54,8 +54,8 @@ public:
   SequenceScrollView(
     QWidget* const parent,
     QWidget* content_widget,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<IThemeService> theme_service);
+    sptr<Sequence> sequence,
+    sptr<IThemeService> theme_service);
 
   void setContentWidget(QWidget* widget);
 

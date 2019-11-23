@@ -13,13 +13,13 @@ namespace effect_control {
 
 Vector2PropertyView::Vector2PropertyView(
   QWidget* parent,
-  QSharedPointer<EffectControlLayout> layout_params,
-  QSharedPointer<Sequence> sequence,
-  QSharedPointer<Clip> clip,
-  QSharedPointer<effect::Property<effect::value::Vector2>> property,
+  sptr<EffectControlLayout> layout_params,
+  sptr<Sequence> sequence,
+  sptr<Clip> clip,
+  sptr<effect::Property<effect::value::Vector2>> property,
   QString label,
   SequenceScrollView* sequence_scroll_view,
-  QSharedPointer<IThemeService> theme_service) :
+  sptr<IThemeService> theme_service) :
   PropertyView<effect::value::Vector2>(
     parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();

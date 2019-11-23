@@ -6,14 +6,14 @@ namespace nlive {
 
 ResourceStorageItem::ResourceStorageItem(
   std::string type,
-  QSharedPointer<StorageItem> parent,
-  QSharedPointer<Resource> resource) :
+  sptr<StorageItem> parent,
+  sptr<Resource> resource) :
   StorageItem(parent->project(), type, resource->name(), parent),
   resource_(resource) {
 
 }
 
-QSharedPointer<Resource> ResourceStorageItem::resource() {
+sptr<Resource> ResourceStorageItem::resource() {
   return resource_;
 }
 

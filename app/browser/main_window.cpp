@@ -35,7 +35,7 @@
 #include <QDialog>
 #include <QTimer>
 #include <QThread>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QFuture>
@@ -44,7 +44,7 @@
 
 namespace nlive {
 
-MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
+MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   QMainWindow(), widgets_service_(widgets_service) {
 
   qDebug() << "Main thread = " << thread() << "\n";
@@ -53,21 +53,21 @@ MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
 
   registerLoggers();
 
-  service_locator_ = QSharedPointer<ServiceLocator>(
+  service_locator_ = sptr<ServiceLocator>(
     new ServiceLocator());
 
   ThemeService::Initialize();
   TimelineWidgetService::Initialize();
-  auto task_service = new QSharedPointer<ITaskService>(new TaskService());
+  auto task_service = new sptr<ITaskService>(new TaskService());
   auto theme_service = ThemeService::instance();
   auto timeline_widget_service = TimelineWidgetService::instance();
   auto resource_service = new ResourceService(*task_service);
   auto import_service = new ImportService(resource_service);
-  auto memento_service = new QSharedPointer<IMementoService>(new InMemoryMementoService());
-  auto play_service = new QSharedPointer<PlayService>(new PlayService(this));
+  auto memento_service = new sptr<IMementoService>(new InMemoryMementoService());
+  auto play_service = new sptr<PlayService>(new PlayService(this));
 
-  auto s_resource_service = new QSharedPointer<ResourceService>(resource_service);
-  auto s_import_service = new QSharedPointer<ImportService>(import_service);
+  auto s_resource_service = new sptr<ResourceService>(resource_service);
+  auto s_import_service = new sptr<ImportService>(import_service);
 
   service_locator_->registerService(theme_service);
   service_locator_->registerService(widgets_service);
@@ -83,12 +83,12 @@ MainWindow::MainWindow(QSharedPointer<IWidgetsService> widgets_service) :
   t->show();
 
   // Create Sequence mock data
-  auto sproject = new QSharedPointer<Project>(new Project());
+  auto sproject = new sptr<Project>(new Project());
   auto project = *sproject;
 
   auto root_storage = project->root_storage_directory();
-  auto sequence = QSharedPointer<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
-  auto sequence_storage_item = QSharedPointer<SequenceStorageItem>(
+  auto sequence = sptr<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
+  auto sequence_storage_item = sptr<SequenceStorageItem>(
     new SequenceStorageItem(root_storage, sequence));
   root_storage->addItem(sequence_storage_item);
 

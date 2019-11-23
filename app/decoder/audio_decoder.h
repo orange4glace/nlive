@@ -1,7 +1,7 @@
 #ifndef NLIVE_AUDIO_DECODER_H_
 #define NLIVE_AUDIO_DECODER_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QFile>
 #include <string>
 #include "model/resource/raw_audio_resource.h"
@@ -12,16 +12,16 @@ namespace nlive {
 class AudioDecoder {
 
 private:
-  QSharedPointer<RawAudioResource> resource_;
+  sptr<RawAudioResource> resource_;
   QFile file_;
-  QSharedPointer<AudioFrame> frame_;
+  sptr<AudioFrame> frame_;
 
 public:
-  AudioDecoder(QSharedPointer<RawAudioResource> resource);
+  AudioDecoder(sptr<RawAudioResource> resource);
 
-  QSharedPointer<AudioFrame> decode(int64_t start_frame, int64_t end_frame);
+  sptr<AudioFrame> decode(int64_t start_frame, int64_t end_frame);
 
-  inline QSharedPointer<RawAudioResource> resource() { return resource_; }
+  inline sptr<RawAudioResource> resource() { return resource_; }
 
 };
 

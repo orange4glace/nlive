@@ -2,7 +2,7 @@
 #define NLIVE_EFFECT_CONTROL_VECTOR2_PROPERTY_VIEW_H_
 
 #include <QWidget>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "model/effect/property.h"
 #include "model/effect/value/vector2.h"
 #include "browser/widgets/effect_control/property/property_view.h"
@@ -29,13 +29,13 @@ protected:
 public:
   Vector2PropertyView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
-    QSharedPointer<effect::Property<effect::value::Vector2>> property,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Property<effect::value::Vector2>> property,
     QString label,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service);
+    sptr<IThemeService> theme_service);
 
   inline NumberInputBox* x_input_box() { return x_input_box_; }
   inline NumberInputBox* y_input_box() { return y_input_box_; }

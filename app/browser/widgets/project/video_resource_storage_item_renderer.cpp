@@ -8,10 +8,10 @@ namespace nlive {
 namespace project_widget {
 
 VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
-  QWidget* parent, QSharedPointer<VideoResourceStorageItem> item) :
+  QWidget* parent, sptr<VideoResourceStorageItem> item) :
   Div(parent) {
-  QSharedPointer<VideoResourceStorageItem> vrsi = item.staticCast<VideoResourceStorageItem>();
-  QSharedPointer<VideoResource> vs = vrsi->video_resource();
+  sptr<VideoResourceStorageItem> vrsi = std::static_pointer_cast<VideoResourceStorageItem>(item);
+  sptr<VideoResource> vs = vrsi->video_resource();
   VideoDecoder dec(item->video_resource()->path());
   auto frame = dec.decode(0, true);
   uint8_t* rgb = new uint8_t[vs->width() * vs->height() * 3];
@@ -30,14 +30,14 @@ void VideoResourceStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
 }
 
 VideoResourceStorageItemRenderer::VideoResourceStorageItemRenderer(
-    QSharedPointer<VideoResourceStorageItem> item,
+    sptr<VideoResourceStorageItem> item,
     QOpenGLContext* target_gl) : item_(item), target_gl_(target_gl) {
   
 }
 
 void VideoResourceStorageItemRenderer::open() {
   auto resource = item_->video_resource();
-  renderer_ = QSharedPointer<video_renderer::Renderer>(
+  renderer_ = sptr<video_renderer::Renderer>(
     new video_renderer::Renderer(target_gl_, resource->width(), resource->height()));
 }
 

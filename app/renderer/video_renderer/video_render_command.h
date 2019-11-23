@@ -1,7 +1,7 @@
 // #ifndef NLIVE_VIDEO_RENDER_COMMAND_H_
 // #define NLIVE_VIDEO_RENDER_COMMAND_H_
 
-// #include <QSharedPointer>
+// #include "base/common/memory.h"
 // #include <QOpenGLFunctions>
 // #include <stdint.h>
 
@@ -16,8 +16,8 @@
 // class VideoRenderCommand : public RenderCommand {
 
 // private:
-//   QSharedPointer<VideoResource> resource_;
-//   QSharedPointer<VideoDecoder> decoder_;
+//   sptr<VideoResource> resource_;
+//   sptr<VideoDecoder> decoder_;
 //   int64_t timestamp_;
 
 //   uint8_t* buffer_;
@@ -82,8 +82,8 @@
 
 // public:
 //   inline VideoRenderCommand(
-//     QSharedPointer<VideoResource> resource,
-//     QSharedPointer<VideoDecoder> decoder,
+//     sptr<VideoResource> resource,
+//     sptr<VideoDecoder> decoder,
 //     int64_t timestamp) :
 //     resource_(resource), decoder_(decoder), timestamp_(timestamp),
 //     buffer_(nullptr), is_external_buffer_(false), initialized_(false) {
@@ -93,10 +93,10 @@
 //     if (buffer_ && !is_external_buffer_) delete buffer_;
 //   }
 
-//   inline void render(QSharedPointer<RendererContext> ctx) {
+//   inline void render(sptr<RendererContext> ctx) {
 //     QOpenGLContext* gl = ctx->gl();
 //     decoder_->open();
-//     QSharedPointer<VideoFrame> video_frame = decoder_->decode(timestamp_);
+//     sptr<VideoFrame> video_frame = decoder_->decode(timestamp_);
 //     qDebug() << "FRAME = " << video_frame << "\n";
 //     // TODO: If video_frame == NULL
 //     if (!video_frame) return;

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <vector>
 #include <map>
 #include "base/common/sig.h"
@@ -31,17 +31,17 @@ class ClipView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
-  QSharedPointer<IThemeService> theme_service_;
-  QSharedPointer<IMementoService> memento_service_;
-  QSharedPointer<EffectControlLayout> layout_params_;
-  QSharedPointer<Sequence> sequence_;
-  QSharedPointer<Clip> clip_;
+  sptr<IThemeService> theme_service_;
+  sptr<IMementoService> memento_service_;
+  sptr<EffectControlLayout> layout_params_;
+  sptr<Sequence> sequence_;
+  sptr<Clip> clip_;
   SequenceScrollView* sequence_scroll_view_;
 
-  std::vector<std::pair<QSharedPointer<effect::Effect>, EffectView*>> effect_views_;
-  std::map<QSharedPointer<effect::Effect>, EffectView*> effect_view_map_;
+  std::vector<std::pair<sptr<effect::Effect>, EffectView*>> effect_views_;
+  std::map<sptr<effect::Effect>, EffectView*> effect_view_map_;
 
-  void addEffectView(QSharedPointer<effect::Effect> effect, int index);
+  void addEffectView(sptr<effect::Effect> effect, int index);
 
   void doLayout();
 
@@ -51,12 +51,12 @@ protected:
 public:
   ClipView(
     QWidget* parent,
-    QSharedPointer<EffectControlLayout> layout,
-    QSharedPointer<Sequence> sequence,
-    QSharedPointer<Clip> clip,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
     SequenceScrollView* sequence_scroll_view,
-    QSharedPointer<IThemeService> theme_service,
-    QSharedPointer<IMementoService> memento_service);
+    sptr<IThemeService> theme_service,
+    sptr<IMementoService> memento_service);
 
   QSize sizeHint() const;
 

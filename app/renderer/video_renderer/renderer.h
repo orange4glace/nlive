@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include <QThread>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLContext>
 #include <QMutex>
 #include <QMutexLocker>
@@ -20,7 +20,7 @@ namespace nlive {
 namespace video_renderer {
 
 // struct RenderTexture {
-//   QSharedPointer<QMutexLocker> lock;
+//   sptr<QMutexLocker> lock;
 //   GLuint buffer;
 //   GLuint texture;
 
@@ -35,13 +35,13 @@ private:
   int height_;
 
   QOpenGLContext* target_gl_;
-  // QSharedPointer<QOpenGLContext> gl_;
+  // sptr<QOpenGLContext> gl_;
   QOpenGLContext* gl_;
   QOffscreenSurface* surface_;
-  QSharedPointer<RenderSharingContext> sharing_ctx_;
-  QSharedPointer<RendererContext> renderer_ctx_;
+  sptr<RenderSharingContext> sharing_ctx_;
+  sptr<RendererContext> renderer_ctx_;
 
-  QSharedPointer<CommandBuffer> current_command_buffer_;
+  sptr<CommandBuffer> current_command_buffer_;
 
   QMutex command_buffer_mutex_;
   QWaitCondition command_buffer_wait_;
@@ -71,11 +71,11 @@ public:
   ~Renderer();
 
 
-  void render(QSharedPointer<CommandBuffer> command_buffer);
+  void render(sptr<CommandBuffer> command_buffer);
   // std::unique_ptr<RenderTexture> getRenderData();
   void close();
 
-  inline QSharedPointer<RendererContext> context() {
+  inline sptr<RendererContext> context() {
     return renderer_ctx_;
   }
 

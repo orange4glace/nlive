@@ -16,24 +16,24 @@ namespace timeline_widget {
 
 TrackTimelineView::TrackTimelineView(
   QWidget* const parent,
-  QSharedPointer<Track> const track,
+  sptr<Track> const track,
   SequenceScrollView* const scrollView,
-  QSharedPointer<IThemeService> const theme_service) : 
+  sptr<IThemeService> const theme_service) : 
   QWidget(parent), track_(track), scrollView_(scrollView), theme_service_(theme_service) {
 
   auto& clips = track->clips();
   for (auto& clip : clips) handleDidAddClip(clip);
-  track->onDidAddClip.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+  track->onDidAddClip.connect(SIG2_TRACK(sig2_t<void (sptr<Clip>)>::slot_type(
     boost::bind(&TrackTimelineView::handleDidAddClip, this, _1))));
-  track->onWillRemoveClip.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Clip>)>::slot_type(
+  track->onWillRemoveClip.connect(SIG2_TRACK(sig2_t<void (sptr<Clip>)>::slot_type(
     boost::bind(&TrackTimelineView::handleWillRemoveClip, this, _1))));
-  track->onDidChangeClipTime.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Clip>, int, int, int)>::slot_type(
-    [this](QSharedPointer<Clip>, int, int, int) {
+  track->onDidChangeClipTime.connect(SIG2_TRACK(sig2_t<void (sptr<Clip>, int, int, int)>::slot_type(
+    [this](sptr<Clip>, int, int, int) {
       updateClipViews();
   })));
 }
 
-void TrackTimelineView::handleDidAddClip(QSharedPointer<Clip> clip) {
+void TrackTimelineView::handleDidAddClip(sptr<Clip> clip) {
   // Create and add Clip view
   auto view = new ClipView(this, track_, clip, scrollView_, theme_service_);
   QObject::connect(view, &ClipView::onDidFocus, this, [this, view]() {
@@ -50,7 +50,7 @@ void TrackTimelineView::handleDidAddClip(QSharedPointer<Clip> clip) {
   updateClipViews();
 }
 
-void TrackTimelineView::handleWillRemoveClip(QSharedPointer<Clip> clip) {
+void TrackTimelineView::handleWillRemoveClip(sptr<Clip> clip) {
   // Delete Track view
   auto it = clip_to_view_map_.find(clip);
   Q_ASSERT(it != clip_to_view_map_.end());
@@ -107,7 +107,7 @@ void TrackTimelineView::updateClipViews() {
   }
 }
 
-ClipView* const TrackTimelineView::getClipView(QSharedPointer<Clip> clip) {
+ClipView* const TrackTimelineView::getClipView(sptr<Clip> clip) {
   Q_ASSERT(clip_to_view_map_.count(clip));
   return clip_to_view_map_[clip];
 }

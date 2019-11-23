@@ -4,7 +4,7 @@
 #include <vector>
 #include <QObject>
 #include <QDebug>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 
 #include "base/common/sig.h"
 #include "platform/undo/undo_stack.h"
@@ -37,35 +37,35 @@ protected:
   int64_t end_time_;
   int64_t b_time_;
 
-  std::vector<QSharedPointer<effect::Effect>> effects_;
-  std::map<QSharedPointer<effect::Effect>, sig2_conn_t> effect_conn_;
+  std::vector<sptr<effect::Effect>> effects_;
+  std::map<sptr<effect::Effect>, sig2_conn_t> effect_conn_;
   // Every clip has EXACTLY 1 TransformEffect
-  QSharedPointer<effect::TransformEffect> transform_effect_;
+  sptr<effect::TransformEffect> transform_effect_;
 
 public:
   Clip(sptr<IUndoStack> undo_stack, Rational time_base, int sample_rate, int64_t start_time, int64_t end_time, int64_t b_time);
   Clip(const Clip&);
 
   void setTime(int64_t start_time, int64_t end_time, int64_t b_time);
-  void addEffect(QSharedPointer<effect::Effect> effect);
+  void addEffect(sptr<effect::Effect> effect);
 
-  virtual void render(QSharedPointer<video_renderer::CommandBuffer> command_buffer, int64_t time);
-  virtual void renderAudio(QSharedPointer<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame);
+  virtual void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t time);
+  virtual void renderAudio(sptr<audio_renderer::CommandBuffer> command_buffer, int64_t start_frame, int64_t end_frame);
 
-  QSharedPointer<effect::TransformEffect> transform();
+  sptr<effect::TransformEffect> transform();
 
   inline int sample_rate() const { return sample_rate_; }
   int64_t start_time() const;
   int64_t end_time() const;
   int64_t b_time() const;
 
-  const std::vector<QSharedPointer<effect::Effect>>& effects();
+  const std::vector<sptr<effect::Effect>>& effects();
 
   int id() const;
 
   sptr<IUndoStack> undo_stack();
 
-  virtual QSharedPointer<Clip> clone() const;
+  virtual sptr<Clip> clone() const;
 
   bool operator<(const Clip& rhs) const;
 
@@ -74,7 +74,7 @@ public:
   sig2_t<void (void)> onDidUpdate;
 
 signals:
-  void onDidAddEffect(QSharedPointer<effect::Effect> effect);
+  void onDidAddEffect(sptr<effect::Effect> effect);
 
 
 };
@@ -85,41 +85,41 @@ QDebug operator<<(QDebug dbg, const Clip &type);
 
 struct ClipStartCompare {
   using is_transparent = void;
-  inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const sptr<Clip>& a, const sptr<Clip>& b) const
   { int lhs = a->start_time(); int rhs = b->start_time();
     if (lhs == rhs) return a.get() < b.get();
     return lhs < rhs; }
-  inline bool operator() (const QSharedPointer<Clip>& a, const Clip* b) const
+  inline bool operator() (const sptr<Clip>& a, const Clip* b) const
   { int lhs = a->start_time(); int rhs = b->start_time();
     if (lhs == rhs) return a.get() < b;
     return lhs < rhs; }
-  inline bool operator() (const Clip* a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const Clip* a, const sptr<Clip>& b) const
   { int lhs = a->start_time(); int rhs = b->start_time();
     if (lhs == rhs) return a < b.get();
     return lhs < rhs; }
 };
 struct ClipEndCompare {
   using is_transparent = void;
-  inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const sptr<Clip>& a, const sptr<Clip>& b) const
   { int lhs = a->end_time(); int rhs = b->end_time();
     if (lhs == rhs) return a.get() < b.get();
     return lhs < rhs; }
-  inline bool operator() (const QSharedPointer<Clip>& a, const Clip* b) const
+  inline bool operator() (const sptr<Clip>& a, const Clip* b) const
   { int lhs = a->end_time(); int rhs = b->end_time();
     if (lhs == rhs) return a.get() < b;
     return lhs < rhs; }
-  inline bool operator() (const Clip* a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const Clip* a, const sptr<Clip>& b) const
   { int lhs = a->end_time(); int rhs = b->end_time();
     if (lhs == rhs) return a < b.get();
     return lhs < rhs; }
 };
 struct ClipCompare {
   using is_transparent = void;
-  inline bool operator() (const QSharedPointer<Clip>& a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const sptr<Clip>& a, const sptr<Clip>& b) const
   { return a.get() < b.get(); }
-  inline bool operator() (const QSharedPointer<Clip>& a, const Clip* b) const
+  inline bool operator() (const sptr<Clip>& a, const Clip* b) const
   { return a.get() < b; }
-  inline bool operator() (const Clip* a, const QSharedPointer<Clip>& b) const
+  inline bool operator() (const Clip* a, const sptr<Clip>& b) const
   { return a < b.get(); }
 };
 

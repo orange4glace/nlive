@@ -1,7 +1,7 @@
 #ifndef NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
 #define NLIVE_VIDEO_CLIP_RENDER_COMMAND_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include <QOpenGLFunctions>
 #include <iostream>
 #include <stdint.h>
@@ -19,7 +19,7 @@ namespace video_renderer {
 
 namespace {
 struct Sharing {
-  QSharedPointer<VideoDecoderRef> decoder_ref;
+  sptr<VideoDecoderRef> decoder_ref;
 };
 }
 
@@ -27,23 +27,23 @@ class VideoClipPreRenderCommand : public RenderCommand {
 
 private:
   int clip_id_;
-  QSharedPointer<VideoResource> resource_;
+  sptr<VideoResource> resource_;
   int64_t timestamp_;
   bool iframe_;
 
 public:
-  QSharedPointer<Sharing> sharing;
+  sptr<Sharing> sharing;
 
   inline VideoClipPreRenderCommand(
     int clip_id,
-    QSharedPointer<VideoResource> resource,
+    sptr<VideoResource> resource,
     int64_t timestamp,
     bool iframe = false) :
     clip_id_(clip_id), resource_(resource), timestamp_(timestamp), iframe_(iframe) {
-    sharing = QSharedPointer<Sharing>(new Sharing());
+    sharing = sptr<Sharing>(new Sharing());
   }
 
-  inline void render(QSharedPointer<RendererContext> ctx) {
+  inline void render(sptr<RendererContext> ctx) {
 // std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
     int width = resource_->width();
     int height = resource_->height();
@@ -51,7 +51,7 @@ public:
     auto rtt = ctx->createTemporaryRenderTexture("clip_temp", width, height);
     auto decoder_ref = ctx->decoder_manager()->acquireDecoder(resource_, clip_id_);
     sharing->decoder_ref = decoder_ref;
-    QSharedPointer<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_, iframe_);
+    sptr<VideoFrame> video_frame = decoder_ref->decoder()->decode(timestamp_, iframe_);
     if (!video_frame) return;
 // std::chrono::duration<double> sec = std::chrono::system_clock::now() - start;
 // qDebug() << "Decode = " <<  sec.count();
@@ -82,19 +82,19 @@ public:
 class VideoClipPostRenderCommand : public RenderCommand {
 
 private:
-  QSharedPointer<VideoResource> resource_;
+  sptr<VideoResource> resource_;
   int64_t timestamp_;
 
 public:
-  QSharedPointer<Sharing> sharing;
+  sptr<Sharing> sharing;
 
   inline VideoClipPostRenderCommand(
-    QSharedPointer<Sharing> sharing,
-    QSharedPointer<VideoResource> resource) :
+    sptr<Sharing> sharing,
+    sptr<VideoResource> resource) :
     sharing(sharing), resource_(resource) {
   }
 
-  inline void render(QSharedPointer<RendererContext> ctx) {
+  inline void render(sptr<RendererContext> ctx) {
     ctx->decoder_manager()->releaseDecoder(sharing->decoder_ref);
     ctx->releaseTemporaryRenderTexture("clip");
     ctx->releaseTemporaryRenderTexture("clip_temp");

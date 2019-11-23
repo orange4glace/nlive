@@ -17,13 +17,13 @@ private:
   IResourceService* resource_service_;
   QList<QFileInfo> current_urls_;
 
-  QSharedPointer<StorageItem> doImportVideoContainer(QFileInfo& url, QSharedPointer<StorageDirectory> directory);
-  QSharedPointer<StorageItem> doImportAudio(QFileInfo& url, QSharedPointer<StorageDirectory> directory);
+  sptr<StorageItem> doImportVideoContainer(QFileInfo& url, sptr<StorageDirectory> directory);
+  sptr<StorageItem> doImportAudio(QFileInfo& url, sptr<StorageDirectory> directory);
 
 public:
   ImportService(IResourceService* resource_service);
 
-  void import(QList<QFileInfo> urls, QSharedPointer<StorageDirectory> directory) override;
+  void import(QList<QFileInfo> urls, sptr<StorageDirectory> directory) override;
 
   inline std::string service_id() const override { return "service.ImportService"; }
 

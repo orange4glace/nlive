@@ -1,7 +1,7 @@
 #ifndef NLIVE_ITHEME_SERVICE_IMPL_H_
 #define NLIVE_ITHEME_SERVICE_IMPL_H_
 
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "platform/theme/themeservice.h"
 
 namespace nlive {
@@ -9,7 +9,7 @@ namespace nlive {
 class ThemeService : public IThemeService {
 
 private:
-  static QSharedPointer<ThemeService> instance_;
+  static sptr<ThemeService> instance_;
 
   Theme theme_;
 
@@ -18,7 +18,7 @@ protected:
 
 public:
   static void Initialize();
-  inline static QSharedPointer<ThemeService> const instance() {
+  inline static sptr<ThemeService> const instance() {
     return ThemeService::instance_;
   }
 

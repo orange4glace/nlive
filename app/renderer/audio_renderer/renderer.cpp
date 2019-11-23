@@ -15,7 +15,7 @@ Renderer::Renderer(int64_t ch_layout, AVSampleFormat sample_fmt, int sample_rate
     nb_channels, bytes_per_sample, sample_rate, samples_per_channel,
     kernels_per_slot, slot_length);
   render_io_ = std::make_shared<RenderIO>(nullptr, render_state_);
-  render_context_ = QSharedPointer<RenderContext>(
+  render_context_ = sptr<RenderContext>(
     new RenderContext(ch_layout, sample_fmt, sample_rate,
         samples_per_channel));
   requested_command_buffer_ = nullptr;
@@ -52,7 +52,7 @@ void Renderer::run() {
     int next_producer_index;
     if (requested_burst_command_buffer_ != nullptr) {
       writing_index = consumer_index;
-      QSharedPointer<CommandBuffer> rcb = requested_burst_command_buffer_;
+      sptr<CommandBuffer> rcb = requested_burst_command_buffer_;
       requested_burst_command_buffer_ = nullptr;
       state_lock.unlock();
       for (auto command : rcb->commands()) {
@@ -80,7 +80,7 @@ void Renderer::run() {
       }
       // Is this check statement redundant?
       assert(state_ == State::DATA_AVAILABLE);
-      QSharedPointer<CommandBuffer> rcb;
+      sptr<CommandBuffer> rcb;
       if (requested_burst_command_buffer_) continue;
       else rcb = requested_command_buffer_;
       state_lock.unlock();
@@ -132,14 +132,14 @@ void Renderer::close() {
   render_io_->exit();
 }
 
-void Renderer::sendBurstRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer) {
+void Renderer::sendBurstRenderCommandBuffer(sptr<CommandBuffer> command_buffer) {
   std::unique_lock<std::mutex> state_lock(state_mutex_);
   requested_burst_command_buffer_ = command_buffer;
   state_ = State::DATA_AVAILABLE;
   state_cv_.notify_one();
 }
 
-void Renderer::sendRenderCommandBuffer(QSharedPointer<CommandBuffer> command_buffer, int index) {
+void Renderer::sendRenderCommandBuffer(sptr<CommandBuffer> command_buffer, int index) {
   std::unique_lock<std::mutex> state_lock(state_mutex_);
   if (writing_index_ != index) return;
   requested_command_buffer_ = command_buffer;

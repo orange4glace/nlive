@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QCursor>
 #include <QEvent>
-#include <QSharedPointer>
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 
 namespace nlive {
@@ -33,8 +33,8 @@ class ClipView : public QWidget, public Sig {
   Q_OBJECT
 
 private:
-  QSharedPointer<Track> track_;
-  QSharedPointer<Clip> clip_;
+  sptr<Track> track_;
+  sptr<Clip> clip_;
   SequenceScrollView* scrollView_;
 
   QCursor left_cursor_;
@@ -51,7 +51,7 @@ private:
 
   bool focused_;
 
-  QSharedPointer<IThemeService> theme_service_;
+  sptr<IThemeService> theme_service_;
 
   void initializeHandles();
 
@@ -62,10 +62,10 @@ protected:
 public:
   ClipView(
     QWidget* const parent,
-    QSharedPointer<Track> track,
-    QSharedPointer<Clip> clip,
+    sptr<Track> track,
+    sptr<Clip> clip,
     SequenceScrollView* const scrollView,
-    QSharedPointer<IThemeService> const themeService);
+    sptr<IThemeService> const themeService);
 
   ClipViewHandle testHandle(QPoint&& point) const;
 
@@ -80,7 +80,7 @@ public:
   void blur();
   bool focused() const;
 
-  QSharedPointer<Clip> clip();
+  sptr<Clip> clip();
 
 signals:
   void onDidFocus();

@@ -7,7 +7,7 @@ namespace nlive {
 
 namespace timeline_widget {
 
-TrackView::TrackView(QSharedPointer<Track> track, SequenceScrollView* scroll_view, QSharedPointer<IThemeService> theme_service) :
+TrackView::TrackView(sptr<Track> track, SequenceScrollView* scroll_view, sptr<IThemeService> theme_service) :
   side_view_(nullptr, track, theme_service),
   timeline_view_(nullptr, track, scroll_view, theme_service) {
 
