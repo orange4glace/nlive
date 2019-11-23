@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QEnableSharedFromThis>
+#include <boost/serialization/serialization.hpp>
 #include "platform/undo/undo_stack.h"
 #include "model/storage/storage_directory.h"
 
@@ -14,6 +15,12 @@ class Sequence;
 class Project : public QEnableSharedFromThis<Project> {
 
 private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+
+  }
+
   QSharedPointer<StorageDirectory> root_storage_directory_;
   sptr<IUndoStack> undo_stack_;
 

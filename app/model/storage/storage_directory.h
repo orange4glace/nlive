@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <vector>
+#include <boost/serialization/base_object.hpp>
 #include "model/storage/storage_item.h"
 
 namespace nlive {
@@ -13,6 +14,12 @@ private:
   std::vector<QSharedPointer<StorageItem>> items_;
 
 public:
+  // friend class boost::serialization::access;
+  // template <class Archive>
+  // void serialize(Archive& ar, const unsigned int version) {
+  //   ar << boost::serialization::base_object<StorageItem>(*this);
+  // }
+
   StorageDirectory(
     QSharedPointer<Project> project,
     QString name,

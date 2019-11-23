@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
+#include <boost/serialization/serialization.hpp>
 #include "base/common/sig.h"
 #include "model/sequence/sequence.h"
 #include "model/common/rational.h"
@@ -17,6 +18,12 @@ class Clip;
 class StorageItem : public Sig {
 
 private:
+  // friend class boost::serialization::access;
+  // template <class Archive>
+  // void serialize(Archive& ar, const unsigned int version) {
+  //   ar << uuid_ << type_ << name_.toStdString();
+  // }
+
   std::string uuid_;
   std::string type_;
   QString name_;
