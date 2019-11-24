@@ -11,6 +11,13 @@ namespace nlive {
 class ResourceStorageItem : public StorageItem {
 
 private:
+  ResourceStorageItem() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<StorageItem>(*this);
+  }
+
   sptr<Resource> resource_;
 
 public:

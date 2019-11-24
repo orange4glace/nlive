@@ -2,9 +2,9 @@
 #define NLIVE_STORAGE_ITEM_H_
 
 #include <QObject>
-#include "base/common/memory.h"
 #include <QString>
-#include <boost/serialization/serialization.hpp>
+#include "base/common/serialize.h"
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "model/sequence/sequence.h"
 #include "model/common/rational.h"
@@ -18,34 +18,35 @@ class Clip;
 class StorageItem : public Sig {
 
 private:
-  // friend class boost::serialization::access;
-  // template <class Archive>
-  // void serialize(Archive& ar, const unsigned int version) {
-  //   ar << uuid_ << type_ << name_.toStdString();
-  // }
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & uuid_ & type_ & name_;
+  }
 
   std::string uuid_;
   std::string type_;
   QString name_;
 
   sptr<Project> project_;
-  StorageItem* parent_;
-
+  sptr<StorageItem> parent_;
+  
 protected:
+  StorageItem() = default;
+
+public:
   StorageItem(
     sptr<Project> project,
     std::string type, QString name,
-    sptr<StorageItem> parent = nullptr,
-    std::string uuid = std::string());
-  
-public:
-  void setParent(StorageItem* item);
+    sptr<StorageItem> parent = nullptr);
+
+  void setParent(sptr<StorageItem> item);
   QString getAbsoluteNamePath() const;
   std::string getAbsolutePath() const;
 
   virtual sptr<Clip> cliperize(sptr<Sequence> sequence) = 0;
 
-  StorageItem* parent();
+  inline sptr<StorageItem> parent() { return parent_; }
   inline sptr<Project> project() { return project_; }
 
   std::string const& uuid() const;

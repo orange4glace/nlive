@@ -5,6 +5,7 @@
 extern "C" {
 #include <libavutil/rational.h>
 }
+#include "base/common/serialize.h"
 
 namespace nlive {
 
@@ -24,10 +25,17 @@ enum Rounding {
 class Rational {
 
 private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & num_ & den_;
+  }
+
   int num_;
   int den_;
 
 public:
+  Rational();
   Rational(int num, int den);
   Rational(const Rational& from);
 
@@ -41,6 +49,10 @@ public:
   static int64_t rescale(int64_t a, int64_t b, int64_t c, Rounding rounding = Rounding::ROUND_NEAR_INF);
   static int64_t rescale(int64_t a, const Rational& b, Rounding rounding = Rounding::ROUND_NEAR_INF);
   static Rational fromAVRational(const AVRational& rational);
+
+  inline bool operator==(const Rational &rhs) {
+    return num_ == rhs.num_ && den_ == rhs.den_;
+  }
 
 };
 

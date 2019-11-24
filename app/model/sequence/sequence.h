@@ -4,11 +4,11 @@
 #include <QObject>
 #include <QString>
 #include <QMetaObject>
-#include "base/common/memory.h"
 #include <QTimer>
 #include <map>
 #include <vector>
-
+#include "base/common/serialize.h"
+#include "base/common/memory.h"
 #include "base/common/sig.h"
 #include "platform/undo/undo_stack.h"
 #include "model/common/rational.h"
@@ -27,6 +27,14 @@ class Sequence : public QObject {
   Q_OBJECT
 
 private:
+  Sequence() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & id_ & name_ & time_base_ & sample_rate_ & current_time_ & duration_
+       & width_ & height_ & tracks_;
+  }
+
   std::string id_;
   QString name_;
   sptr<IUndoStack> undo_stack_;

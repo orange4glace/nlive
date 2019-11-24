@@ -10,6 +10,14 @@ namespace nlive {
 class AudioClip : public Clip {
 
 private:
+  AudioClip() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<Clip>(*this);
+    ar & resource_;
+  }
+
   sptr<AudioResource> resource_;
 
 public:

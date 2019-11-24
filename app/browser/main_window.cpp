@@ -89,7 +89,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   auto root_storage = project->root_storage_directory();
   auto sequence = sptr<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
   auto sequence_storage_item = sptr<SequenceStorageItem>(
-    new SequenceStorageItem(root_storage, sequence));
+    new SequenceStorageItem(root_storage, "sequence", sequence));
   root_storage->addItem(sequence_storage_item);
 
   sequence->setDuration(500);

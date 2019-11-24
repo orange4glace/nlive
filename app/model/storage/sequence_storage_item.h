@@ -9,6 +9,13 @@ namespace nlive {
 class SequenceStorageItem : public StorageItem {
 
 private:
+  SequenceStorageItem() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<StorageItem>(*this);
+  }
+  
   sptr<Sequence> sequence_;
 
 public:
@@ -16,6 +23,7 @@ public:
 
   SequenceStorageItem(
     sptr<StorageItem> parent,
+    QString name,
     sptr<Sequence> sequence);
 
   sptr<Clip> cliperize(sptr<Sequence> sequence) override;

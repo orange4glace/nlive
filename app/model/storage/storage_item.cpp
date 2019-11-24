@@ -10,12 +10,12 @@ StorageItem::StorageItem(
   sptr<Project> project,
   std::string type,
   QString name,
-  sptr<StorageItem> parent,
-  std::string uuid) :
-  project_(project), type_(type), name_(name), parent_(nullptr), uuid_(uuid) {
+  sptr<StorageItem> parent) :
+  project_(project), type_(type), name_(name), parent_(parent),
+  uuid_(UUID::instance()->generateUUID()) {
 }
 
-void StorageItem::setParent(StorageItem* item) {
+void StorageItem::setParent(sptr<StorageItem> item) {
   parent_ = item;
 }
 
@@ -27,10 +27,6 @@ QString StorageItem::getAbsoluteNamePath() const {
 std::string StorageItem::getAbsolutePath() const {
   if (parent_ == nullptr) return uuid_;
   return parent_->getAbsolutePath() + "/" + uuid_;
-}
-
-StorageItem* StorageItem::parent() {
-  return parent_;
 }
 
 std::string const& StorageItem::uuid() const {

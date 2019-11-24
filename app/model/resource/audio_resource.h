@@ -13,6 +13,14 @@ namespace nlive {
 class AudioResource : public Resource {
 
 private:  
+  AudioResource() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<Resource>(*this);
+    ar & sample_rate_ & duration_;
+  }
+
   Rational time_base_;
   int64_t sample_rate_;
   int64_t duration_;

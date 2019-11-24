@@ -15,6 +15,14 @@ class VideoResource : public Resource {
   Q_OBJECT
 
 private:
+  VideoResource() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<Resource>(*this);
+    ar & duration_ & width_ & height_;
+  }
+
   Rational time_base_;
   Rational frame_rate_;
   int64_t duration_;

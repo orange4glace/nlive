@@ -6,6 +6,11 @@ extern "C" {
 
 namespace nlive {
 
+Rational::Rational() :
+  num_(0), den_(0) {
+
+}
+
 Rational::Rational(int num, int den) :
   num_(num), den_(den) {
 

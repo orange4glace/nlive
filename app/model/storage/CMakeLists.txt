@@ -12,5 +12,6 @@ set(NLIVE_SOURCES
   model/storage/video_resource_storage_item.cpp
   model/storage/sequence_storage_item.h
   model/storage/sequence_storage_item.cpp
+  model/storage/serialization.h
   PARENT_SCOPE
 )

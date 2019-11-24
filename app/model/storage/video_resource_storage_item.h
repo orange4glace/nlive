@@ -12,6 +12,13 @@ namespace nlive {
 class VideoResourceStorageItem : public StorageItem {
 
 private:
+  VideoResourceStorageItem() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<StorageItem>(*this);
+  }
+
   sptr<VideoResource> video_resource_;
   sptr<AudioResource> audio_resource_;
 

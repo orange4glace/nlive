@@ -18,6 +18,7 @@ find_package(OpenGL REQUIRED)
 find_package(Boost 1.45.0 REQUIRED
   COMPONENTS
   filesystem
+  serialization
 )
 
 find_package(Qt5 REQUIRED
@@ -41,8 +42,9 @@ find_package(FFMPEG 3.4 REQUIRED
   swresample
 )
 find_package(spdlog REQUIRED)
-message(STATUS ${spdlog_INCLUDE_DIR})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_subdirectory(app)
+add_subdirectory(test)
+add_subdirectory(googletest)

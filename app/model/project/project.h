@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "base/common/memory.h"
-#include <boost/serialization/serialization.hpp>
+#include "base/common/serialize.h"
 #include "platform/undo/undo_stack.h"
 #include "model/storage/storage_directory.h"
 
@@ -17,7 +17,7 @@ private:
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-
+    ar & root_storage_directory_;
   }
 
   sptr<StorageDirectory> root_storage_directory_;

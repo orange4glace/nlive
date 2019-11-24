@@ -7,5 +7,6 @@ add_subdirectory(effect)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
+  model/serialization.h
   PARENT_SCOPE
 )

@@ -24,6 +24,11 @@ add_executable(nlive
   ${NLIVE_RESOURCES}
 )
 
+add_library(nlive_test_lib
+  STATIC
+  ${NLIVE_SOURCES}
+)
+
 target_include_directories(${CMAKE_PROJECT_NAME} BEFORE
   PRIVATE
   ${Boost_INCLUDE_DIRS}
@@ -31,6 +36,31 @@ target_include_directories(${CMAKE_PROJECT_NAME} BEFORE
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
+  PRIVATE
+  OpenGL::GL
+  Qt5::Core
+  Qt5::Gui
+  Qt5::Widgets
+  Qt5::Concurrent
+  Qt5::Multimedia
+  Qt5::OpenGL
+  Qt5::Svg
+  FFMPEG::avutil
+  FFMPEG::avcodec
+  FFMPEG::avformat
+  FFMPEG::avfilter
+  FFMPEG::swscale
+  FFMPEG::swresample
+  ${Boost_LIBRARIES}
+)
+
+target_include_directories(nlive_test_lib BEFORE
+  PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  ${spdlog_INCLUDE_DIR}
+)
+
+target_link_libraries(nlive_test_lib
   PRIVATE
   OpenGL::GL
   Qt5::Core
