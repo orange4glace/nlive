@@ -21,7 +21,6 @@ private:
 public:
   inline Effect(std::string type) : type_(type) {
     id_ = UUID::instance()->generateUUID();
-    qDebug() << QString::fromStdString(id_);
   }
 
   inline virtual void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) {}

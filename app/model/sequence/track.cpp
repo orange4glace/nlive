@@ -123,6 +123,14 @@ sptr<Clip> Track::getClipAt(int64_t time) {
   }
   return nullptr;
 }
+  
+// TODO : Remove O(N) complexity
+sptr<Clip> Track::getClipByID(int id) {
+  for (auto clip : clips_) {
+    if (clip->id() == id) return clip;
+  }
+  return nullptr;
+}
 
 // TODO : Remove O(N) complexity
 std::vector<sptr<Clip>> Track::getClipsBetween(int64_t from, int64_t to) {

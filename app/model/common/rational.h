@@ -50,7 +50,7 @@ public:
   static int64_t rescale(int64_t a, const Rational& b, Rounding rounding = Rounding::ROUND_NEAR_INF);
   static Rational fromAVRational(const AVRational& rational);
 
-  inline bool operator==(const Rational &rhs) {
+  inline bool operator==(const Rational &rhs) const {
     return num_ == rhs.num_ && den_ == rhs.den_;
   }
 

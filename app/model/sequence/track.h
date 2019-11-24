@@ -22,10 +22,19 @@ class Track : public QObject, public Sig {
 private:
   Track() = default;
   friend class boost::serialization::access;
-  template <class Archive>
-  void serialize(Archive& ar, const unsigned int version) {
-    ar & sample_rate_ & clips_;
+  template<class Archive>
+  void save(Archive & ar, const unsigned int version) const {
+    ar & time_base_ & sample_rate_;
+    ar & clips_;
   }
+  template<class Archive>
+  void load(Archive & ar, const unsigned int version) {
+    ar & time_base_ & sample_rate_;
+    std::set<sptr<Clip>, ClipCompare> clips;
+    ar & clips;
+    for (auto clip : clips) doAddClip(clip);
+  }
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
   sptr<IUndoStack> undo_stack_;
 
@@ -57,6 +66,7 @@ public:
   void detachClip(sptr<Clip> clip);
   bool hasClip(sptr<Clip> clip) const;
   sptr<Clip> getClipAt(int64_t time);
+  sptr<Clip> getClipByID(int id);
   std::vector<sptr<Clip>> getClipsBetween(int64_t from, int64_t to);
 
   sptr<Clip> getNextClip(sptr<Clip> clip);

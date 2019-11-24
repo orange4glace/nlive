@@ -29,11 +29,21 @@ class Sequence : public QObject {
 private:
   Sequence() = default;
   friend class boost::serialization::access;
-  template <class Archive>
-  void serialize(Archive& ar, const unsigned int version) {
+  template<class Archive>
+  void save(Archive & ar, const unsigned int version) const {
     ar & id_ & name_ & time_base_ & sample_rate_ & current_time_ & duration_
-       & width_ & height_ & tracks_;
+       & width_ & height_;
+    ar & tracks_;
   }
+  template<class Archive>
+  void load(Archive & ar, const unsigned int version) {
+    ar & id_ & name_ & time_base_ & sample_rate_ & current_time_ & duration_
+       & width_ & height_;
+    std::vector<sptr<Track>> tracks;
+    ar & tracks;
+    for (auto track : tracks) doAddTrack(track);
+  }
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
   std::string id_;
   QString name_;
@@ -52,6 +62,7 @@ private:
   std::map<sptr<Track>, std::vector<sig2_conn_t>, TrackCompare> track_connections_;
 
   sptr<Track> doAddTrack();
+  sptr<Track> doAddTrack(sptr<Track> track);
   void doRemoveTrackAt(int index);
   void doSetCurrentTime(int64_t value);
   void doSetDuration(int64_t value);

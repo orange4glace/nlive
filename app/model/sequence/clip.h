@@ -28,14 +28,14 @@ private:
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & id_;
+    ar & id_ & time_base_ & sample_rate_ & start_time_ & end_time_ & b_time_;
   }
 
   int id_;
 
 protected:
   Clip() = default;
-  
+
   sptr<IUndoStack> undo_stack_;
 
   Rational time_base_;
@@ -62,6 +62,7 @@ public:
 
   sptr<effect::TransformEffect> transform();
 
+  inline const Rational& time_base() const { return time_base_; }
   inline int sample_rate() const { return sample_rate_; }
   int64_t start_time() const;
   int64_t end_time() const;

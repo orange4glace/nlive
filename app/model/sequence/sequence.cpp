@@ -50,6 +50,10 @@ sptr<Track> Sequence::addTrack() {
 
 sptr<Track> Sequence::doAddTrack() {
   sptr<Track> track = sptr<Track>(new Track(undo_stack_, time_base_, sample_rate_));
+  return doAddTrack(track);
+}
+
+sptr<Track> Sequence::doAddTrack(sptr<Track> track) {
   tracks_.push_back(track);
   std::vector<sig2_conn_t> connections;
   connections.push_back(track->onDidAddClip.connect(sig2_t<void (sptr<Clip>)>::slot_type(

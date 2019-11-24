@@ -6,5 +6,6 @@
 #define LOGGER_DEFAULT ("LOGGER_DEFAULT")
 
 extern void registerLoggers();
+extern void registerNullLoggers();
 
 #endif

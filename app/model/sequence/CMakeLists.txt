@@ -10,5 +10,6 @@ set(NLIVE_SOURCES
   model/sequence/video_clip.cpp
   model/sequence/audio_clip.h
   model/sequence/audio_clip.cpp
+  model/sequence/serialization.h
   PARENT_SCOPE
 )
