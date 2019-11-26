@@ -1,4 +1,4 @@
-#include "browser/widgets/project/video_resource_storage_item_view.h"
+#include "browser/widgets/project/video_storage_item_view.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -13,10 +13,10 @@ namespace nlive {
 
 namespace project_widget {
 
-VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
-  QWidget* parent, sptr<VideoResourceStorageItem> item) :
+VideoStorageItemThumbnailView::VideoStorageItemThumbnailView(
+  QWidget* parent, sptr<VideoStorageItem> item) :
   Div(parent) {
-  sptr<VideoResourceStorageItem> vrsi = std::static_pointer_cast<VideoResourceStorageItem>(item);
+  sptr<VideoStorageItem> vrsi = std::static_pointer_cast<VideoStorageItem>(item);
   sptr<VideoResource> vs = vrsi->video_resource();
   VideoDecoder dec(item->video_resource()->path());
   auto frame = dec.decode(0, true);
@@ -26,11 +26,11 @@ VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
     vs->width() * 4, QImage::Format_RGBA8888);
 }
 
-VideoResourceStorageItemThumbnailView::~VideoResourceStorageItemThumbnailView() {
+VideoStorageItemThumbnailView::~VideoStorageItemThumbnailView() {
   delete image_;
 }
 
-void VideoResourceStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
+void VideoStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
   QPainter p(this);
   p.drawImage(rect(), *image_);
 }
@@ -40,25 +40,25 @@ void VideoResourceStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
 
 
 
-VideoResourceStorageItemContentView::VideoResourceStorageItemContentView(
-  QWidget* parent, sptr<VideoResourceStorageItem> item) :
+VideoStorageItemContentView::VideoStorageItemContentView(
+  QWidget* parent, sptr<VideoStorageItem> item) :
   StorageItemContentView(parent), item_(item) {
-  thumbnail_view_ = new VideoResourceStorageItemThumbnailView(this, item);
+  thumbnail_view_ = new VideoStorageItemThumbnailView(this, item);
   renderer_view_ = nullptr;
 }
 
-void VideoResourceStorageItemContentView::onScrubStart() {
-  auto resource = std::static_pointer_cast<VideoResourceStorageItem>(item_)->video_resource();
+void VideoStorageItemContentView::onScrubStart() {
+  auto resource = std::static_pointer_cast<VideoStorageItem>(item_)->video_resource();
   renderer_view_ = new video_renderer::RendererView(this, resource->width(), resource->height());
   renderer_view_->setAttribute(Qt::WA_TransparentForMouseEvents);
   renderer_view_->show();
   doLayout();
 }
 
-void VideoResourceStorageItemContentView::onScrub(double x) {
+void VideoStorageItemContentView::onScrub(double x) {
   auto command_buffer = sptr<video_renderer::CommandBuffer>(
     new video_renderer::CommandBuffer());
-  auto resource = std::static_pointer_cast<VideoResourceStorageItem>(item_)->video_resource();
+  auto resource = std::static_pointer_cast<VideoStorageItem>(item_)->video_resource();
   int64_t time = resource->duration() * x;
   
   auto pre = sptr<video_renderer::VideoClipPreRenderCommand>(
@@ -74,22 +74,22 @@ void VideoResourceStorageItemContentView::onScrub(double x) {
   renderer_view_->render(command_buffer);
 }
 
-void VideoResourceStorageItemContentView::onScrubEnd() {
+void VideoStorageItemContentView::onScrubEnd() {
   renderer_view_->deleteLater();
   renderer_view_ = nullptr;
 }
 
-void VideoResourceStorageItemContentView::paintEvent(QPaintEvent* e) {
+void VideoStorageItemContentView::paintEvent(QPaintEvent* e) {
 
 }
 
-void VideoResourceStorageItemContentView::contentRectUpdated() {
+void VideoStorageItemContentView::contentRectUpdated() {
   StorageItemContentView::contentRectUpdated();
   doLayout();
 }
 
-void VideoResourceStorageItemContentView::doLayout() {
-  auto resource = std::static_pointer_cast<VideoResourceStorageItem>(item_)->video_resource();
+void VideoStorageItemContentView::doLayout() {
+  auto resource = std::static_pointer_cast<VideoStorageItem>(item_)->video_resource();
   double r = (double) resource->width() / resource->height();
   int w = height() * r;
   int h = height();
@@ -110,7 +110,7 @@ void VideoResourceStorageItemContentView::doLayout() {
   }
 }
 
-// void VideoResourceStorageItemContentView::paintEvent(QPaintEvent* event) {
+// void VideoStorageItemContentView::paintEvent(QPaintEvent* event) {
 //   auto theme = theme_service_->getTheme();
 //   QPainter p(this);
 //   p.setPen(QPen(theme.surfaceBrightColor()));
@@ -120,22 +120,22 @@ void VideoResourceStorageItemContentView::doLayout() {
 
 
 
-VideoResourceStorageItemView::VideoResourceStorageItemView(QWidget* parent, sptr<VideoResourceStorageItem> item, sptr<IThemeService> theme_service) :
+VideoStorageItemView::VideoStorageItemView(QWidget* parent, sptr<VideoStorageItem> item, sptr<IThemeService> theme_service) :
   StorageItemView(parent, item, theme_service) {
-  sptr<VideoResourceStorageItem> vrsi = std::static_pointer_cast<VideoResourceStorageItem>(item);
+  sptr<VideoStorageItem> vrsi = std::static_pointer_cast<VideoStorageItem>(item);
   QString dur = QString::fromStdString(datetime::secondsToHHmmss(vrsi->video_resource()->duration_in_seconds()));
   title_view()->left_label_box()->setText(item->name());
   title_view()->right_label_box()->setText(dur);
-  content_view_ = new VideoResourceStorageItemContentView(nullptr, vrsi);
+  content_view_ = new VideoStorageItemContentView(nullptr, vrsi);
   content_view()->setContentView(content_view_);
 }
 
-VideoResourceStorageItemViewFactory::VideoResourceStorageItemViewFactory(sptr<ServiceLocator> service_locator) :
+VideoStorageItemViewFactory::VideoStorageItemViewFactory(sptr<ServiceLocator> service_locator) :
   StorageItemViewFactory(service_locator) {}
-StorageItemView* VideoResourceStorageItemViewFactory::create(QWidget* parent, sptr<StorageItem> item) {
-  Q_ASSERT(item->type() == VideoResourceStorageItem::TYPE);
-  sptr<VideoResourceStorageItem> vrsi = std::static_pointer_cast<VideoResourceStorageItem>(item);
-  return new VideoResourceStorageItemView(parent, vrsi, service_locator_->getService<IThemeService>(IThemeService::ID));
+StorageItemView* VideoStorageItemViewFactory::create(QWidget* parent, sptr<StorageItem> item) {
+  Q_ASSERT(item->type() == VideoStorageItem::TYPE);
+  sptr<VideoStorageItem> vrsi = std::static_pointer_cast<VideoStorageItem>(item);
+  return new VideoStorageItemView(parent, vrsi, service_locator_->getService<IThemeService>(IThemeService::ID));
 }
 
 }

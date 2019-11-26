@@ -18,7 +18,7 @@ private:
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & boost::serialization::base_object<Resource>(*this);
-    ar & sample_rate_ & duration_;
+    ar & time_base_ & sample_rate_ & duration_;
   }
 
   Rational time_base_;

@@ -1,23 +1,23 @@
-#include "model/storage/video_resource_storage_item.h"
+#include "model/storage/video_storage_item.h"
 
 #include "model/sequence/clip.h"
 #include "model/sequence/video_clip.h"
 
 namespace nlive {
 
-const std::string VideoResourceStorageItem::TYPE = "nlive.StorageItem.VideoResourceStorageItem";
+const std::string VideoStorageItem::TYPE = "nlive.StorageItem.VideoStorageItem";
 
-VideoResourceStorageItem::VideoResourceStorageItem(
+VideoStorageItem::VideoStorageItem(
   sptr<StorageItem> parent,
   QString name,
   sptr<VideoResource> video_resource,
   sptr<AudioResource> audio_resource) :
-  StorageItem(parent->project(), VideoResourceStorageItem::TYPE, name, parent),
+  StorageItem(parent->project(), VideoStorageItem::TYPE, name, parent),
   video_resource_(video_resource), audio_resource_(audio_resource) {
 
 }
 
-sptr<Clip> VideoResourceStorageItem::cliperize(sptr<Sequence> sequence) {
+sptr<Clip> VideoStorageItem::cliperize(sptr<Sequence> sequence) {
   qDebug() << "cliperize " << video_resource_->duration() << " " <<
       video_resource_->time_base().num() << video_resource_->time_base().den() << " " <<
       sequence->time_base().num() << " " << sequence->time_base().den() << "\n";
@@ -25,11 +25,11 @@ sptr<Clip> VideoResourceStorageItem::cliperize(sptr<Sequence> sequence) {
     0, Rational::rescale(video_resource_->duration(), video_resource_->time_base(), sequence->time_base()), 0));
 }
 
-sptr<VideoResource> VideoResourceStorageItem::video_resource() {
+sptr<VideoResource> VideoStorageItem::video_resource() {
   return video_resource_;
 }
 
-sptr<AudioResource> VideoResourceStorageItem::audio_resource() {
+sptr<AudioResource> VideoStorageItem::audio_resource() {
   return audio_resource_;
 }
 

@@ -10,7 +10,6 @@
 #include "model/storage/sequence_storage_item.h"
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-#include "model/serialization.h"
 
 using namespace nlive;
 

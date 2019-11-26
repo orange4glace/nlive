@@ -1,5 +1,5 @@
-#ifndef NLIVE_VIDEO_RESOURCE_STORAGE_ITEM_RENDERER_H_
-#define NLIVE_VIDEO_RESOURCE_STORAGE_ITEM_RENDERER_H_
+#ifndef NLIVE_VIDEO_STORAGE_ITEM_RENDERER_H_
+#define NLIVE_VIDEO_STORAGE_ITEM_RENDERER_H_
 
 #include <QOpenGLContext>
 #include "base/common/memory.h"
@@ -8,14 +8,14 @@
 
 #include "base/layout/div.h"
 #include "renderer/video_renderer/renderer.h"
-#include "model/storage/video_resource_storage_item.h"
+#include "model/storage/video_storage_item.h"
 #include "decoder/video_decoder.h"
 
 namespace nlive {
 
 namespace project_widget {
 
-class VideoResourceStorageItemThumbnailView : public Div {
+class VideoStorageItemThumbnailView : public Div {
 
 private:
   QImage* image_;
@@ -24,15 +24,15 @@ protected:
   void paintEvent(QPaintEvent* e) override;
 
 public:
-  VideoResourceStorageItemThumbnailView(QWidget* parent, sptr<VideoResourceStorageItem> item);
-  ~VideoResourceStorageItemThumbnailView();
+  VideoStorageItemThumbnailView(QWidget* parent, sptr<VideoStorageItem> item);
+  ~VideoStorageItemThumbnailView();
 
 };
 
-class VideoResourceStorageItemRenderer {
+class VideoStorageItemRenderer {
 
 private:
-  sptr<VideoResourceStorageItem> item_;
+  sptr<VideoStorageItem> item_;
   QOpenGLContext* target_gl_;
 
   sptr<video_renderer::Renderer> renderer_;
@@ -40,8 +40,8 @@ private:
   std::mutex mutex_;
 
 public:
-  VideoResourceStorageItemRenderer(
-    sptr<VideoResourceStorageItem> item,
+  VideoStorageItemRenderer(
+    sptr<VideoStorageItem> item,
     QOpenGLContext* target_gl);
 
   void open();

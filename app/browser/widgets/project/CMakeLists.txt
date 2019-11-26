@@ -12,7 +12,7 @@ set(NLIVE_SOURCES
   browser/widgets/project/storage_item_view_factory.cpp
   browser/widgets/project/null_storage_item_view.h
   browser/widgets/project/null_storage_item_view.cpp
-  browser/widgets/project/video_resource_storage_item_view.h
-  browser/widgets/project/video_resource_storage_item_view.cpp
+  browser/widgets/project/video_storage_item_view.h
+  browser/widgets/project/video_storage_item_view.cpp
   PARENT_SCOPE
 )

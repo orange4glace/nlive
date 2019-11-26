@@ -1,4 +1,4 @@
-#include "browser/widgets/project/video_resource_storage_item_renderer.h"
+#include "browser/widgets/project/video_storage_item_renderer.h"
 
 #include <QPainter>
 #include "model/resource/video_resource.h"
@@ -7,10 +7,10 @@ namespace nlive {
 
 namespace project_widget {
 
-VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
-  QWidget* parent, sptr<VideoResourceStorageItem> item) :
+VideoStorageItemThumbnailView::VideoStorageItemThumbnailView(
+  QWidget* parent, sptr<VideoStorageItem> item) :
   Div(parent) {
-  sptr<VideoResourceStorageItem> vrsi = std::static_pointer_cast<VideoResourceStorageItem>(item);
+  sptr<VideoStorageItem> vrsi = std::static_pointer_cast<VideoStorageItem>(item);
   sptr<VideoResource> vs = vrsi->video_resource();
   VideoDecoder dec(item->video_resource()->path());
   auto frame = dec.decode(0, true);
@@ -20,28 +20,28 @@ VideoResourceStorageItemThumbnailView::VideoResourceStorageItemThumbnailView(
     vs->width() * 3, QImage::Format_RGB888);
 }
 
-VideoResourceStorageItemThumbnailView::~VideoResourceStorageItemThumbnailView() {
+VideoStorageItemThumbnailView::~VideoStorageItemThumbnailView() {
   delete image_;
 }
 
-void VideoResourceStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
+void VideoStorageItemThumbnailView::paintEvent(QPaintEvent* e) {
   QPainter p(this);
   p.drawImage(rect(), *image_);
 }
 
-VideoResourceStorageItemRenderer::VideoResourceStorageItemRenderer(
-    sptr<VideoResourceStorageItem> item,
+VideoStorageItemRenderer::VideoStorageItemRenderer(
+    sptr<VideoStorageItem> item,
     QOpenGLContext* target_gl) : item_(item), target_gl_(target_gl) {
   
 }
 
-void VideoResourceStorageItemRenderer::open() {
+void VideoStorageItemRenderer::open() {
   auto resource = item_->video_resource();
   renderer_ = sptr<video_renderer::Renderer>(
     new video_renderer::Renderer(target_gl_, resource->width(), resource->height()));
 }
 
-void VideoResourceStorageItemRenderer::close() {
+void VideoStorageItemRenderer::close() {
   renderer_ = nullptr;
 }
 

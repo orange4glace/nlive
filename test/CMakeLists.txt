@@ -4,8 +4,10 @@ set(BINARY ${CMAKE_PROJECT_NAME}_test)
 set(NLIVE_TEST_SOURCES
   ${NLIVE_TEST_SOURCES}
   main.cpp
-  serialize.cpp
   storage_item.cpp
+  serialize/sequence.cpp
+  serialize/resource.cpp
+  serialize/storage_item.cpp
 )
 
 add_executable(${BINARY}

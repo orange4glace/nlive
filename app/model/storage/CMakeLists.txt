@@ -8,8 +8,8 @@ set(NLIVE_SOURCES
   model/storage/resource_storage_item.cpp
   model/storage/audio_storage_item.h
   model/storage/audio_storage_item.cpp
-  model/storage/video_resource_storage_item.h
-  model/storage/video_resource_storage_item.cpp
+  model/storage/video_storage_item.h
+  model/storage/video_storage_item.cpp
   model/storage/sequence_storage_item.h
   model/storage/sequence_storage_item.cpp
   model/storage/serialization.h

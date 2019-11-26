@@ -1,5 +1,5 @@
-#ifndef NLIVE_VIDEO_RESOURCE_STORAGE_ITEM_H_
-#define NLIVE_VIDEO_RESOURCE_STORAGE_ITEM_H_
+#ifndef NLIVE_VIDEO_STORAGE_ITEM_H_
+#define NLIVE_VIDEO_STORAGE_ITEM_H_
 
 #include "base/common/memory.h"
 
@@ -9,14 +9,16 @@
 
 namespace nlive {
 
-class VideoResourceStorageItem : public StorageItem {
+class VideoStorageItem : public StorageItem {
 
 private:
-  VideoResourceStorageItem() = default;
+  VideoStorageItem() = default;
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & boost::serialization::base_object<StorageItem>(*this);
+    ar & video_resource_;
+    ar & audio_resource_;
   }
 
   sptr<VideoResource> video_resource_;
@@ -25,7 +27,7 @@ private:
 public:
   static const std::string TYPE;
 
-  VideoResourceStorageItem(
+  VideoStorageItem(
     sptr<StorageItem> parent,
     QString name,
     sptr<VideoResource> video_resource,

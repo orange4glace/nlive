@@ -17,6 +17,7 @@ private:
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & boost::serialization::base_object<StorageItem>(*this);
+    ar & audio_resource_;
   }
 
   sptr<AudioResource> audio_resource_;

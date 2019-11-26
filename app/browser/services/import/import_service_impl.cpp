@@ -10,7 +10,7 @@
 #include "platform/resource/resource_service.h"
 #include "model/storage/storage_directory.h"
 #include "model/storage/resource_storage_item.h"
-#include "model/storage/video_resource_storage_item.h"
+#include "model/storage/video_storage_item.h"
 #include "model/storage/audio_storage_item.h"
 #include "browser/services/import/import_progress_dialog.h"
 
@@ -28,8 +28,8 @@ sptr<StorageItem> ImportService::doImportVideoContainer(QFileInfo& url, sptr<Sto
     return nullptr;
   }
   auto audio_resource = resource_service_->loadBestAudioResource(url.absoluteFilePath());
-  return sptr<VideoResourceStorageItem>(
-    new VideoResourceStorageItem(directory, url.fileName(), video_resource, audio_resource));
+  return sptr<VideoStorageItem>(
+    new VideoStorageItem(directory, url.fileName(), video_resource, audio_resource));
 }
 
 sptr<StorageItem> ImportService::doImportAudio(QFileInfo& url, sptr<StorageDirectory> directory) {

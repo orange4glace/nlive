@@ -4,7 +4,7 @@
 #include "model/sequence/track.h"
 #include "model/sequence/sequence.h"
 #include "model/storage/storage_item.h"
-#include "model/storage/video_resource_storage_item.h"
+#include "model/storage/video_storage_item.h"
 #include "browser/drag/static_drag_and_drop.h"
 #include "browser/widgets/timeline/trackview.h"
 #include "browser/widgets/timeline/clipview.h"

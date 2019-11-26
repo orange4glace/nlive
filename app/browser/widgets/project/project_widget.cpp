@@ -10,7 +10,7 @@
 
 #include "browser/widgets/project/storage_item_view_factory.h"
 #include "browser/widgets/project/null_storage_item_view.h"
-#include "browser/widgets/project/video_resource_storage_item_view.h"
+#include "browser/widgets/project/video_storage_item_view.h"
 #include "browser/widgets/project/storage_item_view/audio_storage_item_view.h"
 #include "browser/widgets/project/storage_item_view/sequence_storage_item_view.h"
 
@@ -25,7 +25,7 @@ const std::string ProjectWidget::TYPE = "widget.Project";
 void ProjectWidget::Initialize(sptr<ServiceLocator> service_locator) {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory(service_locator));
-  StorageItemViewFactoryRegistry::registerFactory(VideoResourceStorageItem::TYPE, new VideoResourceStorageItemViewFactory(service_locator));
+  StorageItemViewFactoryRegistry::registerFactory(VideoStorageItem::TYPE, new VideoStorageItemViewFactory(service_locator));
   StorageItemViewFactoryRegistry::registerFactory(AudioStorageItem::TYPE, new AudioStorageItemViewFactory(service_locator));
   StorageItemViewFactoryRegistry::registerFactory(SequenceStorageItem::TYPE, new SequenceStorageItemViewFactory(service_locator));
 
