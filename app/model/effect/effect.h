@@ -6,6 +6,7 @@
 #include <QDebug>
 #include "base/common/sig.h"
 #include "base/common/uuid.h"
+#include "base/common/serialize.h"
 #include "renderer/video_renderer/command_buffer.h"
 
 namespace nlive {
@@ -15,18 +16,23 @@ namespace effect {
 class Effect : public Sig {
 
 private:
+  Effect() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & id_ & type_;
+  }
+
   std::string id_;
   std::string type_;
 
 public:
-  inline Effect(std::string type) : type_(type) {
-    id_ = UUID::instance()->generateUUID();
-  }
+  Effect(std::string type);
 
-  inline virtual void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset) {}
+  virtual void render(sptr<video_renderer::CommandBuffer> command_buffer, int64_t timeoffset);
 
-  const std::string& id() const { return id_; }
-  const std::string& type() const { return type_; }
+  const std::string& id() const;
+  const std::string& type() const;
 
   template <class T>
   void connectProperty(sptr<T> property) {
@@ -42,12 +48,9 @@ public:
 
 struct EffectCompare {
   using is_transparent = void;
-  inline bool operator() (const sptr<Effect>& a, const sptr<Effect>& b) const
-  { return a.get() < b.get(); }
-  inline bool operator() (const sptr<Effect>& a, const Effect* b) const
-  { return a.get() < b; }
-  inline bool operator() (const Effect* a, const sptr<Effect>& b) const
-  { return a < b.get(); }
+  bool operator() (const sptr<Effect>& a, const sptr<Effect>& b) const;
+  bool operator() (const sptr<Effect>& a, const Effect* b) const;
+  bool operator() (const Effect* a, const sptr<Effect>& b) const;
 };
 
 }

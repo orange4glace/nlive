@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string>
+#include "base/common/serialize.h"
 
 namespace nlive {
 
@@ -12,20 +13,27 @@ template <class T>
 class Keyframe {
   
 private:
+  Keyframe() = default;
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & time_ & value_;
+  }
+
   int64_t time_;
   T value_;
 
 public:
-  Keyframe(int64_t time, T&& value) :
+  Keyframe(int64_t time, const T&& value) :
     time_(time), value_(value) {
   }
 
-  Keyframe(int64_t time, T& value) :
+  Keyframe(int64_t time, const T& value) :
     time_(time), value_(value) {
 
   }
 
-  void setValue(T& value) {
+  void setValue(const T& value) {
     value_ = value;
   }
 

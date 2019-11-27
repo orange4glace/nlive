@@ -14,6 +14,13 @@ namespace effect {
 class TransformEffect : public Effect {
 
 private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & boost::serialization::base_object<Effect>(*this);
+    ar & position_ & scale_;
+  }
+
   sptr<Property<value::Vector2>> position_;
   sptr<Property<value::Vector2>> scale_;
 

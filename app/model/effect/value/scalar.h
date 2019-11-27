@@ -2,6 +2,7 @@
 #define NILVE_EFFECT_VALUE_SCALAR_H_
 
 #include <string>
+#include "base/common/serialize.h"
 
 namespace nlive {
 
@@ -12,24 +13,24 @@ namespace value {
 class Scalar {
 
 private:
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & value_;
+  }
+
   double value_;
 
 public:
-  inline Scalar(double value = 0.0) :
-    value_(value) {
+  Scalar();
+  Scalar(double value);
+  Scalar(const Scalar& v);
 
-  }
+  double value() const;
 
-  inline Scalar(const Scalar& v) : Scalar(v.value_) {}
+  static Scalar interpolate(const Scalar& lhs, const Scalar& rhs, double t);
 
-  inline double value() const {
-    return value_;
-  }
-
-  inline static Scalar interpolate(const Scalar& lhs, const Scalar& rhs, double t) {
-    double v = lhs.value_ + (rhs.value_ - lhs.value_) * t;
-    return Scalar(v);
-  }
+  bool operator==(const Scalar &rhs) const;
 
 };
 

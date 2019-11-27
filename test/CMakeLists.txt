@@ -7,6 +7,7 @@ set(NLIVE_TEST_SOURCES
   storage_item.cpp
   serialize/sequence.cpp
   serialize/resource.cpp
+  serialize/effect.cpp
   serialize/storage_item.cpp
 )
 

@@ -2,12 +2,12 @@
 #define NILVE_EFFECT_PROPERTY_H_
 
 #include <QObject>
-#include "base/common/memory.h"
 #include <stdint.h>
 #include <map>
 #include <string>
-
 #include "base/common/sig.h"
+#include "base/common/memory.h"
+#include "base/common/serialize.h"
 #include "model/effect/keyframe.h"
 
 namespace nlive {
@@ -16,8 +16,12 @@ namespace effect {
 
 template <class T>
 class Property {
-  
+
 private:
+  Property() = default;
+  friend class boost::serialization::access;
+
+
   std::string type_;
   T default_value_;
   std::map<int64_t, sptr<Keyframe<T>>> keyframes_;
@@ -25,14 +29,14 @@ private:
   bool animatable_;
   bool animated_;
 
-  void doUpsertKeyframe(int64_t time, T& value) {
+  void doUpsertKeyframe(int64_t time, const T& value) {
     if (!animated_) return doSetDefaultValue(value);
     auto match_it = keyframes_.find(time);
     if (match_it == keyframes_.end()) return doCreateKeyframe(time, value);
     else return doUpdateKeyframe(time, value);
   }
   
-  void doCreateKeyframe(int64_t time, T& value) {
+  void doCreateKeyframe(int64_t time, const T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it == keyframes_.end());
     auto kf = sptr<Keyframe<T>>(new Keyframe<T>(time, value));
@@ -41,7 +45,7 @@ private:
     onDidAddKeyframe(kf);
   }
 
-  void doUpdateKeyframe(int64_t time, T& value) {
+  void doUpdateKeyframe(int64_t time, const T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it != keyframes_.end());
     sptr<Keyframe<T>> kf = match_it->second;
@@ -49,12 +53,15 @@ private:
     onDidUpdate();
   }
 
-  void doSetDefaultValue(T& value) {
+  void doSetDefaultValue(const T& value) {
     default_value_ = value;
     onDidUpdate();
   }
 
 public:
+  struct access_;
+  // https://stackoverflow.com/questions/30594917/get-private-data-members-for-non-intrusive-boost-serialization-c/30595430#30595430
+
   Property(T default_value, bool animatable = true) :
     default_value_(default_value), animatable_(animatable),
     animated_(false) {
@@ -132,8 +139,42 @@ public:
 
 };
 
+template <class T>
+struct Property<T>::access_ {
+  template <class Archive>
+  static void save(Archive& ar, const Property<T>& t, const unsigned int version) {
+    ar & t.type_ & t.default_value_ & t.animatable_ & t.animated_;
+    ar & t.keyframes_;
+  }
+  template <class Archive>
+  static void load(Archive& ar, Property<T>& t, const unsigned int version) {
+    ar & t.type_ & t.default_value_ & t.animatable_ & t.animated_;
+    std::map<int64_t, sptr<Keyframe<T>>> keyframes;
+    ar & keyframes;
+    for (auto const& kv : keyframes)
+      t.doCreateKeyframe(kv.second->time(), kv.second->value());
+  }
+};
+
 }
 
+}
+
+namespace boost {
+namespace serialization{
+template <class Archive, class T>
+inline void save(Archive& ar, const nlive::effect::Property<T>& t, const unsigned int version) {
+  nlive::effect::Property<T>::access_::save(ar, t, version);
+}
+template <class Archive, class T>
+inline void load(Archive& ar, nlive::effect::Property<T>& t, const unsigned int version) {
+  nlive::effect::Property<T>::access_::load(ar, t, version);
+}
+template <class Archive, class T>
+inline void serialize(Archive& ar, nlive::effect::Property<T>& t, const unsigned int version) {
+  boost::serialization::split_free(ar, t, version);
+}
+}
 }
 
 #endif

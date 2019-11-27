@@ -1,58 +1,58 @@
-#ifndef NILVE_EFFECT_PROPERTY_BASE_H_
-#define NILVE_EFFECT_PROPERTY_BASE_H_
+// #ifndef NILVE_EFFECT_PROPERTY_BASE_H_
+// #define NILVE_EFFECT_PROPERTY_BASE_H_
 
-#include <QObject>
-#include <stdint.h>
-#include <map>
-#include <string>
+// #include <QObject>
+// #include <stdint.h>
+// #include <map>
+// #include <string>
 
-#include "base/common/sig.h"
+// #include "base/common/sig.h"
 
-namespace nlive {
+// namespace nlive {
 
-namespace effect {
+// namespace effect {
 
-template <class T>
-class Property {
+// template <class T>
+// class Property {
   
-private:
-  std::string type_;
+// private:
+//   std::string type_;
 
-  bool animatable_;
-  bool animated_;
+//   bool animatable_;
+//   bool animated_;
 
-public:
-  PropertyBase(bool animatable = true) :
-    animatable_(animatable), animated_(false) {
+// public:
+//   PropertyBase(bool animatable = true) :
+//     animatable_(animatable), animated_(false) {
 
-  }
+//   }
 
-  void setAnimatable(bool value) {
-    animatable_ = value;
-    onDidChangeAnimatable(value);
-    onDidUpdate();
-  }
+//   void setAnimatable(bool value) {
+//     animatable_ = value;
+//     onDidChangeAnimatable(value);
+//     onDidUpdate();
+//   }
 
-  const std::string& type() const {
-    return type_;
-  }
+//   const std::string& type() const {
+//     return type_;
+//   }
 
-  bool animatable() const {
-    return animatable_;
-  }
+//   bool animatable() const {
+//     return animatable_;
+//   }
 
-  bool animated() const {
-    return animated_;
-  }
+//   bool animated() const {
+//     return animated_;
+//   }
 
-  sig2_t<void (bool)> onDidChangeAnimated;
-  sig2_t<void (bool)> onDidChangeAnimatable;
-  sig2_t<void (void)> onDidUpdate;
+//   sig2_t<void (bool)> onDidChangeAnimated;
+//   sig2_t<void (bool)> onDidChangeAnimatable;
+//   sig2_t<void (void)> onDidUpdate;
 
-};
+// };
 
-}
+// }
 
-}
+// }
 
-#endif
+// #endif

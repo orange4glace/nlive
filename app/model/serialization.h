@@ -6,5 +6,6 @@
 #include "model/storage/serialization.h"
 #include "model/sequence/serialization.h"
 #include "model/resource/serialization.h"
+#include "model/effect/serialization.h"
 
 #endif
