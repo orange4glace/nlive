@@ -19,7 +19,7 @@ namespace project_widget {
 
 class DirectoryView;
 
-class ProjectWidget : public QDockWidget, public Widget {
+class ProjectWidget : public Widget {
   
 public:
   static const std::string TYPE;

@@ -24,6 +24,7 @@
 #include "browser/services/play/play_service.h"
 #include "browser/services/projects/projects_service_impl.h"
 #include "browser/services/audio_flaty/audio_flaty_service.h"
+#include "browser/services/menu_bar/menu_bar_service.h"
 
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
@@ -69,6 +70,8 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   auto memento_service = new sptr<IMementoService>(new InMemoryMementoService());
   auto play_service = new sptr<PlayService>(new PlayService(this));
   auto audio_flaty_service = sptr<AudioFlatyService>(new AudioFlatyService(projects_service, *task_service));
+  auto menu_bar_service = sptr<MenuBarService>(new MenuBarService(menuBar(), theme_service));
+  menu_bar_service->addMenu("file", "&File");
 
   auto s_resource_service = new sptr<ResourceService>(resource_service);
   auto s_import_service = new sptr<ImportService>(import_service);
@@ -77,6 +80,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   service_locator_->registerService(widgets_service);
   service_locator_->registerService(projects_service);
   service_locator_->registerService(audio_flaty_service);
+  service_locator_->registerService(menu_bar_service);
 
   // task_service->setParent(this);
   resource_service->setParent(this);

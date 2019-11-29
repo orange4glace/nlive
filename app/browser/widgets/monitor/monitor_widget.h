@@ -23,7 +23,7 @@ namespace monitor_widget {
 
 class SequenceView;
 
-class MonitorWidget : public QDockWidget, public Widget, public Sig {
+class MonitorWidget : public Widget, public Sig {
 
 public:
   static const std::string TYPE;
@@ -43,7 +43,6 @@ private:
   void handleDidChangeSequenceView(timeline_widget::SequenceView* sequence_view);
 
 protected:
-  void paintEvent(QPaintEvent* event) override;
   void resizeEvent(QResizeEvent* event) override;
 
 public:

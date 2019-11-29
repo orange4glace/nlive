@@ -20,7 +20,7 @@ namespace timeline_widget {
 
 class SequenceView;
 
-class TimelineWidget : public QDockWidget, public Widget, public Sig {
+class TimelineWidget : public Widget, public Sig {
   Q_OBJECT;
   
 public:

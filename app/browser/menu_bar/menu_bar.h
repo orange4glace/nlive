@@ -1,18 +1,19 @@
 #ifndef NLIVE_MENU_BAR_H_
 #define NLIVE_MENU_BAR_H_
 
+#include <QWidget>
 #include "base/common/memory.h"
-#include "platform/service/service_locator.h"
+#include "browser/services/menu_bar/menu_bar_sevice.h"
 
 namespace nlive {
 
 class MenuBar {
 
 private:
-  sptr<ServiceLocator> service_locator_;
+  sptr<MenuBarService> menu_bar_service_;
 
 public:
-  MenuBar(sptr<ServiceLocator> service_locator);
+  MenuBar(QWidget* widget, sptr<MenuBarService> menu_bar_service);
 
 };
 

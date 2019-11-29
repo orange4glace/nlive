@@ -22,7 +22,7 @@ TimelineWidget::TimelineWidget(
   sptr<IThemeService> theme_service,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<PlayService> play_service) :
-  QDockWidget(parent),
+  Widget(parent, theme_service),
   theme_service_(theme_service), play_service_(play_service),
   timeline_widget_service_(timeline_widget_service),
   sequence_(nullptr),

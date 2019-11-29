@@ -2,8 +2,8 @@
 
 namespace nlive {
 
-MenuBar::MenuBar(sptr<ServiceLocator> service_locator) :
-  service_locator_(service_locator) {
+MenuBar::MenuBar(QWigdet* widget, sptr<MenuBarService> menu_bar_service) :
+  menu_bar_service_(menu_bar_service) {
 
 }
 

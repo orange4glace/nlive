@@ -1,5 +1,6 @@
 add_subdirectory(widgets)
 add_subdirectory(projects)
+add_subdirectory(menu_bar)
 add_subdirectory(import)
 add_subdirectory(play)
 add_subdirectory(memento)

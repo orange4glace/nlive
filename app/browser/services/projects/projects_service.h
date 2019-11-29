@@ -18,6 +18,9 @@ public:
   static const std::string ID;
 
   inline virtual sptr<Project> createProject() = 0;
+  
+  inline virtual void setTargetProject(sptr<Project> project) = 0;
+  inline virtual sptr<Project> target_project() = 0;
 
   inline virtual std::vector<sptr<Project>> projects() = 0;
 
@@ -27,6 +30,7 @@ public:
 
   sig2_t<void (sptr<Project>)> onDidAddProject;
   sig2_t<void (sptr<Project>)> onWillRemoveProject;
+  sig2_t<void (sptr<Project>)> onDidChangeTargetProject;
 
 };
 

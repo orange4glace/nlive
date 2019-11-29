@@ -17,7 +17,7 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<IThemeService> theme_service,
   sptr<PlayService> play_service) :
-  QDockWidget(parent),
+  Widget(parent, theme_service),
   timeline_widget_service_(timeline_widget_service), play_service_(play_service),
   theme_service_(theme_service),
   sequence_view_(nullptr) {
@@ -70,10 +70,6 @@ void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* t
     action_context_->setSequence(timeline_widget_sequence_view->sequence());
     action_context_->setSequencePlayable(timeline_widget_sequence_view->sequence_playable());
   }
-}
-
-void MonitorWidget::paintEvent(QPaintEvent* event) {
-  QPainter p(this);
 }
 
 void MonitorWidget::resizeEvent(QResizeEvent* event) {

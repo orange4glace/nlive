@@ -34,7 +34,7 @@ EffectControlWidget::EffectControlWidget(
   sptr<IThemeService> theme_service,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<IMementoService> memento_service) :
-  QDockWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
+  Widget(parent, theme_service), theme_service_(theme_service), memento_service_(memento_service),
   timeline_widget_service_(timeline_widget_service),
   target_timeline_widget_(nullptr),
   sequence_view_(nullptr) {
@@ -76,10 +76,6 @@ void EffectControlWidget::setTargetTimelineWidgetSequenceView(timeline_widget::S
   sequence_view_->resize(size());
   sequence_view_->show();
   updateGeometry();
-}
-
-void EffectControlWidget::paintEvent(QPaintEvent* event) {
-  QPainter p(this);
 }
 
 void EffectControlWidget::resizeEvent(QResizeEvent* event) {

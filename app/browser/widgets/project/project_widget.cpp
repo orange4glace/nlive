@@ -35,7 +35,7 @@ ProjectWidget::ProjectWidget(QWidget* parent,
     sptr<IThemeService> theme_service,
     sptr<IImportService> import_service,
     sptr<ServiceLocator> service_locator) :
-  QDockWidget(parent), theme_service_(theme_service),
+  Widget(parent, theme_service), theme_service_(theme_service),
   import_service_(import_service), service_locator_(service_locator),
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());

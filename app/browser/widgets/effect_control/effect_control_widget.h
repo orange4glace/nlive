@@ -26,7 +26,7 @@ namespace effect_control {
 class EffectControlLayout;
 class SequenceView;
 
-class EffectControlWidget : public QDockWidget, public Widget, public Sig {
+class EffectControlWidget : public Widget, public Sig {
   Q_OBJECT
   
 public:
@@ -47,7 +47,6 @@ private:
   void setTargetTimelineWidgetSequenceView(timeline_widget::SequenceView* sequence_view);
   
 protected:
-  void paintEvent(QPaintEvent* event);
   void resizeEvent(QResizeEvent* event);
 
 public:

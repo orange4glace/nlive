@@ -48,7 +48,7 @@ void SequenceSideView::contentRectUpdated() {
   for (int i = 0; i < track_views_.size(); i ++) {
     auto& track_view = track_views_[i];
     track_view->resize(width(), 29);
-    track_view->move(0, i * 30);
+    track_view->move(0, i * 30 + 30);
   }
 }
 
