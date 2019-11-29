@@ -10,7 +10,7 @@ namespace nlive {
 TaskService::TaskService() {
 }
 
-void TaskService::queueTask(sptr<Task> task, std::function<void(sptr<Task>)>&& callback) {
+void TaskService::queueTask(QSharedPointer<Task> task, std::function<void(QSharedPointer<Task>)>&& callback) {
   tasks_.push_back(task);
   onDidAddTask(task);
   task->callback_ = std::move(callback);
@@ -25,7 +25,7 @@ void TaskService::queueTask(sptr<Task> task, std::function<void(sptr<Task>)>&& c
   QThreadPool::globalInstance()->start(runnable_task);
 }
 
-std::vector<sptr<Task>>& TaskService::tasks() {
+std::vector<QSharedPointer<Task>>& TaskService::tasks() {
   return tasks_;
 }
 

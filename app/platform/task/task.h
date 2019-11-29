@@ -2,6 +2,7 @@
 #define NLIVE_TASK_H_
 
 #include <QObject>
+#include <QSharedPointer>
 #include <functional>
 #include <mutex>
 #include "base/common/sig.h"
@@ -15,11 +16,11 @@ friend class TaskService;
 friend class RunnableTask;
 
 private:
-  std::function<void(sptr<Task>)> callback_;
+  std::function<void(QSharedPointer<Task>)> callback_;
   qreal progress_;
 
 private slots:
-  inline void finished(sptr<Task> task) {
+  inline void finished(QSharedPointer<Task> task) {
     Q_ASSERT(this == task.get());
     if (callback_ != nullptr) callback_(task);
   }

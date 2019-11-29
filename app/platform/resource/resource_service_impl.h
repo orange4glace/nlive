@@ -10,28 +10,10 @@
 
 namespace nlive {
 
-
-
-class AudioResourceRawConvertingService {
-
-private:
-  sptr<ITaskService> task_service_;
-  std::map<std::string, std::vector<sptr<AudioResource>>> processing_map_;
-  std::map<std::string, sptr<RawAudioResource>> processed_map_;
-
-public:
-  AudioResourceRawConvertingService(sptr<ITaskService> task_service);
-  void process(sptr<AudioResource> resource);
-
-};
-
-
-
 class ResourceService : public IResourceService {
 
 private:
   sptr<ITaskService> task_service_;
-  AudioResourceRawConvertingService audio_resource_raw_converting_service_;
 
   std::map<QString, sptr<Resource>> resources_;
 

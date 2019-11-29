@@ -1,8 +1,9 @@
 add_subdirectory(widgets)
-add_subdirectory(project)
+add_subdirectory(projects)
 add_subdirectory(import)
 add_subdirectory(play)
 add_subdirectory(memento)
+add_subdirectory(audio_flaty)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}

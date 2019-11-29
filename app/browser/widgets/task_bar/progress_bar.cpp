@@ -7,11 +7,10 @@ namespace nlive {
 
 namespace task_bar {
 
-ProgressBar::ProgressBar(QWidget* parent, sptr<Task> task,
+ProgressBar::ProgressBar(QWidget* parent, QSharedPointer<Task> task,
     sptr<IThemeService> theme_service) :
   QWidget(parent), theme_service_(theme_service), task_(task), progress_(0) {
   
-  qDebug() << "Hello Progressbar";
   task_->onUpdateProgress.connect(SIG2_TRACK(sig2_t<void (qreal)>::slot_type(
     [this](qreal value) {
       progress_ = value;

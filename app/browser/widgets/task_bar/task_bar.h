@@ -19,7 +19,7 @@ private:
   sptr<ITaskService> task_service_;
   sptr<IThemeService> theme_service_;
 
-  sptr<Task> first_task_;
+  QSharedPointer<Task> first_task_;
   ProgressBar* progress_bar_;
 
   void updateProgressBar();

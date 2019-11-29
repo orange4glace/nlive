@@ -16,14 +16,14 @@ class ProgressBar : public QWidget, public Sig {
 private:
   sptr<IThemeService> theme_service_;
 
-  sptr<Task> task_;
+  QSharedPointer<Task> task_;
   qreal progress_;
 
 protected:
   void paintEvent(QPaintEvent* e) override;
 
 public:
-  ProgressBar(QWidget* parent, sptr<Task> task,
+  ProgressBar(QWidget* parent, QSharedPointer<Task> task,
       sptr<IThemeService> theme_service);
 
 };

@@ -12,13 +12,13 @@ class TaskService : public ITaskService, public Sig {
   Q_OBJECT
 
 private:
-  std::vector<sptr<Task>> tasks_;
+  std::vector<QSharedPointer<Task>> tasks_;
 
 public:
   TaskService();
 
-  void queueTask(sptr<Task> task, std::function<void(sptr<Task>)>&& callback) override;
-  std::vector<sptr<Task>>& tasks() override;
+  void queueTask(QSharedPointer<Task> task, std::function<void(QSharedPointer<Task>)>&& callback) override;
+  std::vector<QSharedPointer<Task>>& tasks() override;
 
 };
 

@@ -14,12 +14,12 @@ TaskBar::TaskBar(QWidget* parent, sptr<ITaskService> task_service,
   progress_bar_ = nullptr;
   setPadding(Div::ALL, 2);
   updateProgressBar();
-  task_service_->onDidAddTask.connect(SIG2_TRACK(sig2_t<void (sptr<Task>)>::slot_type(
-    [this](sptr<Task> task) {
+  task_service_->onDidAddTask.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Task>)>::slot_type(
+    [this](QSharedPointer<Task> task) {
       updateProgressBar();
     })));
-  task_service_->onDidRemoveTask.connect(SIG2_TRACK(sig2_t<void (sptr<Task>)>::slot_type(
-    [this](sptr<Task> task) {
+  task_service_->onDidRemoveTask.connect(SIG2_TRACK(sig2_t<void (QSharedPointer<Task>)>::slot_type(
+    [this](QSharedPointer<Task> task) {
       updateProgressBar();
     })));
 }

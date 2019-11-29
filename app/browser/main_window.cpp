@@ -22,6 +22,8 @@
 #include "browser/services/import/import_service_impl.h"
 #include "browser/services/memento/in_memory_memento_service.h"
 #include "browser/services/play/play_service.h"
+#include "browser/services/projects/projects_service_impl.h"
+#include "browser/services/audio_flaty/audio_flaty_service.h"
 
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
@@ -60,17 +62,21 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   TimelineWidgetService::Initialize();
   auto task_service = new sptr<ITaskService>(new TaskService());
   auto theme_service = ThemeService::instance();
+  auto projects_service = sptr<IProjectsService>(new ProjectsService());
   auto timeline_widget_service = TimelineWidgetService::instance();
   auto resource_service = new ResourceService(*task_service);
   auto import_service = new ImportService(resource_service);
   auto memento_service = new sptr<IMementoService>(new InMemoryMementoService());
   auto play_service = new sptr<PlayService>(new PlayService(this));
+  auto audio_flaty_service = sptr<AudioFlatyService>(new AudioFlatyService(projects_service, *task_service));
 
   auto s_resource_service = new sptr<ResourceService>(resource_service);
   auto s_import_service = new sptr<ImportService>(import_service);
 
   service_locator_->registerService(theme_service);
   service_locator_->registerService(widgets_service);
+  service_locator_->registerService(projects_service);
+  service_locator_->registerService(audio_flaty_service);
 
   // task_service->setParent(this);
   resource_service->setParent(this);
@@ -83,8 +89,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   t->show();
 
   // Create Sequence mock data
-  auto sproject = new sptr<Project>(new Project());
-  auto project = *sproject;
+  auto project = projects_service->createProject();
 
   auto root_storage = project->root_storage_directory();
   auto sequence = sptr<Sequence>(new Sequence(project->undo_stack(), 30, 48000));
