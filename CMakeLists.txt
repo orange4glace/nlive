@@ -5,13 +5,18 @@ project(nlive)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-set(Boost_USE_STATIC_LIBS ON) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
 
 add_compile_definitions(__STDC_CONSTANT_MACROS)
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 add_compile_options(-bigobj)
+if (MSVC)
+  add_compile_options(/std:c++17)
+  # https://studiofreya.com/2018/01/06/visual-studio-2017-with-cpp17-and-boost/
+  add_compile_definitions(_HAS_STD_BYTE=0)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 

@@ -5,11 +5,15 @@
 #include "platform/theme/themeservice-impl.h"
 #include "platform/task/task_service_impl.h"
 #include "platform/resource/resource_service_impl.h"
+#include "platform/commands/commands.h"
+#include "platform/task/task.h"
+#include "platform/logger/logger.h"
+#include "platform/action/menu_service.h"
+
 #include "model/sequence/sequence.h"
 #include "model/sequence/track.h"
 #include "model/sequence/clip.h"
 #include "model/storage/sequence_storage_item.h"
-
 #include "model/project/project.h"
 #include "model/effect/transform_effect.h"
 
@@ -24,10 +28,8 @@
 #include "browser/services/play/play_service.h"
 #include "browser/services/projects/projects_service_impl.h"
 #include "browser/services/audio_flaty/audio_flaty_service.h"
-#include "browser/services/menu_bar/menu_bar_service.h"
-
-#include "platform/task/task.h"
-#include "platform/logger/logger.h"
+#include "browser/menu_bar/qt/menu_bar_control.h"
+#include "browser/services/commands/command_service.h"
 
 #include "renderer/audio_renderer/test_renderer.h"
 #include "renderer/audio_renderer/sequence_renderer.h"
@@ -70,8 +72,8 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   auto memento_service = new sptr<IMementoService>(new InMemoryMementoService());
   auto play_service = new sptr<PlayService>(new PlayService(this));
   auto audio_flaty_service = sptr<AudioFlatyService>(new AudioFlatyService(projects_service, *task_service));
-  auto menu_bar_service = sptr<MenuBarService>(new MenuBarService(menuBar(), theme_service));
-  menu_bar_service->addMenu("file", "&File");
+  auto command_service = sptr<ICommandService>(new CommandService(service_locator_));
+  auto menu_service = sptr<IMenuService>(new MenuService(command_service));
 
   auto s_resource_service = new sptr<ResourceService>(resource_service);
   auto s_import_service = new sptr<ImportService>(import_service);
@@ -80,7 +82,11 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   service_locator_->registerService(widgets_service);
   service_locator_->registerService(projects_service);
   service_locator_->registerService(audio_flaty_service);
-  service_locator_->registerService(menu_bar_service);
+  service_locator_->registerService(command_service);
+  service_locator_->registerService(menu_service);
+
+  MenuRegistry::instance()->appendMenuItem("File", MenuItemable::createMenuItem(ICommandAction("a", L"alleh"), "abc", 0));
+  auto menu_bar_control = new NativeMenuBarControl(this, menu_service, nullptr);
 
   // task_service->setParent(this);
   resource_service->setParent(this);

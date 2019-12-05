@@ -1,5 +1,6 @@
 add_subdirectory(drag)
 add_subdirectory(widgets)
+add_subdirectory(menu_bar)
 add_subdirectory(services)
 
 set(NLIVE_SOURCES

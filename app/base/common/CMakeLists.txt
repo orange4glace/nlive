@@ -2,8 +2,12 @@ set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   base/common/sig.h
   base/common/memory.h
+  base/common/disposable.h
+  base/common/disposable.cpp
   base/common/uuid.h
   base/common/uuid.cpp
+  base/common/actions.h
+  base/common/actions.cpp
   base/common/datetime.h
   base/common/progressable.h
   PARENT_SCOPE

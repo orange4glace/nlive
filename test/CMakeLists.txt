@@ -9,6 +9,7 @@ set(NLIVE_TEST_SOURCES
   serialize/resource.cpp
   serialize/effect.cpp
   serialize/storage_item.cpp
+  platform/context_key.cpp
 )
 
 add_executable(${BINARY}
