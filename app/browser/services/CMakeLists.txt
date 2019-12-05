@@ -9,5 +9,6 @@ add_subdirectory(commands)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
+  browser/services/include.h
   PARENT_SCOPE
 )

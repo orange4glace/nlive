@@ -47,8 +47,9 @@ void MonitorWidget::handleDidChangeCurrentTimelineWidget(timeline_widget::Timeli
   action_context_->setSequencePlayable(nullptr);
   if (timeline_widget != nullptr) {
     handleDidChangeSequenceView(timeline_widget->sequence_view());
-    auto conn = timeline_widget->onDidChangeSequence.connect(sig2_t<void (sptr<Sequence> sequence)>::slot_type([this, timeline_widget](sptr<Sequence> sequence) {
-      handleDidChangeSequenceView(timeline_widget->sequence_view());
+    auto conn = timeline_widget->onDidChangeSequenceStorageItem.connect(sig2_t<void (sptr<SequenceStorageItem>)>::slot_type(
+      [this, timeline_widget](sptr<SequenceStorageItem>) {
+        handleDidChangeSequenceView(timeline_widget->sequence_view());
     }));
     widget_connections_.push_back(conn);
   }

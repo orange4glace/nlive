@@ -24,7 +24,7 @@ void SequenceStorageItemView::onMouseDoubleClick() {
   qDebug() << "DBCL" << widget;
   if (!widget) return;
   auto timeline_widget = static_cast<timeline_widget::TimelineWidget*>(widget);
-  timeline_widget->setSequence(item_->sequence());
+  timeline_widget->setSequenceStorageItem(item_);
 }
 
 SequenceStorageItemViewFactory::SequenceStorageItemViewFactory(sptr<ServiceLocator> service_locator) :

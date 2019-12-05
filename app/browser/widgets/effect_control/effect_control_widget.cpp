@@ -58,9 +58,9 @@ void EffectControlWidget::setTargetTimelineWidget(timeline_widget::TimelineWidge
   target_timeline_widget_ = timeline_widget;
   setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
   timeline_widget_connection_.disconnect();
-  timeline_widget_connection_ = timeline_widget->onDidChangeSequence.connect(
-    sig2_t<void (sptr<Sequence> sequence)>::slot_type(
-      [this, timeline_widget](sptr<Sequence> sequence) {
+  timeline_widget_connection_ = timeline_widget->onDidChangeSequenceStorageItem.connect(
+    sig2_t<void (sptr<SequenceStorageItem>)>::slot_type(
+      [this, timeline_widget](sptr<SequenceStorageItem> ssi) {
       this->setTargetTimelineWidgetSequenceView(timeline_widget->sequence_view());
     }));
 }

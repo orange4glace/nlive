@@ -11,5 +11,6 @@ add_subdirectory(commands)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
+  platform/include.h
   PARENT_SCOPE
 )

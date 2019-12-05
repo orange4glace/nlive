@@ -26,7 +26,7 @@ namespace effect_control {
 class EffectControlLayout;
 class SequenceView;
 
-class EffectControlWidget : public Widget, public Sig {
+class EffectControlWidget : public Widget {
   Q_OBJECT
   
 public:

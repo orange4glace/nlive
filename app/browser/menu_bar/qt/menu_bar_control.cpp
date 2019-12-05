@@ -20,8 +20,10 @@ void NativeMenuBarControl::install(bool first_time) {
   
   for (auto& kv : top_level_titles_) {
     auto menu = menus_[kv.first];
-    qDebug() << "[NativeMenuBarControl] update" << QString::fromStdString(kv.first);
-    updateActions(qmenu_bar_, true, menu, kv.second);
+    auto qmenu = new QMenu(qmenu_bar_);
+    qmenu->setTitle(QString::fromStdWString(kv.second));
+    updateActions(qmenu, false, menu, kv.second);
+    qmenu_bar_->addMenu(qmenu);
   }
 }
 
@@ -31,9 +33,7 @@ void NativeMenuBarControl::doUpdateMenuBar(bool first_time) {
 
 void NativeMenuBarControl::updateActions(QWidget* menubar_or_menu, bool is_menubar,
     sptr<IMenu> menu, std::wstring top_level_title) {
-  qDebug() << "[NativeMenuBarControl] updateActions" << menu.get();
   auto addAction = [](QWidget* menubar_or_menu, bool is_menubar, QAction* action) {
-    qDebug() << "add Action " << menubar_or_menu << is_menubar << action;
     if (is_menubar) {
       static_cast<QMenuBar*>(menubar_or_menu)->addAction(action);
     }
@@ -42,7 +42,6 @@ void NativeMenuBarControl::updateActions(QWidget* menubar_or_menu, bool is_menub
     }
   };
   auto& groups = menu->getActions();
-  qDebug() << "[NativeMenuBarControl] 1" << groups.size();
   for (auto& group : groups) {
     auto& id = group.first;
     auto& actions = group.second;
@@ -50,7 +49,7 @@ void NativeMenuBarControl::updateActions(QWidget* menubar_or_menu, bool is_menub
       if (action.isMenuItemAction()) {
         auto item_action = action.asMenuItemAction();
         auto qaction = new QAction(menubar_or_menu);
-        qaction->setText("ABC");
+        qaction->setText(QString::fromStdWString(item_action->label()));
         QObject::connect(qaction, &QAction::triggered, [this, item_action]() {
           item_action->run(nullptr);
         });

@@ -17,6 +17,7 @@
 #include "model/project/project.h"
 #include "model/effect/transform_effect.h"
 
+#include "browser/commands.h"
 #include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/timeline/timeline_widget_service_impl.h"
 #include "browser/widgets/project/project_widget.h"
@@ -85,6 +86,8 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   service_locator_->registerService(command_service);
   service_locator_->registerService(menu_service);
 
+  BrowserCommand::install();
+
   MenuRegistry::instance()->appendMenuItem("File", MenuItemable::createMenuItem(ICommandAction("a", L"alleh"), "abc", 0));
   auto menu_bar_control = new NativeMenuBarControl(this, menu_service, nullptr);
 
@@ -118,7 +121,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   widgets_service->addWidget(project_widget);
   project_widget->setDirectory(project->root_storage_directory());
 
-  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service);
+  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service, projects_service);
   // timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
   widgets_service->addWidget(timeline_widget);

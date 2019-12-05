@@ -23,7 +23,7 @@ namespace monitor_widget {
 
 class SequenceView;
 
-class MonitorWidget : public Widget, public Sig {
+class MonitorWidget : public Widget {
 
 public:
   static const std::string TYPE;
