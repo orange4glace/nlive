@@ -114,6 +114,12 @@ sptr<Track> Sequence::getTrackAt(int index) {
   return tracks_[index];
 }
 
+void Sequence::setSize(int width, int height) {
+  width_ = width;
+  height_ = height;
+  doInvalidate();
+}
+
 void Sequence::setTimeBase(Rational time_base) {
   time_base_ = time_base;
 }

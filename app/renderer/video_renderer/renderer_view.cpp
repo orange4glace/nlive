@@ -72,8 +72,8 @@ void RendererView::initializeGL() {
 
   gf->glGenTextures(1, &tex_);
 
-  renderer_ = sptr<Renderer>(new Renderer(context(), width_, height_));
-  connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
+  renderer_ = sptr<RenderThread>(new RenderThread(context(), width_, height_));
+  connect(renderer_.get(), &RenderThread::onDidReadyData, this, [this]() {
     update();
   });
 
@@ -83,7 +83,7 @@ void RendererView::initializeGL() {
 }
 
 void RendererView::resizeGL(int w, int h) {
-  glViewport(0,0,w,h);
+  // glViewport(0,0,w,h);
 }
 
 void RendererView::paintGL() {

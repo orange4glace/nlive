@@ -7,7 +7,7 @@
 #include <QOpenGLWidget>
 
 #include "base/common/sig.h"
-#include "renderer/video_renderer/renderer.h"
+#include "renderer/video_renderer/render_thread.h"
 #include "model/sequence/sequence.h"
 
 namespace nlive {
@@ -23,7 +23,7 @@ private:
   int width_, height_;
   bool initialized_;
 
-  sptr<Renderer> renderer_;
+  sptr<RenderThread> renderer_;
 
   GLuint vert_shader_;
   GLuint frag_shader_;

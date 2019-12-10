@@ -19,72 +19,14 @@ namespace nlive {
 
 namespace video_renderer {
 
-// struct RenderTexture {
-//   sptr<QMutexLocker> lock;
-//   GLuint buffer;
-//   GLuint texture;
-
-//   inline RenderTexture() {}
-// };
-
-class Renderer : public QThread {
-  Q_OBJECT
-
-private:
-  int width_;
-  int height_;
-
-  QOpenGLContext* target_gl_;
-  // sptr<QOpenGLContext> gl_;
-  QOpenGLContext* gl_;
-  QOffscreenSurface* surface_;
-  sptr<RenderSharingContext> sharing_ctx_;
-  sptr<RendererContext> renderer_ctx_;
-
-  sptr<CommandBuffer> current_command_buffer_;
-
-  QMutex command_buffer_mutex_;
-  QWaitCondition command_buffer_wait_;
-
-  QMutex buffer_swap_mutex_;
-  
-  GLuint vert_shader_;
-  GLuint frag_shader_;
-  GLuint program_;
-  GLuint position_loc_;
-  GLuint texCoord_loc_;
-  GLuint image_loc_;
-  GLuint position_buffer_;
-  GLuint texCoord_buffer_;
-  GLuint tex_;
-  
-  bool closed_;
-
-protected:
-  void run() override;
-
+class Renderer {
 public:
-  Renderer(
-    QOpenGLContext* target_gl,
-    int width, int height,
-    size_t texture_pool_size = 2);
-  ~Renderer();
+  Renderer() = default;
 
-
-  void render(sptr<CommandBuffer> command_buffer);
-  // std::unique_ptr<RenderTexture> getRenderData();
-  void close();
-
-  inline sptr<RendererContext> context() {
-    return renderer_ctx_;
-  }
-
-  inline QMutex* buffer_swap_mutex() {
-    return &buffer_swap_mutex_;
-  }
-
-signals:
-  void onDidReadyData();
+  void render(
+    sptr<RendererContext> renderer_context,
+    RenderTexture& render_texture,
+    sptr<CommandBuffer> command_buffer);
 
 };
 

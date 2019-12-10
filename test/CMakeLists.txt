@@ -10,6 +10,7 @@ set(NLIVE_TEST_SOURCES
   serialize/effect.cpp
   serialize/storage_item.cpp
   platform/context_key.cpp
+  encoder/encoder_test.cpp
 )
 
 add_executable(${BINARY}

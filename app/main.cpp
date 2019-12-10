@@ -4,6 +4,7 @@
 #include "base/common/memory.h"
 #include "browser/main_window.h"
 #include "browser/widgets_service.h"
+#include <qopengl.h>
 
 int main(int argc, char *argv[])
 {

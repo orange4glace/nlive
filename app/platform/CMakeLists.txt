@@ -7,6 +7,7 @@ add_subdirectory(resource)
 add_subdirectory(undo)
 add_subdirectory(context_key)
 add_subdirectory(commands)
+add_subdirectory(encoder)
 # add_subdirectory(menu_bar)
 
 set(NLIVE_SOURCES

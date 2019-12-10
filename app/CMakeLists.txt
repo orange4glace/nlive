@@ -37,7 +37,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} BEFORE
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
   PRIVATE
-  OpenGL::GL
+  # OpenGL::GL
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
@@ -62,7 +62,7 @@ target_include_directories(nlive_test_lib BEFORE
 
 target_link_libraries(nlive_test_lib
   PRIVATE
-  OpenGL::GL
+  # OpenGL::GL
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets

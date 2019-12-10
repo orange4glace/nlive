@@ -25,9 +25,12 @@ SequenceRenderer::SequenceRenderer(
   QOpenGLContext* target_gl) :
   sequence_(sequence),
   target_gl_(target_gl) {
-  renderer_ = sptr<Renderer>(new Renderer(target_gl, sequence->width(), sequence->height()));
+  if (target_gl == nullptr) {
+    target_gl_ = new QOpenGLContext(this);
+  }
+  renderer_ = sptr<RenderThread>(new RenderThread(target_gl_, sequence->width(), sequence->height()));
   
-  connect(renderer_.get(), &Renderer::onDidReadyData, this, [this]() {
+  connect(renderer_.get(), &RenderThread::onDidReadyData, this, [this]() {
     emit onDidReadyData();
   });
 
@@ -42,6 +45,10 @@ SequenceRenderer::~SequenceRenderer() {
 // std::unique_ptr<RenderTexture> SequenceRenderer::getRenderData() {
 //   return std::move(renderer_->getRenderData());
 // }
+
+sptr<Sequence> SequenceRenderer::sequence() {
+  return sequence_;
+}
 
 void SequenceRenderer::initialize() {
   auto gf = target_gl_->functions();
@@ -89,8 +96,8 @@ void SequenceRenderer::initialize() {
   gf->glGenTextures(1, &tex_);
 }
 
-void SequenceRenderer::render() {
-  auto command_buffer = sequence_->renderVideo(sequence_->current_time());
+void SequenceRenderer::render(int64_t timecode) {
+  auto command_buffer = sequence_->renderVideo(timecode);
   renderer_->render(command_buffer);
 }
 

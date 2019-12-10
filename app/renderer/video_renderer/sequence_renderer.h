@@ -6,7 +6,7 @@
 #include <QOffscreenSurface>
 
 #include "base/common/sig.h"
-#include "renderer/video_renderer/renderer.h"
+#include "renderer/video_renderer/render_thread.h"
 #include "model/sequence/sequence.h"
 
 namespace nlive {
@@ -22,7 +22,7 @@ private:
   sptr<Sequence> sequence_;
   QOpenGLContext* target_gl_;
 
-  sptr<Renderer> renderer_;
+  sptr<RenderThread> renderer_;
 
 public:
   SequenceRenderer(
@@ -31,9 +31,10 @@ public:
   ~SequenceRenderer();
 
   // std::unique_ptr<RenderTexture> getRenderData();
+  sptr<Sequence> sequence();
   void initialize();
   void paint();
-  void render();
+  void render(int64_t timecode);
 
 signals:
   void onDidReadyData();

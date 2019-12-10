@@ -4,6 +4,7 @@ add_subdirectory(command)
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   renderer/video_renderer/shader_program.h
+  renderer/video_renderer/surface_provider.h
   renderer/video_renderer/renderer.h
   renderer/video_renderer/renderer.cpp
   renderer/video_renderer/render_sharing_context.h
@@ -18,6 +19,10 @@ set(NLIVE_SOURCES
   renderer/video_renderer/video_render_command.h
   renderer/video_renderer/command_buffer.h
   renderer/video_renderer/command_buffer.cpp
+  renderer/video_renderer/render_thread.h
+  renderer/video_renderer/render_thread.cpp
+  renderer/video_renderer/render_sync.h
+  renderer/video_renderer/render_sync.cpp
   renderer/video_renderer/renderer_view.h
   renderer/video_renderer/renderer_view.cpp
   renderer/video_renderer/sequence_renderer.h

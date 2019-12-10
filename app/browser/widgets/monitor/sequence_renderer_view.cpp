@@ -28,6 +28,7 @@ void SequenceRendererView::scheduleRender() {
 
 void SequenceRendererView::initializeGL() {
   initializeOpenGLFunctions();
+  qDebug() << context()->format();
   renderer_ = new video_renderer::SequenceRenderer(sequence_, context());
   connect(
     renderer_,

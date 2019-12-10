@@ -78,6 +78,7 @@ public:
   void removeTrackAt(int index);
   sptr<Track> getTrackAt(int index);
 
+  void setSize(int width, int height);
   void setTimeBase(Rational time_base);
   void setCurrentTime(int64_t value);
   void setDuration(int64_t value);

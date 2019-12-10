@@ -34,7 +34,7 @@ void SequencePlayable::setVideoRenderer(video_renderer::SequenceRenderer* render
 
 void SequencePlayable::onInvalidate() {
   if (playing()) return;
-  if (sequence_video_renderer_) sequence_video_renderer_->render();
+  if (sequence_video_renderer_) sequence_video_renderer_->render(sequence_->current_time());
   audio_sequence_renderer_->render();
 }
 
@@ -54,7 +54,7 @@ void SequencePlayable::playingCallback(int64_t elapsed_time) {
     tick_flag_ = true;
     sequence_->setCurrentTime(started_timecode_ + elapsed_timecode);
     tick_flag_ = false;
-    if (sequence_video_renderer_) sequence_video_renderer_->render();
+    if (sequence_video_renderer_) sequence_video_renderer_->render(sequence_->current_time());
     playing_timecode_ = timecode;
   }
 }

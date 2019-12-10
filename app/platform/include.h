@@ -32,6 +32,9 @@ class IThemeService;
 class IUndoStack;
 class UndoCommand;
 
+// Encoder
+class IEncodingService;
+
 }
 
 #endif
