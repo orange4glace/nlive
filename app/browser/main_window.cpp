@@ -95,7 +95,6 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
 
   BrowserCommand::install();
 
-  MenuRegistry::instance()->appendMenuItem("File", MenuItemable::createMenuItem(ICommandAction("a", L"alleh"), "abc", 0));
   auto menu_bar_control = new NativeMenuBarControl(this, menu_service, nullptr);
 
   // task_service->setParent(this);

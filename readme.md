@@ -1,5 +1,7 @@
 # Nlive Video Editor
 
+![image](./images/image.png)
+
 Nlive is a free, open-source video editor for Windows, macOS and Linux.
 
 Nlive is succeed to [Olive](https://github.com/orange4glace/olive), which is also a non-linear video editor, based on Electron. On the other hand, Nlive is built on Qt5.

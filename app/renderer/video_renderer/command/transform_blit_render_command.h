@@ -51,7 +51,7 @@ public:
       1.0f, 0.0f,
       1.0f, 1.0f
     };
-    gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)texCoord, GL_DYNAMIC_DRAW);
+    gf->glBufferData(GL_ARRAY_BUFFER, 2 * 6 * 4, (void*)texCoord, GL_DYNAMIC_DRAW);
     gf->glEnableVertexAttribArray(texture_shader->texCoord());
     gf->glVertexAttribPointer(texture_shader->texCoord(), 2, GL_FLOAT, false, 0, (void*)0);
     gf->glBindBuffer(GL_ARRAY_BUFFER, texture_shader->position_buffer());
@@ -68,7 +68,7 @@ public:
       x2, y1,
       x2, y2
     };
-    gf->glBufferData(GL_ARRAY_BUFFER, 4 * 12, (void*)position, GL_DYNAMIC_DRAW);
+    gf->glBufferData(GL_ARRAY_BUFFER, 2 * 6 * 4, (void*)position, GL_DYNAMIC_DRAW);
     gf->glEnableVertexAttribArray(texture_shader->position());
     gf->glVertexAttribPointer(texture_shader->position(), 2, GL_FLOAT, false, 0, (void*)0);
     gf->glDrawArrays(GL_TRIANGLES, 0, 6);

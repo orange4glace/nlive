@@ -86,6 +86,10 @@ public:
     [this]() {
       updateAll();
   })));
+  sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+    [this]() {
+      updateAll();
+    })));
 
   setBorder(Div::BOTTOM, 1, theme_service->getTheme().surfaceBrightColor());
   theme_service->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
