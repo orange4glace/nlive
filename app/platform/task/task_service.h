@@ -2,16 +2,16 @@
 #define NLIVE_TASK_SERVICE_H_
 
 #include <functional>
-#include <QObject>
 #include <QSharedPointer>
 #include "base/common/sig.h"
+#include "platform/service/service.h"
 
 namespace nlive {
 
 class Task;
 
-class ITaskService : public QObject {
-  Q_OBJECT
+class ITaskService : public IService {
+DECLARE_SERVICE("nlive.platform.services.TaskService")
 
 protected:
   inline ITaskService() {}

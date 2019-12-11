@@ -1,8 +1,13 @@
 #include "browser/commands.h"
 
+#include <QDialog>
+#include <QFileDialog>
 #include "platform/action/actions.h"
-#include "browser/services/projects/projects_service.h"
+#include "platform/encoder/encoding_service_impl.h"
 #include "platform/logger/logger.h"
+#include "model/storage/sequence_storage_item.h"
+#include "browser/services/projects/projects_service.h"
+#include "browser/services/sequences/sequences_service.h"
 
 namespace nlive {
 
@@ -27,10 +32,8 @@ void BrowserCommand::regist() {
 }
 
 void BrowserCommand::install() {
-  {
-    auto command = new SaveCommand();
-    command->regist();
-  }
+  { auto command = new SaveCommand(); command->regist(); }
+  { auto command = new EncodeCommand(); command->regist(); }
 }
 
 SaveCommand::SaveCommand() :
@@ -48,6 +51,42 @@ SaveCommand::SaveCommand() :
 void SaveCommand::runCommand(sptr<ServiceLocator> service_locator, ICommandParam* param) {
   auto projects_service = service_locator->getService<IProjectsService>(IProjectsService::ID);
   spdlog::get(LOGGER_DEFAULT)->info("{}", projects_service->target_project() ? "Exist" : "Non-exist");
+}
+
+class EncodeDialog : public QDialog {
+
+private:
+  sptr<EncodingTask> task_;
+
+public:
+  EncodeDialog(sptr<EncodingTask> task) :
+    task_(task) {
+
+  }
+
+};
+
+EncodeCommand::EncodeCommand() :
+  BrowserCommand(ID, {
+    ICommandMenubarOptions{
+      "File",
+      "project",
+      0,
+      L"Encode"
+    }
+  }) {
+
+}
+
+void EncodeCommand::runCommand(sptr<ServiceLocator> service_locator, ICommandParam* param) {
+  auto sequences_service = service_locator->getService<SequencesService>(SequencesService::ID);
+  auto encoding_service = service_locator->getService<IEncodingService>(IEncodingService::ID);
+  auto ssi = sequences_service->target_sequence();
+  if (!ssi) return;
+  auto sequence = ssi->sequence();
+  auto filename = QFileDialog::getSaveFileName().toStdWString();
+  qDebug() << encoding_service.get() << ssi.get() << sequence.get();
+  encoding_service->encode(sequence, filename);
 }
 
 }

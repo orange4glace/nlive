@@ -9,6 +9,7 @@
 #include "platform/task/task.h"
 #include "platform/logger/logger.h"
 #include "platform/action/menu_service.h"
+#include "platform/encoder/encoding_service_impl.h"
 
 #include "model/sequence/sequence.h"
 #include "model/sequence/track.h"
@@ -31,6 +32,7 @@
 #include "browser/services/audio_flaty/audio_flaty_service.h"
 #include "browser/menu_bar/qt/menu_bar_control.h"
 #include "browser/services/commands/command_service.h"
+#include "browser/services/sequences/sequences_service.h"
 
 #include "renderer/audio_renderer/test_renderer.h"
 #include "renderer/audio_renderer/sequence_renderer.h"
@@ -64,27 +66,32 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
 
   ThemeService::Initialize();
   TimelineWidgetService::Initialize();
-  auto task_service = new sptr<ITaskService>(new TaskService());
+  auto task_service = sptr<ITaskService>(new TaskService());
   auto theme_service = ThemeService::instance();
   auto projects_service = sptr<IProjectsService>(new ProjectsService());
   auto timeline_widget_service = TimelineWidgetService::instance();
-  auto resource_service = new ResourceService(*task_service);
+  auto resource_service = new ResourceService(task_service);
   auto import_service = new ImportService(resource_service);
   auto memento_service = new sptr<IMementoService>(new InMemoryMementoService());
   auto play_service = new sptr<PlayService>(new PlayService(this));
-  auto audio_flaty_service = sptr<AudioFlatyService>(new AudioFlatyService(projects_service, *task_service));
+  auto audio_flaty_service = sptr<AudioFlatyService>(new AudioFlatyService(projects_service, task_service));
   auto command_service = sptr<ICommandService>(new CommandService(service_locator_));
   auto menu_service = sptr<IMenuService>(new MenuService(command_service));
+  auto encoding_service = sptr<IEncodingService>(new EncodingService(task_service));
 
   auto s_resource_service = new sptr<ResourceService>(resource_service);
   auto s_import_service = new sptr<ImportService>(import_service);
+  auto sequences_service = sptr<SequencesService>(new SequencesService());
 
+  service_locator_->registerService(task_service);
   service_locator_->registerService(theme_service);
   service_locator_->registerService(widgets_service);
   service_locator_->registerService(projects_service);
   service_locator_->registerService(audio_flaty_service);
   service_locator_->registerService(command_service);
   service_locator_->registerService(menu_service);
+  service_locator_->registerService(sequences_service);
+  service_locator_->registerService(encoding_service);
 
   BrowserCommand::install();
 
@@ -95,7 +102,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   resource_service->setParent(this);
 
   QStatusBar* status_bar = new QStatusBar(this);
-  auto t = new task_bar::TaskBar(this, *task_service, ThemeService::instance());
+  auto t = new task_bar::TaskBar(this, task_service, ThemeService::instance());
   status_bar->addPermanentWidget(t, 1000);
   setStatusBar(status_bar);
   status_bar->show();
@@ -121,7 +128,7 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   widgets_service->addWidget(project_widget);
   project_widget->setDirectory(project->root_storage_directory());
 
-  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service, projects_service);
+  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service, projects_service, sequences_service);
   // timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
   widgets_service->addWidget(timeline_widget);

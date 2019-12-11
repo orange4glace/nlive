@@ -63,7 +63,7 @@ TEST(Encoder, basic) {
     seq->addTrack();
     seq->getTrackAt(0)->addClip(vc);
     seq->setDuration(90);
-    EncodingTask task(seq, surface_provider, sf);
+    EncodingTask task(seq, L"test.mp4", surface_provider, sf);
     task.start();
     QMetaObject::invokeMethod(QApplication::instance(), "quit", Qt::QueuedConnection);
   });

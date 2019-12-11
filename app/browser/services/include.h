@@ -1,7 +1,7 @@
 #ifndef NLIVE_BROWSER_SERVICES_INCLUDE_H_
 #define NLIVE_BROWSER_SERVICES_INCLUDE_H_
 
-namespace {
+namespace nlive {
 
 class IProjectsService;
 class PlayService;
@@ -15,6 +15,8 @@ class ContextKey;
 
 class CommandService;
 class AudioFlatyService;
+
+class SequencesService;
 
 }
 

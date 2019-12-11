@@ -27,9 +27,7 @@ RenderContext::~RenderContext() {
     SwrContext* ctx = kv.second.context;
     uint8_t* data = kv.second.out_data;
     swr_free(&ctx);
-    av_freep(&data[0]);
     av_freep(&data);
-    av_freep(&kv.second.flush_data[0]);
     av_freep(&kv.second.flush_data);
   }
   delete data_;

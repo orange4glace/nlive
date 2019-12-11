@@ -2,13 +2,14 @@
 #define NLIVE_TASK_SERVICE_IMPL_H_
 
 #include "platform/task/task_service.h"
+#include <QObject>
 #include <QThread>
 #include <QRunnable>
 #include <vector>
 
 namespace nlive {
 
-class TaskService : public ITaskService, public Sig {
+class TaskService : public QObject, public ITaskService, public Sig {
   Q_OBJECT
 
 private:

@@ -10,6 +10,7 @@
 #include "platform/include.h"
 #include "model/include.h"
 #include "browser/widgets/widget.h"
+#include "browser/services/include.h"
 #include "browser/services/play/play_service.h"
 #include "browser/services/projects/projects_service.h"
 
@@ -32,6 +33,7 @@ private:
   sptr<PlayService> play_service_;
   sptr<ITimelineWidgetService> timeline_widget_service_;
   sptr<IProjectsService> projects_service_;
+  sptr<SequencesService> sequences_service_;
 
   sptr<SequenceStorageItem> sequence_storage_item_;
   SequenceView* sequence_view_;
@@ -47,7 +49,8 @@ public:
     sptr<IThemeService> themeService,
     sptr<ITimelineWidgetService> timeline_widget_service,
     sptr<PlayService> play_service,
-    sptr<IProjectsService> projects_service);
+    sptr<IProjectsService> projects_service,
+    sptr<SequencesService> sequences_service);
 
   void setSequenceStorageItem(sptr<SequenceStorageItem> sequence_storage_item);
 

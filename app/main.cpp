@@ -1,13 +1,18 @@
 #include <QApplication>
 #include <any>
 
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/dict.h>
+}
 #include "base/common/memory.h"
 #include "browser/main_window.h"
 #include "browser/widgets_service.h"
-#include <qopengl.h>
 
 int main(int argc, char *argv[])
 {
+    av_register_all();
     QApplication a(argc, argv);
     
     auto widgets_service = new sptr<nlive::WidgetsService>(

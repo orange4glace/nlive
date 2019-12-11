@@ -43,6 +43,13 @@ public:
   void runCommand(sptr<ServiceLocator> service_locator, ICommandParam* param) override;
 };
 
+class EncodeCommand : public BrowserCommand {
+public:
+  inline static const std::string ID = "nlive.browser.command.Encode";
+  EncodeCommand();
+  void runCommand(sptr<ServiceLocator> service_locator, ICommandParam* param) override;
+};
+
 }
 
 #endif

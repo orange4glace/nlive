@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "platform/logger/logger.h"
+#include "platform/task/task_service.h"
 #include "model/sequence/sequence.h"
 
 namespace nlive {
@@ -30,10 +31,17 @@ static OutputStream* add_stream(sptr<Sequence> sequence, OutputStream* ost,
     spdlog::get(LOGGER_DEFAULT)->error("Could not alloc an encoding context");
     return nullptr;
   }
+  c->thread_count = 0;
   ost->enc = c;
 
+  const AVSampleFormat* supported_fmts = (*codec)->sample_fmts;
   switch((*codec)->type) {
   case AVMEDIA_TYPE_AUDIO:
+    while (*supported_fmts != AV_SAMPLE_FMT_NONE) {
+      qDebug() << *supported_fmts;
+      supported_fmts++;
+    }
+    // TODO : Check supported format
     c->sample_fmt = AV_SAMPLE_FMT_FLTP;
     c->sample_rate = sequence->sample_rate();
     c->bit_rate = 64000;
@@ -43,7 +51,7 @@ static OutputStream* add_stream(sptr<Sequence> sequence, OutputStream* ost,
     break;
   case AVMEDIA_TYPE_VIDEO:
     c->codec_id = codec_id;
-    c->bit_rate = 400000;
+    c->bit_rate = 761000;
     c->width = sequence->width();
     c->height = sequence->height();
     c->time_base = {1 , sequence->base_time()};
@@ -136,6 +144,9 @@ int EncodingTask::openAudio(AVFormatContext* oc, AVCodec* codec,
     nb_samples = sequence_->sample_rate();
   else
     nb_samples = c->frame_size;
+    
+  audio_render_context_ = std::make_shared<audio_renderer::RenderContext>(
+    AV_CH_LAYOUT_STEREO, AV_SAMPLE_FMT_FLT, sequence_->sample_rate(), nb_samples);
 
   ost->frame = alloc_audio_frame(c->sample_fmt, c->channel_layout,
       c->sample_rate, nb_samples);
@@ -143,12 +154,13 @@ int EncodingTask::openAudio(AVFormatContext* oc, AVCodec* codec,
     spdlog::get(LOGGER_DEFAULT)->error("Could not allocate audio frame: {}", ret);
     return -1;
   }
-  ost->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_FLTP, c->channel_layout,
-      c->sample_rate, nb_samples);
+  // TODO : Calibrate sample format, channel layout, ..
+  ost->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_FLT, c->channel_layout,
+      sequence_->sample_rate(), nb_samples);
   if (!ost->tmp_frame) {
     spdlog::get(LOGGER_DEFAULT)->error("Could not allocate tmp audio frame: {}", ret);
     return -1;
-  }
+  } 
 
   ret = avcodec_parameters_from_context(ost->st->codecpar, c);
   if (ret < 0) {
@@ -158,7 +170,7 @@ int EncodingTask::openAudio(AVFormatContext* oc, AVCodec* codec,
 
   ost->swr_ctx = swr_alloc_set_opts(NULL,
     c->channel_layout, c->sample_fmt, c->sample_rate,
-    c->channel_layout, c->sample_fmt, c->sample_rate, 0, 0);
+    c->channel_layout, AV_SAMPLE_FMT_FLT, sequence_->sample_rate(), 0, 0);
   if (!ost->swr_ctx) {
     spdlog::get(LOGGER_DEFAULT)->error("Could not allocate swrcontext");
     return -1;
@@ -215,13 +227,29 @@ static int writeFrame(AVFormatContext* fmt_ctx, const AVRational* time_base,
   return av_interleaved_write_frame(fmt_ctx, pkt);
 }
 
-static AVFrame* getAudioFrame(sptr<Sequence> sequence, OutputStream* ost) {
+static int c = 0;
+static AVFrame* getAudioFrame(sptr<Sequence> sequence, 
+    sptr<audio_renderer::RenderContext> render_context, OutputStream* ost) {
   AVFrame* frame = ost->tmp_frame;
-  
   if (av_compare_ts(
       ost->next_pts, ost->enc->time_base,
-      sequence->duration(), { 1, sequence->sample_rate() }) >= 0) {
+      sequence->duration(), { 1, sequence->base_time() }) >= 0) {
     return nullptr;
+  }
+
+  int start_frame = ost->next_pts;
+  int end_frame = start_frame + frame->nb_samples;
+  render_context->clearData();
+  auto command_buffer = sequence->renderAudio(start_frame, end_frame);
+  for (auto command : command_buffer->commands()) {
+    command->render(render_context);
+  }
+
+  int32_t *s = (int32_t*)render_context->data();
+  int32_t *d = (int32_t*)frame->data[0];
+  for (int j = 0; j < frame->nb_samples; j++) {
+      for (int i = 0; i < ost->enc->channels; i++)
+        *d++ = *s++;
   }
 
   frame->pts = ost->next_pts;
@@ -230,7 +258,9 @@ static AVFrame* getAudioFrame(sptr<Sequence> sequence, OutputStream* ost) {
   return frame;
 }
 
-static int writeAudioFrame(sptr<Sequence> sequence, AVFormatContext* oc, OutputStream* ost) {
+static int writeAudioFrame(sptr<Sequence> sequence, 
+    sptr<audio_renderer::RenderContext> render_context, AVFormatContext* oc,
+    OutputStream* ost) {
   int ret;
   int got_packet;
   int dst_nb_samples;
@@ -241,7 +271,7 @@ static int writeAudioFrame(sptr<Sequence> sequence, AVFormatContext* oc, OutputS
   av_init_packet(&pkt);
   c = ost->enc;
 
-  frame = getAudioFrame(sequence, ost);
+  frame = getAudioFrame(sequence, render_context, ost);
 
   if (frame) {
     dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
@@ -251,14 +281,14 @@ static int writeAudioFrame(sptr<Sequence> sequence, AVFormatContext* oc, OutputS
     ret = av_frame_make_writable(ost->frame);
     if (ret < 0) {
       spdlog::get(LOGGER_DEFAULT)->error("Could not make frame writable: {}", ret);
-      return -1;
+      return ret;
     }
 
     ret = swr_convert(ost->swr_ctx, ost->frame->data, dst_nb_samples,
         (const uint8_t**)frame->data, frame->nb_samples);
     if (ret < 0) {
       spdlog::get(LOGGER_DEFAULT)->error("Error while swr converting: {}", ret);
-      return -1;
+      return ret;
     }
     frame = ost->frame;
 
@@ -279,7 +309,7 @@ static int writeAudioFrame(sptr<Sequence> sequence, AVFormatContext* oc, OutputS
     }
   }
 
-  return !(frame || got_packet);
+  return (frame || got_packet) ? 0 : 1;
 }
 
 
@@ -327,15 +357,15 @@ void Bitmap2Yuv420p_calc2(uint8_t *destination, uint8_t *rgb, size_t width, size
 }
 
 static void fill_yuv_image(
-    video_renderer::RenderSync& renderer,
+    video_renderer::RenderSync* renderer,
     sptr<Sequence> sequence,
     AVFrame* pict, int frame_index, int width, int height) {
   uint8_t* data = new uint8_t[width * height * 3];
   uint8_t* yuv = new uint8_t[width * height + (width * height) / 2];
   auto rb = sequence->renderVideo(frame_index);
-  renderer.render(rb);
-  auto ctx = renderer.context();
-  renderer.readPixels(0, 0, ctx->width(), ctx->height(), GL_RGB, GL_UNSIGNED_BYTE, data);
+  renderer->render(rb);
+  auto ctx = renderer->context();
+  renderer->readPixels(0, 0, ctx->width(), ctx->height(), GL_RGB, GL_UNSIGNED_BYTE, data);
   Bitmap2Yuv420p_calc2(yuv, data, width, height);
   for (int y = 0; y < height; y ++) {
     for (int x = 0; x < width; x ++) {
@@ -353,7 +383,7 @@ static void fill_yuv_image(
 }
 
 static AVFrame* getVideoFrame(
-    video_renderer::RenderSync& renderer,
+    video_renderer::RenderSync* renderer,
     sptr<Sequence> sequence,
     OutputStream* ost) {
   int ret;
@@ -396,7 +426,7 @@ static AVFrame* getVideoFrame(
 }
 
 static bool writeVideoFrame(
-    video_renderer::RenderSync& renderer,
+    video_renderer::RenderSync* renderer,
     sptr<Sequence> sequence,
     AVFormatContext* oc, OutputStream* ost) {
   int ret;
@@ -439,6 +469,11 @@ static void closeStream(AVFormatContext* oc, OutputStream* ost) {
 }
 
 void EncodingTask::run() {
+
+  gl_ctx_ = new QOpenGLContext();
+  video_renderer_ = new video_renderer::RenderSync(surface_provider_,
+      surface_format_, gl_ctx_, sequence_->width(), sequence_->height());
+
   AVOutputFormat* fmt;
   AVFormatContext* oc;
   AVCodec *audio_codec, *video_codec;
@@ -447,11 +482,10 @@ void EncodingTask::run() {
   bool has_video = false, has_audio = false;
   bool encode_video = false, encode_audio = false;
   int ret;
-
-  avformat_alloc_output_context2(&oc, NULL, NULL, "test.mp4");
+  avformat_alloc_output_context2(&oc, NULL, NULL, std::string(filename_.begin(), filename_.end()).c_str());
   if (!oc) {
     spdlog::get(LOGGER_DEFAULT)->error("Could not deduce output format from file extension: using MPEG.");
-    avformat_alloc_output_context2(&oc, NULL, "mpeg", "test.mp4");
+    avformat_alloc_output_context2(&oc, NULL, "mpeg", std::string(filename_.begin(), filename_.end()).c_str());
   }
   if (!oc) {
     return;
@@ -477,9 +511,9 @@ void EncodingTask::run() {
   }
 
   if (!(fmt->flags & AVFMT_NOFILE)) {
-    ret = avio_open(&oc->pb, "test.mp4", AVIO_FLAG_WRITE);
+    ret = avio_open(&oc->pb, std::string(filename_.begin(), filename_.end()).c_str(), AVIO_FLAG_WRITE);
     if (ret < 0) {
-      spdlog::get(LOGGER_DEFAULT)->error("Could not open {}", "test.mp4");
+      spdlog::get(LOGGER_DEFAULT)->error("Could not open {}", std::string(filename_.begin(), filename_.end()).c_str());
       return;
     }
   }
@@ -490,6 +524,7 @@ void EncodingTask::run() {
     return;
   }
 
+  int progress_update_count = 0;
   while (encode_video || encode_audio) {
     if (encode_video &&
         (!encode_audio ||
@@ -498,7 +533,13 @@ void EncodingTask::run() {
       encode_video = !writeVideoFrame(video_renderer_, sequence_, oc, &video_st_);
     }
     else {
-      encode_audio = !writeAudioFrame(sequence_, oc, &audio_st_);
+      ret = writeAudioFrame(sequence_, audio_render_context_, oc, &audio_st_);
+      if (ret == 1) encode_audio = false;
+    }
+    if (progress_update_count ++ >= 100) {
+      qreal progress = audio_st_.next_pts / sequence_->sample_rate() * sequence_->base_time() / (qreal)sequence_->duration();
+      progress_update_count = 0;
+      setProgress(progress);
     }
   }
 
@@ -508,7 +549,6 @@ void EncodingTask::run() {
     closeStream(oc, &video_st_);
   if (has_audio)
     closeStream(oc, &audio_st_);
-  
 
   if (!(fmt->flags & AVFMT_NOFILE))
       avio_closep(&oc->pb);
@@ -517,16 +557,54 @@ void EncodingTask::run() {
 }
 
 EncodingTask::EncodingTask(sptr<Sequence> sequence,
+    std::wstring filename,
     sptr<video_renderer::ISurfaceProvider> surface_provider,
     QSurfaceFormat& surface_format) :
-  sequence_(sequence), gl_ctx_(), 
-  video_renderer_(surface_provider, surface_format, &gl_ctx_, sequence->width(), sequence->height()) {
+  sequence_(sequence), filename_(filename), surface_provider_(surface_provider),
+  surface_format_(surface_format) {
+  sequence->setDuration(600);
 }
 
-// sptr<Task> EncodingService::encode(sptr<Sequence> sequence) {
-  
-// }
 
+
+
+
+EncodingService::EncodingService(sptr<ITaskService> task_service) :
+  task_service_(task_service) {
+  surface_provider_ = std::make_shared<SurfaceProvider>();
+  surface_format_.setMajorVersion(3);
+  surface_format_.setMinorVersion(0);
+  surface_format_.setAlphaBufferSize(8);
+  surface_format_.setRedBufferSize(8);
+  surface_format_.setBlueBufferSize(8);
+  surface_format_.setGreenBufferSize(8);
+  surface_format_.setDepthBufferSize(8);
+  surface_format_.setSamples(0);
+}
+
+QSharedPointer<Task> EncodingService::encode(sptr<Sequence> sequence,  std::wstring filename) {
+  spdlog::get(LOGGER_DEFAULT)->info("[EncodingService] encode sequence: {}", sequence->id());
+  auto task = QSharedPointer<EncodingTask>
+      (new EncodingTask(sequence, filename, surface_provider_, surface_format_));
+  task_service_->queueTask(task, [](QSharedPointer<Task>){});
+  return task;
+}
+
+
+
+
+GUIThreadSurfaceProvider::GUIThreadSurfaceProvider() {
+}
+
+QSurface* GUIThreadSurfaceProvider::createSurface(const QSurfaceFormat& format) {
+  auto surface = new QOffscreenSurface();
+  surface->setFormat(format);
+  surface->create();
+  return surface;
+}
+void GUIThreadSurfaceProvider::releaseSurface(QSurface* surface) {
+  delete surface;
+}
 
 
 SurfaceProvider::SurfaceProvider() {
@@ -546,7 +624,6 @@ SurfaceProvider::SurfaceProvider() {
 }
 
 QSurface* SurfaceProvider::createSurface(const QSurfaceFormat& format) {
-  qDebug() << "Create surface requested";
   int surface_id = surface_id_++;
   std::unique_lock<std::mutex> lk(m_);
   emit createSurfaceRequested(surface_id, format);

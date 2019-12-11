@@ -9,6 +9,7 @@
 #include "platform/theme/themeservice.h"
 #include "browser/widgets/timeline/sequenceview.h"
 #include "browser/widgets/timeline/timeline_widget_service.h"
+#include "browser/services/sequences/sequences_service.h"
 
 #include <iostream>
 
@@ -23,10 +24,12 @@ TimelineWidget::TimelineWidget(
   sptr<IThemeService> theme_service,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<PlayService> play_service,
-  sptr<IProjectsService> projects_service) :
+  sptr<IProjectsService> projects_service,
+  sptr<SequencesService> sequences_service) :
   Widget(parent, theme_service),
   theme_service_(theme_service), play_service_(play_service),
   timeline_widget_service_(timeline_widget_service), projects_service_(projects_service),
+  sequences_service_(sequences_service),
   sequence_storage_item_(nullptr),
   sequence_view_(nullptr) {
   setTitleBarWidget(new QWidget());
@@ -47,14 +50,17 @@ void TimelineWidget::onFocused() {
   timeline_widget_service_->setCurrentWidget(this);
   if (sequence_storage_item_) {
     projects_service_->setTargetProject(sequence_storage_item_->project());
+    sequences_service_->setTargetSequence(sequence_storage_item_);
   }
   else {
     projects_service_->setTargetProject(nullptr);
+    sequences_service_->setTargetSequence(nullptr);
   }
 }
 
 void TimelineWidget::onBlured() {
   projects_service_->setTargetProject(nullptr);
+  sequences_service_->setTargetSequence(nullptr);
 }
 
 void TimelineWidget::setSequenceStorageItem(sptr<SequenceStorageItem> sequence_storage_item) {
@@ -67,6 +73,7 @@ void TimelineWidget::setSequenceStorageItem(sptr<SequenceStorageItem> sequence_s
     onDidChangeSequenceStorageItem(nullptr);
     if (focused()) {
       projects_service_->setTargetProject(nullptr);
+      sequences_service_->setTargetSequence(nullptr);
     }
     return;
   }
@@ -76,6 +83,7 @@ void TimelineWidget::setSequenceStorageItem(sptr<SequenceStorageItem> sequence_s
   sequence_view_->setGeometry(rect());
   if (focused()) {
     projects_service_->setTargetProject(sequence_storage_item_->project());
+    sequences_service_->setTargetSequence(sequence_storage_item_);
   }
   onDidChangeSequenceStorageItem(sequence_storage_item_);
 }

@@ -1,4 +1,5 @@
 add_subdirectory(widgets)
+add_subdirectory(sequences)
 add_subdirectory(projects)
 add_subdirectory(menu_bar)
 add_subdirectory(import)

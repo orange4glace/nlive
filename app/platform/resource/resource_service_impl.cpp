@@ -39,7 +39,6 @@ struct AudioMetadata {
 };
 
 VideoMetadata* findBestVideoMetadata(QString path) {
-  av_register_all();
   AVFormatContext* fmt_ctx = nullptr;
   AVDictionaryEntry* tag = nullptr;
   int ret;
@@ -77,7 +76,6 @@ VideoMetadata* findBestVideoMetadata(QString path) {
 }
 
 AudioMetadata* findBestAudioMetadata(QString path) {
-  av_register_all();
   AVFormatContext* fmt_ctx = nullptr;
   AVDictionaryEntry* tag = nullptr;
   int ret;

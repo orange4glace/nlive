@@ -4,8 +4,10 @@
 #include <mutex>
 #include <condition_variable>
 #include "platform/encoder/encoding_service.h"
+#include "platform/include.h"
 #include "platform/task/task.h"
 #include "renderer/video_renderer/render_sync.h"
+#include "renderer/audio_renderer/renderer.h"
 
 extern "C" {
 #include <libavutil/imgutils.h>
@@ -43,8 +45,13 @@ class EncodingTask : public Task {
 
 private:
   sptr<Sequence> sequence_;
-  QOpenGLContext gl_ctx_;
-  video_renderer::RenderSync video_renderer_;
+  std::wstring filename_;
+
+  sptr<video_renderer::ISurfaceProvider> surface_provider_;
+  QSurfaceFormat surface_format_;
+  QOpenGLContext* gl_ctx_;
+  video_renderer::RenderSync* video_renderer_;
+  sptr<audio_renderer::RenderContext> audio_render_context_;
 
   /* audio output */
   OutputStream audio_st_;
@@ -67,17 +74,33 @@ protected:
 
 public:
   EncodingTask(sptr<Sequence> sequence,
+      std::wstring filename,
       sptr<video_renderer::ISurfaceProvider> surface_provider,
       QSurfaceFormat& surface_format);
 
 };
 
-// class EncodingService : public IEncodingService {
+class EncodingService : public IEncodingService {
 
-// public:
-//   sptr<Task> encode(sptr<Sequence> sequence) override;
+private:
+  sptr<ITaskService> task_service_;
+  sptr<video_renderer::ISurfaceProvider> surface_provider_;
+  QSurfaceFormat surface_format_;
 
-// };
+public:
+  EncodingService(sptr<ITaskService> task_service);
+  QSharedPointer<Task> encode(sptr<Sequence> sequence, std::wstring filename) override;
+
+};
+
+class GUIThreadSurfaceProvider : public video_renderer::ISurfaceProvider {
+
+public:
+  GUIThreadSurfaceProvider();
+  QSurface* createSurface(const QSurfaceFormat& format) override;
+  void releaseSurface(QSurface* surface) override;
+
+};
 
 class SurfaceProvider : public QObject, public video_renderer::ISurfaceProvider {
   Q_OBJECT
