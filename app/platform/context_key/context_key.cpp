@@ -7,10 +7,96 @@
 
 namespace nlive {
 
+ContextKeyBooleanValue::ContextKeyBooleanValue(bool value) : value_(value) {
+
+}
+sptr<IContextKeyValue> ContextKeyBooleanValue::create(bool value) {
+  return sptr<IContextKeyValue>(new ContextKeyBooleanValue(value));
+}
+bool ContextKeyBooleanValue::defined() {
+  return value_;
+}
+bool ContextKeyBooleanValue::equals(sptr<IContextKeyValue> value) {
+  if (type() != value->type()) return false;
+  auto rhs = std::static_pointer_cast<ContextKeyBooleanValue>(value);
+  return value_ == rhs->value_;
+}
+int ContextKeyBooleanValue::compare(sptr<IContextKeyValue> value) {
+  auto at = type();
+  auto bt = value->type();
+  if (at != bt) return at - bt > 0 ? 1 : -1;
+  auto rhs = std::static_pointer_cast<ContextKeyBooleanValue>(value);
+  if (value_ == rhs->value_) return 0;
+  return value_ ? 1 : -1;
+}
+std::string ContextKeyBooleanValue::serialize() {
+  return value_ ? "true" : "false";
+}
+ContextKeyValueType ContextKeyBooleanValue::type() {
+  return ContextKeyValueTypeBoolean;
+}
+
+
+
+ContextKeyDefinedValue::ContextKeyDefinedValue() {
+
+}
+sptr<IContextKeyValue> ContextKeyDefinedValue::create() {
+  return sptr<IContextKeyValue>(new ContextKeyDefinedValue());
+}
+bool ContextKeyDefinedValue::defined() {
+  return true;
+}
+bool ContextKeyDefinedValue::equals(sptr<IContextKeyValue> value) {
+  return (type() == value->type());
+}
+int ContextKeyDefinedValue::compare(sptr<IContextKeyValue> value) {
+  auto at = type();
+  auto bt = value->type();
+  if (at != bt) return at - bt > 0 ? 1 : -1;
+  return 0;
+}
+std::string ContextKeyDefinedValue::serialize() {
+  return "true";
+}
+ContextKeyValueType ContextKeyDefinedValue::type() {
+  return ContextKeyValueTypeDefined;
+}
+
+
+ContextKeyStringValue::ContextKeyStringValue(std::string value) : value_(value) {
+
+}
+sptr<IContextKeyValue> ContextKeyStringValue::create(std::string value) {
+  return sptr<IContextKeyValue>(new ContextKeyStringValue(value));
+}
+bool ContextKeyStringValue::defined() {
+  return value_ != "";
+}
+bool ContextKeyStringValue::equals(sptr<IContextKeyValue> value) {
+  if (type() != value->type()) return false;
+  auto rhs = std::static_pointer_cast<ContextKeyStringValue>(value);
+  return value_ == rhs->value_;
+}
+int ContextKeyStringValue::compare(sptr<IContextKeyValue> value) {
+  auto at = type();
+  auto bt = value->type();
+  if (at != bt) return at - bt > 0 ? 1 : -1;
+  auto rhs = std::static_pointer_cast<ContextKeyStringValue>(value);
+  return value_.compare(rhs->value_);
+}
+std::string ContextKeyStringValue::serialize() {
+  return value_;
+}
+ContextKeyValueType ContextKeyStringValue::type() {
+  return ContextKeyValueTypeBoolean;
+}
+
+
 int cmp(const ContextKeyExprPtr& a, const ContextKeyExprPtr& b) {
   auto at = a->getType();
   auto bt = b->getType();
-  if (at != bt) return at - bt;
+  if (at != bt) return at - bt > 0 ? 1 : -1;
   switch (at) {
     case ContextKeyExprType::Defined:
       return std::static_pointer_cast<ContextKeyDefinedExpr>(a)->cmp(
@@ -18,11 +104,18 @@ int cmp(const ContextKeyExprPtr& a, const ContextKeyExprPtr& b) {
     case ContextKeyExprType::Not:
       return std::static_pointer_cast<ContextKeyNotExpr>(a)->cmp(
         std::static_pointer_cast<ContextKeyNotExpr>(b));
+    case ContextKeyExprType::Equals:
+      return std::static_pointer_cast<ContextKeyEqualsExpr>(a)->cmp(
+        std::static_pointer_cast<ContextKeyEqualsExpr>(b));
+    case ContextKeyExprType::NotEquals:
+      return std::static_pointer_cast<ContextKeyNotEqualsExpr>(a)->cmp(
+        std::static_pointer_cast<ContextKeyNotEqualsExpr>(b));
     case ContextKeyExprType::And:
       return std::static_pointer_cast<ContextKeyAndExpr>(a)->cmp(
         std::static_pointer_cast<ContextKeyAndExpr>(b));
+    default:
+      throw "ContextKeyExpr compare exception";
   }
-  throw "ContextKeyExpr compare exception";
 }
 
 struct cmpFunc {
@@ -34,7 +127,12 @@ struct cmpFunc {
 ContextKeyExprPtr ContextKeyExpr::has(std::string key) {
   return ContextKeyDefinedExpr::create(key);
 }
-// ContextKeyExprPtr ContextKeyExpr::equals(std::string key, std::any value) {}
+ContextKeyExprPtr ContextKeyExpr::equals(std::string key, sptr<IContextKeyValue> value) {
+  return ContextKeyEqualsExpr::create(key, value);
+}
+ContextKeyExprPtr ContextKeyExpr::notEquals(std::string key, sptr<IContextKeyValue> value) {
+  return ContextKeyNotEqualsExpr::create(key, value);
+}
 ContextKeyExprPtr ContextKeyExpr::not(std::string key) {
   return ContextKeyNotExpr::create(key);
 }
@@ -80,8 +178,9 @@ bool ContextKeyDefinedExpr::equals(sptr<ContextKeyExpr> other) const {
 }
 
 bool ContextKeyDefinedExpr::evaluate(sptr<IContext> context) const {
-  // TODO
-  return false;
+  auto value = context->getValue(key_);
+  if (!value) return false;
+  return value->defined();
 }
 
 std::string ContextKeyDefinedExpr::serialize() const {
@@ -107,56 +206,115 @@ ContextKeyExprPtr ContextKeyDefinedExpr::negate() const {
 
 
 
-// ContextKeyEqualsExpr::ContextKeyEqualsExpr(std::string key, std::any value) :
-//   key_(key), value_(value) {
+ContextKeyEqualsExpr::ContextKeyEqualsExpr(std::string key, sptr<IContextKeyValue> value) :
+  key_(key), value_(value) {
 
-// }
+}
 
-// sptr<ContextKeyExpr> ContextKeyEqualsExpr::create(std::string key, std::any value) {
-//   if (value.type() == typeid(bool)) {
-//     bool v = std::any_cast<bool>(value);
-//     if (v) return ContextKeyDefinedExpr::create(key);
-//   }
-//   return std::make_shared<ContextKeyEqualsExpr>(key, value);
-// }
+sptr<ContextKeyExpr> ContextKeyEqualsExpr::create(std::string key, sptr<IContextKeyValue> value) {
+  return sptr<ContextKeyExpr>(new ContextKeyEqualsExpr(key, value));
+}
 
-// ContextKeyExprType ContextKeyEqualsExpr::getType() const {
-//   return ContextKeyExprType::Equals;
-// }
+ContextKeyExprType ContextKeyEqualsExpr::getType() const {
+  return ContextKeyExprType::Equals;
+}
 
-// int ContextKeyEqualsExpr::cmp(sptr<ContextKeyEqualsExpr> other) const {
-//   return key_.compare(other->key_);
-// }
+int ContextKeyEqualsExpr::cmp(sptr<ContextKeyEqualsExpr> other) const {
+  auto kc = key_.compare(other->key_);
+  if (kc != 0) return kc;
+  auto vc = value_->compare(other->value_);
+  return vc;
+}
 
-// bool ContextKeyEqualsExpr::equals(sptr<ContextKeyExpr> other) const {
-//   if (other->getType() == ContextKeyExprType::Defined)
-//     return key_ == std::static_pointer_cast<ContextKeyEqualsExpr>(other)->key_;
-//   return false;
-// }
+bool ContextKeyEqualsExpr::equals(sptr<ContextKeyExpr> other) const {
+  if (other->getType() == ContextKeyExprType::Equals) {
+    auto rhs = std::static_pointer_cast<ContextKeyEqualsExpr>(other);
+    return (key_ == rhs->key_) && (value_->compare(rhs->value_) == 0);
+  }
+  return false;
+}
 
-// bool ContextKeyEqualsExpr::evaluate(sptr<IContext> context) const {
-//   // TODO
-//   return false;
-// }
+bool ContextKeyEqualsExpr::evaluate(sptr<IContext> context) const {
+  auto value = context->getValue(key_);
+  if (!value) return false;
+  return value->compare(value_) == 0;
+}
 
-// std::string ContextKeyEqualsExpr::serialize() const {
-//   return key_;
-// }
+std::string ContextKeyEqualsExpr::serialize() const {
+  return key_ + " == \"" + value_->serialize() + "\"";
+}
 
-// std::vector<std::string> ContextKeyEqualsExpr::keys() const {
-//   std::vector<std::string> vec;
-//   vec.push_back(key_);
-//   return vec;
-// }
+std::vector<std::string> ContextKeyEqualsExpr::keys() const {
+  std::vector<std::string> vec;
+  vec.push_back(key_);
+  return vec;
+}
 
-// ContextKeyExprPtr ContextKeyEqualsExpr::map(sptr<IContextKeyExprMapper> mapFunc) const {
-//   // TODO
-//   return nullptr;
-// }
+ContextKeyExprPtr ContextKeyEqualsExpr::map(sptr<IContextKeyExprMapper> mapFunc) const {
+  // TODO
+  return nullptr;
+}
 
-// ContextKeyExprPtr ContextKeyEqualsExpr::negate() const {
-  
-// }
+ContextKeyExprPtr ContextKeyEqualsExpr::negate() const {
+  return ContextKeyNotEqualsExpr::create(key_, value_);
+}
+
+
+
+
+
+ContextKeyNotEqualsExpr::ContextKeyNotEqualsExpr(std::string key, sptr<IContextKeyValue> value) :
+  key_(key), value_(value) {
+
+}
+
+sptr<ContextKeyExpr> ContextKeyNotEqualsExpr::create(std::string key, sptr<IContextKeyValue> value) {
+  return sptr<ContextKeyExpr>(new ContextKeyNotEqualsExpr(key, value));
+}
+
+ContextKeyExprType ContextKeyNotEqualsExpr::getType() const {
+  return ContextKeyExprType::NotEquals;
+}
+
+int ContextKeyNotEqualsExpr::cmp(sptr<ContextKeyNotEqualsExpr> other) const {
+  auto kc = key_.compare(other->key_);
+  if (kc != 0) return kc;
+  auto vc = value_->compare(other->value_);
+  return vc;
+}
+
+bool ContextKeyNotEqualsExpr::equals(sptr<ContextKeyExpr> other) const {
+  if (other->getType() == ContextKeyExprType::NotEquals) {
+    auto rhs = std::static_pointer_cast<ContextKeyNotEqualsExpr>(other);
+    return (key_ == rhs->key_) && (value_->compare(rhs->value_) == 0);
+  }
+  return false;
+}
+
+bool ContextKeyNotEqualsExpr::evaluate(sptr<IContext> context) const {
+  auto value = context->getValue(key_);
+  if (!value) return !value_->defined();
+  return value->compare(value_) != 0;
+}
+
+std::string ContextKeyNotEqualsExpr::serialize() const {
+  return key_ + " != \"" + value_->serialize() + "\"";
+}
+
+std::vector<std::string> ContextKeyNotEqualsExpr::keys() const {
+  std::vector<std::string> vec;
+  vec.push_back(key_);
+  return vec;
+}
+
+ContextKeyExprPtr ContextKeyNotEqualsExpr::map(sptr<IContextKeyExprMapper> mapFunc) const {
+  // TODO
+  return nullptr;
+}
+
+ContextKeyExprPtr ContextKeyNotEqualsExpr::negate() const {
+  return ContextKeyEqualsExpr::create(key_, value_);
+}
 
 
 
@@ -181,7 +339,7 @@ int ContextKeyNotExpr::cmp(sptr<ContextKeyNotExpr> other) const {
 }
 
 bool ContextKeyNotExpr::equals(sptr<ContextKeyExpr> other) const {
-  if (other->getType() == ContextKeyExprType::Defined)
+  if (other->getType() == ContextKeyExprType::Not)
     return key_ == std::static_pointer_cast<ContextKeyNotExpr>(other)->key_;
   return false;
 }

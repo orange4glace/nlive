@@ -2,39 +2,78 @@
 #define NLIVE_BROWSER_CONTEXT_KEY_H_
 
 #include <map>
+#include <memory>
+#include "base/common/sig.h"
 #include "platform/context_key/context_key.h"
 
 namespace nlive {
 
+struct SimpleContextKeyChangeEvent : IContextKeyChangeEvent {
+  const std::string key;
+  SimpleContextKeyChangeEvent(std::string key);
+  bool affectsSome(const std::set<std::string>& keys) override;
+};
+
+
 class Context : public IContext {
 
 private:
-  sptr<Context> parent_;
-  std::map<std::string, std::any> value_;
   int id_;
+  sptr<Context> parent_;
+  std::map<std::string, sptr<IContextKeyValue>> values_;
 
 public:
   Context(int id, sptr<Context> parent);
-  bool setValue(std::string key, std::any value);
+  bool setValue(std::string key, sptr<IContextKeyValue> value);
   bool removeValue(std::string key);
-  std::any getValue(std::string key) override;
+  sptr<IContextKeyValue> getValue(std::string key) override;
 
 };
 
-class AbstractContextKeyService : public IContextKeyService {
+class AbstractContextKeyService : public IContextKeyService, public Sig,
+    public std::enable_shared_from_this<AbstractContextKeyService> {
+
+private:
+  int my_context_id_;
 
 public:
-  sptr<IContextKey> createKey(std::string key, std::any default_value);
-  std::any getContextKeyValue(std::string key);
-  void setContext(std::string key, std::any value);
+  AbstractContextKeyService(int my_context_id);
+  
+  sptr<IContextKey> createKey(std::string key, sptr<IContextKeyValue> default_value);
+  sptr<IContextKeyValue> getContextKeyValue(std::string key);
+  void setContext(std::string key, sptr<IContextKeyValue> value);
   void removeContext(std::string key);
+  virtual sptr<Context> getContextValuesContainer(int context_id) = 0;
 
+  sig2_t<void (IContextKeyChangeEvent*)> onDidChangeContext;
+
+};
+
+class ContextKeyService : public AbstractContextKeyService {
+
+private:
+  sptr<Context> context_;
+
+public:
+  ContextKeyService();
+
+  sptr<Context> getContextValuesContainer(int context_id) override;
 };
 
 class ContextKey : public IContextKey {
 
 private:
+  sptr<AbstractContextKeyService> service_;
+  std::string key_;
+  sptr<IContextKeyValue> default_value_;
 
+public:
+  ContextKey(sptr<AbstractContextKeyService> service,
+    std::string key, sptr<IContextKeyValue> default_value);
+
+  void set(sptr<IContextKeyValue> value) override;
+  void reset() override;
+  sptr<IContextKeyValue> get() override;
 
 };
 

@@ -7,6 +7,7 @@ add_subdirectory(play)
 add_subdirectory(memento)
 add_subdirectory(audio_flaty)
 add_subdirectory(commands)
+add_subdirectory(context_key)
 
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
