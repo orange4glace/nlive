@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/browser">
     <file>play-button.svg</file>
+    <file alias="FontAwesome.otf">fa.otf</file>
   </qresource>
 </RCC>

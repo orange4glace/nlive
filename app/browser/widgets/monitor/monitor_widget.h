@@ -37,7 +37,7 @@ private:
   SequenceView* sequence_view_;
   
   sptr<ActionContext> action_context_;
-  ActionBar* action_bar_;
+  std::unique_ptr<ActionBar> action_bar_;
 
   void handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget);
   void handleDidChangeSequenceView(timeline_widget::SequenceView* sequence_view);

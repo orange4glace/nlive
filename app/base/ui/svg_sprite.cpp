@@ -76,6 +76,11 @@ SvgSprite::SvgSprite(QString path, int width, int height, std::string color) :
 
 }
 
+SvgSprite::SvgSprite(QString path, int width, int height, QColor color) :
+  SvgSprite(path, width, height, color.name(QColor::HexRgb).toStdString()) {
+
+}
+
 SvgSprite::~SvgSprite() {
   delete pixmap_;
 }

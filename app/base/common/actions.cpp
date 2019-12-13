@@ -4,7 +4,9 @@ namespace nlive {
 
 Action::Action(std::string id, std::wstring label, bool enabled) :
   id_(id), label_(label), enabled_(enabled) {
-
+  tooltip_ = L"";
+  icon_ = L"";
+  checked_ = false;
 }
 
 void Action::run(IActionRunParam* param) {}
@@ -27,6 +29,14 @@ void Action::setTooltip(std::wstring value) {
 
 std::wstring Action::tooltip() const {
   return tooltip_;
+}
+
+void Action::setIcon(std::wstring value) {
+  icon_ = value;
+}
+
+std::wstring Action::icon() const {
+  return icon_;
 }
 
 void Action::setEnabled(bool value) {

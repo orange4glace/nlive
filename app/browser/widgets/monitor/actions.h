@@ -4,11 +4,15 @@
 #include <QDebug>
 #include <QObject>
 #include <QAction>
+#include <QWidget>
 #include "base/common/memory.h"
 #include "base/common/sig.h"
+#include "base/common/actions.h"
+#include "base/layout/action_bar.h"
 #include "model/sequence/sequence.h"
 #include "browser/widgets/timeline/sequence_playable.h"
 #include "browser/services/play/play_service.h"
+#include "platform/include.h"
 
 namespace nlive {
 
@@ -41,43 +45,27 @@ public:
 
 };
 
-class Action : public QAction, public Sig {
+class MonitorWidgetAction : public Action {
 
 protected:
   sptr<ActionContext> context_;
 
 public:
-  inline Action(QObject* parent, sptr<ActionContext> context) :
-    QAction(parent), context_(context) {
-
-  }
+  MonitorWidgetAction(std::string id, std::wstring label,
+      sptr<ActionContext> context);
 
 };
 
-class PlayPauseAction : public Action {
+class ToggleAction : public MonitorWidgetAction {
 
 private:
   sptr<PlayService> play_service_;
   sptr<SequencePlayable> playable_;
 
 public:
-  inline PlayPauseAction(QObject* parent,
-    sptr<ActionContext> context,
-    sptr<PlayService> play_service) :
-    Action(parent, context), play_service_(play_service), playable_(nullptr) {
-    setEnabled(playable_ != nullptr);
-    context->onDidChangeSequencePlayable.connect(SIG2_TRACK(
-      sig2_t<void (sptr<SequencePlayable>)>::slot_type([this](sptr<SequencePlayable> playable) {
-        playable_ = playable;
-        setEnabled(playable_ != nullptr);
-      })
-    ));
+  ToggleAction(sptr<ActionContext> context, sptr<PlayService> play_service);
 
-    connect(this, &QAction::triggered, [this]() {
-      Q_ASSERT(playable_ != nullptr);
-      play_service_->toggle(playable_);
-    });
-  }
+  void run(IActionRunParam* param) override;
 
 };
 

@@ -110,7 +110,7 @@ MenuItemActionable MenuItemActionable::createMenuItemAction(ICommandAction comma
 
 
 sptr<MenuRegistry> MenuRegistry::instance_ = 
-  sptr<MenuRegistry>(new MenuRegistry());
+    sptr<MenuRegistry>(new MenuRegistry());
 
 MenuRegistry::MenuRegistry() {
 

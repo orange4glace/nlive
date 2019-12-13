@@ -39,8 +39,9 @@ private:
 public:
   AbstractContextKeyService(int my_context_id);
   
-  sptr<IContextKey> createKey(std::string key, sptr<IContextKeyValue> default_value);
-  sptr<IContextKeyValue> getContextKeyValue(std::string key);
+  sptr<IContextKey> createKey(std::string key, sptr<IContextKeyValue> default_value) override;
+  sptr<IContextKeyValue> getContextKeyValue(std::string key) override;
+  bool contextMatchesRules(ContextKeyExprPtr rules) override;
   void setContext(std::string key, sptr<IContextKeyValue> value);
   void removeContext(std::string key);
   virtual sptr<Context> getContextValuesContainer(int context_id) = 0;

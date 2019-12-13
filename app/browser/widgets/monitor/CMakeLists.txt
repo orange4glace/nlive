@@ -1,6 +1,7 @@
 set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   browser/widgets/monitor/actions.h
+  browser/widgets/monitor/actions.cpp
   browser/widgets/monitor/monitor_widget.h
   browser/widgets/monitor/monitor_widget.cpp
   browser/widgets/monitor/sequence_view.h

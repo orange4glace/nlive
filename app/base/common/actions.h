@@ -16,6 +16,7 @@ public:
   virtual std::string id() const = 0;
   virtual std::wstring label() const = 0;
   virtual std::wstring tooltip() const = 0;
+  virtual std::wstring icon() const = 0;
   virtual bool enabled() const = 0;
   virtual bool checked() const = 0;
   virtual void run(IActionRunParam* param) = 0;
@@ -28,6 +29,7 @@ private:
   std::string id_;
   std::wstring label_;
   std::wstring tooltip_;
+  std::wstring icon_;
   bool enabled_;
   bool checked_;
 
@@ -41,6 +43,8 @@ public:
   std::wstring label() const override;
   void setTooltip(std::wstring value);
   std::wstring tooltip() const override;
+  void setIcon(std::wstring value);
+  std::wstring icon() const override;
   void setEnabled(bool value);
   bool enabled() const override;
   void setChecked(bool value);

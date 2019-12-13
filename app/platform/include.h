@@ -11,6 +11,7 @@ class IMenu;
 class ICommandService;
 class IContext;
 class IContextKey;
+class RawContextKey;
 struct IContextKeyChangeEvent;
 class IContextKeyService;
 

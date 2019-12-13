@@ -2,65 +2,112 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QPainterPath>
+#include <QFontDatabase>
+#include "base/common/actions.h"
 
+#include <iostream>
 namespace nlive {
 
 namespace {
 enum ActionBarItemViewState { Unchecked, Checked, Pressed, };
 }
 
-ActionBarItemView::ActionBarItemView(QWidget* parent, QAction* action,
-  QString svg_path, sptr<IThemeService> theme_service) :
-  QPushButton(parent), action_(action) {
+ActionBarItemView::ActionBarItemView(QWidget* parent, sptr<IAction> action,
+  sptr<IThemeService> theme_service) :
+  QPushButton(parent), theme_service_(theme_service), action_(action) {
+  setMouseTracking(true);
+  width_ = height_ = 0;
+  hover_ = false;
 
+  if (auto a = std::dynamic_pointer_cast<Action>(action)) {
+    a->onDidChange.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
+      [this]() {
+        update();
+      })));
+  }
   connect(this, &QPushButton::pressed, [this]() {
-    if (action_->isEnabled()) {
-      action_->trigger();
-    }
-  });
-  connect(this, &QPushButton::clicked, [this]() {
     pressed_ = true;
     update();
   });
-  connect(action, &QAction::changed, [this]() {
-    update();
+  connect(this, &QPushButton::clicked, [this]() {
+    if (action_->enabled()) {
+      action_->run(nullptr);
+    }
   });
-
-  auto theme = theme_service->getTheme();
-  normal_sprite_ = new SvgSprite(svg_path);
-  normal_sprite_->setColor(theme.buttonEnabled());
-  highlighted_sprite_ = new SvgSprite(svg_path);
-  highlighted_sprite_->setColor(theme.buttonHighlighted());
-  disabled_sprite_ = new SvgSprite(svg_path);
-  disabled_sprite_->setColor(theme.buttonDisabled());
 }
 
 void ActionBarItemView::setSize(int width, int height) {
-  normal_sprite_->resize(width, height);
-  highlighted_sprite_->resize(width, height);
-  disabled_sprite_->resize(width, height);
+  width_ = width;
+  height_ = height;
 }
 
+void ActionBarItemView::setPadding(int padding) {
+  padding_ = padding;
+  update();
+}
+
+void ActionBarItemView::enterEvent(QEvent* e) {
+  if (!hover_) {
+    hover_ = true;
+    update();
+  }
+}
+
+void ActionBarItemView::leaveEvent(QEvent* e) {
+  if (hover_) {
+    hover_ = false;
+    update();
+  }
+}
+
+static int FA = -1;
 void ActionBarItemView::paintEvent(QPaintEvent* e) {
   QPainter p(this);
-  ActionBarItemViewState state;
-  if (!action_->isEnabled()) {
-    p.drawPixmap(rect(), disabled_sprite_->pixmap());
-    return;
+  auto theme = theme_service_->getTheme();
+  if (hover_) {
+    QPainterPath path;
+    path.addRoundedRect(rect(), 3, 3);
+    QPen pen(theme.surfaceDarkColor());
+    p.setPen(pen);
+    p.fillPath(path, theme.surfaceDarkColor());
   }
-  if (pressed_) state = action_->isChecked() ? Unchecked : Checked;
-  else state = action_->isChecked() ? Checked : Unchecked;
-  if (state == Checked) {
-    p.drawPixmap(rect(), highlighted_sprite_->pixmap());
+  QRect icon_rect = rect().marginsRemoved(QMargins(padding_, padding_, padding_, padding_));
+  QPen pen;
+  QFont font;
+  font.setPixelSize(width_);
+  font.setFamily("Font Awesome 5 Free Solid");
+  ActionBarItemViewState state;
+  if (!action_->enabled()) {
+    pen.setColor(theme.buttonDisabled());
   }
   else {
-    p.drawPixmap(rect(), normal_sprite_->pixmap());
+    // if (pressed_) state = action_->checked() ? Unchecked : Checked;
+    // else state = action_->checked() ? Checked : Unchecked;
+    // if (state == Checked) {
+    //   pen.setColor(theme.buttonHighlighted());
+    // }
+    // else {
+    //   pen.setColor(theme.buttonEnabled());
+    // }
+    if (hover_) {
+      pen.setColor(theme.buttonHovered());
+    }
+    else {
+      pen.setColor(theme.buttonEnabled());
+    }
   }
+  p.setFont(font);
+  p.setPen(pen);
+  p.drawText(rect(), Qt::AlignCenter, QString::fromStdWString(action_->icon()));
 }
 
 ActionBar::ActionBar(QWidget* parent, sptr<IThemeService> theme_service) :
-  Div(parent), theme_service_(theme_service), icon_size_(20, 20) {
-
+  Div(parent), theme_service_(theme_service), icon_size_(20, 20), icon_padding_(8) {
+  if (FA == -1) {
+    FA = QFontDatabase::addApplicationFont(":/browser/FontAwesome.otf");
+    qDebug() << "FA = " << FA;
+  }
 }
 
 void ActionBar::contentRectUpdated() {
@@ -69,12 +116,14 @@ void ActionBar::contentRectUpdated() {
 
 void ActionBar::doLayout() {
   int x = 0, y = 0;
+  int icon_width = icon_size_.width() + icon_padding_;
+  int icon_height = icon_size_.height() + icon_padding_;
   for (auto item : items_) {
-    setChildGeometry(item, QRect(x, y, icon_size_.width(), icon_size_.height()));
-    x += icon_size_.width();
-    if (x + icon_size_.width() >= rect().width()) {
+    setChildGeometry(item, QRect(x, y, icon_width, icon_height));
+    x += icon_width;
+    if (x + icon_width >= rect().width()) {
       x = 0;
-      y += icon_size_.height();
+      y += icon_height;
     }
   }
 }
@@ -85,11 +134,25 @@ void ActionBar::setIconSize(QSize size) {
   doLayout();
 }
 
-void ActionBar::addAction(QAction* action, QString svg_path) {
-  ActionBarItemView* item = new ActionBarItemView(this, action, svg_path, theme_service_);
+void ActionBar::setIconPadding(int padding) {
+  icon_padding_ = padding;
+  for (auto item : items_) item->setPadding(padding);
+}
+
+void ActionBar::addAction(sptr<IAction> action) {
+  ActionBarItemView* item = new ActionBarItemView(this, action, theme_service_);
   item->setSize(icon_size_.width(), icon_size_.height());
+  item->setPadding(icon_padding_);
   items_.push_back(item);
   doLayout();
+}
+
+const QSize& ActionBar::icon_size() const {
+  return icon_size_;
+}
+
+QSize ActionBar::sizeHint() const {
+  return QSize(-1, icon_size_.height() + icon_padding_);
 }
 
 }

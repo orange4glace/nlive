@@ -23,15 +23,14 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   sequence_view_(nullptr) {
 
   action_context_ = sptr<ActionContext>(new ActionContext());
-  action_bar_ = new ActionBar(this, theme_service);
-  action_bar_->setIconSize(QSize(20, 20));
+  action_bar_ = std::make_unique<ActionBar>(this, theme_service);
+  action_bar_->addAction(std::make_shared<ToggleAction>(action_context_,
+    play_service));
 
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
     sig2_t<void (timeline_widget::TimelineWidget*)>::slot_type(
     &MonitorWidget::handleDidChangeCurrentTimelineWidget, this, _1).track(__sig_scope_));
-
-  action_bar_->addAction(new PlayPauseAction(action_bar_, action_context_, play_service), ":/browser/play-button.svg");
 }
 
 void MonitorWidget::handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget) {
@@ -60,7 +59,6 @@ void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* t
     // TODO
     delete sequence_view_;
   }
-  qDebug() << "DONE DELETE";
   sequence_view_ = nullptr;
   action_context_->setSequence(nullptr);
   action_context_->setSequencePlayable(nullptr);
@@ -74,7 +72,7 @@ void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* t
 }
 
 void MonitorWidget::resizeEvent(QResizeEvent* event) {
-  int ACTION_BAR_HEIGHT = 20;
+  int ACTION_BAR_HEIGHT = action_bar_->sizeHint().height();
   if (sequence_view_) {
     sequence_view_->setGeometry(0, 0, width(), height() - ACTION_BAR_HEIGHT);
   }

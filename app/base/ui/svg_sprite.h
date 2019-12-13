@@ -22,6 +22,7 @@ private:
 public:
   SvgSprite(QString path);
   SvgSprite(QString path, int width, int height, std::string color = "black");
+  SvgSprite(QString path, int width, int height, QColor color);
   ~SvgSprite();
 
   void resize(int width, int height);

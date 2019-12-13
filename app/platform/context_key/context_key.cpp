@@ -163,6 +163,10 @@ sptr<ContextKeyDefinedExpr> ContextKeyDefinedExpr::create(std::string key) {
   return sptr<ContextKeyDefinedExpr>(new ContextKeyDefinedExpr(key));
 }
 
+const std::string& ContextKeyDefinedExpr::key() const {
+  return key_;
+}
+
 ContextKeyExprType ContextKeyDefinedExpr::getType() const {
   return ContextKeyExprType::Defined;
 }
@@ -598,6 +602,34 @@ ContextKeyExprPtr ContextKeyOrExpr::negate() const {
 
 
 
+RawContextKey::RawContextKey(std::string key, sptr<IContextKeyValue> default_key) :
+  ContextKeyDefinedExpr(key), default_value_(default_key) {
+
+}
+
+sptr<RawContextKey> RawContextKey::create(std::string key, sptr<IContextKeyValue> default_value) {
+  return std::make_shared<RawContextKey>(key, default_value);
+}
+
+sptr<IContextKey> RawContextKey::bindTo(sptr<IContextKeyService> target) {
+  return target->createKey(key(), default_value_);
+}
+
+sptr<IContextKeyValue> RawContextKey::getValue(sptr<IContextKeyService> target) {
+  return target->getContextKeyValue(key());
+}
+
+ContextKeyExprPtr RawContextKey::not() {
+  return ContextKeyExpr::not(key());
+}
+
+ContextKeyExprPtr RawContextKey::equals(sptr<IContextKeyValue> value) {
+  return ContextKeyExpr::equals(key(), value);
+}
+
+ContextKeyExprPtr RawContextKey::notEquals(sptr<IContextKeyValue> value) {
+  return ContextKeyExpr::notEquals(key(), value);
+}
 
 
 }

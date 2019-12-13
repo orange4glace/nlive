@@ -131,10 +131,12 @@ class ContextKeyDefinedExpr : public ContextKeyExpr {
 private:
   std::string key_;
 
+protected:
   ContextKeyDefinedExpr(std::string key);
 
 public:
   static sptr<ContextKeyDefinedExpr> create(std::string key);
+  const std::string& key() const;
 
   DECLARE_CONTEXT_KEY_METHODS(ContextKeyDefinedExpr);
 
@@ -222,8 +224,6 @@ public:
 
 };
 
-#undef DECLARE_CONTEXT_KEY_METHODS
-
 class IContextKey {
 public:
   virtual void set(sptr<IContextKeyValue> value) = 0;
@@ -239,9 +239,31 @@ class IContextKeyService : public IService {
 DECLARE_SERVICE("nlive.platform.context_key.ContextKeyService");
 
 public:
-  sptr<IContextKey> createKey(std::string key, std::any default_value);
+  virtual sptr<IContextKey> createKey(std::string key, sptr<IContextKeyValue> default_value) = 0;
+  virtual bool contextMatchesRules(ContextKeyExprPtr rules) = 0;
+  virtual sptr<IContextKeyValue> getContextKeyValue(std::string key) = 0;
+
   sig2_t<void (IContextKeyChangeEvent*)> onDidChangeContext;
 };
+
+class RawContextKey : public ContextKeyDefinedExpr {
+
+private:
+  sptr<IContextKeyValue> default_value_;
+
+public:
+  RawContextKey(std::string key, sptr<IContextKeyValue> default_value);
+  static sptr<RawContextKey> create(std::string key, sptr<IContextKeyValue> default_value);
+
+  sptr<IContextKey> bindTo(sptr<IContextKeyService> target);
+  sptr<IContextKeyValue> getValue(sptr<IContextKeyService> target);
+  ContextKeyExprPtr not();
+  ContextKeyExprPtr equals(sptr<IContextKeyValue> value);
+  ContextKeyExprPtr notEquals(sptr<IContextKeyValue> value);
+
+};
+
+#undef DECLARE_CONTEXT_KEY_METHODS
 
 }
 

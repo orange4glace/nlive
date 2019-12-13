@@ -32,6 +32,7 @@
 #include "browser/services/audio_flaty/audio_flaty_service.h"
 #include "browser/menu_bar/qt/menu_bar_control.h"
 #include "browser/services/commands/command_service.h"
+#include "browser/services/context_key/context_key.h"
 #include "browser/services/sequences/sequences_service.h"
 
 #include "renderer/audio_renderer/test_renderer.h"
@@ -81,7 +82,8 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
 
   auto s_resource_service = new sptr<ResourceService>(resource_service);
   auto s_import_service = new sptr<ImportService>(import_service);
-  auto sequences_service = sptr<SequencesService>(new SequencesService());
+  auto context_key_service = sptr<IContextKeyService>(new ContextKeyService());
+  auto sequences_service = sptr<SequencesService>(new SequencesService(context_key_service));
 
   service_locator_->registerService(task_service);
   service_locator_->registerService(theme_service);
@@ -90,12 +92,13 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   service_locator_->registerService(audio_flaty_service);
   service_locator_->registerService(command_service);
   service_locator_->registerService(menu_service);
+  service_locator_->registerService(context_key_service);
   service_locator_->registerService(sequences_service);
   service_locator_->registerService(encoding_service);
 
   BrowserCommand::install();
 
-  auto menu_bar_control = new NativeMenuBarControl(this, menu_service, nullptr);
+  auto menu_bar_control = new NativeMenuBarControl(this, menu_service, context_key_service);
 
   // task_service->setParent(this);
   resource_service->setParent(this);

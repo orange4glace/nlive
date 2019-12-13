@@ -75,6 +75,11 @@ sptr<IContextKeyValue> AbstractContextKeyService::getContextKeyValue(std::string
   return getContextValuesContainer(my_context_id_)->getValue(key);
 }
 
+bool AbstractContextKeyService::contextMatchesRules(ContextKeyExprPtr rules) {
+  auto context = getContextValuesContainer(my_context_id_);
+  return rules->evaluate(context);
+}
+
 void AbstractContextKeyService::setContext(std::string key, sptr<IContextKeyValue> value) {
   auto my_context = getContextValuesContainer(my_context_id_);
   if (!my_context) return;

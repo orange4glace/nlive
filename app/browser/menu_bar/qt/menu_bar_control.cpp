@@ -75,7 +75,6 @@ void NativeMenuBarControl::updateActions(QWidget* menubar_or_menu, bool is_menub
       }
     }
   }
-  qDebug() << "[NativeMenuBarControl] Done";
 }
 
 }

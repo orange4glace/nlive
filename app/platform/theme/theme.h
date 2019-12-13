@@ -21,6 +21,7 @@ private:
   QColor buttonEnabled_;
   QColor buttonHighlighted_;
   QColor buttonDisabled_;
+  QColor buttonHovered_;
 
 
 public:
@@ -34,7 +35,8 @@ public:
     QColor surfaceContrastColor,
     QColor buttonEnabled,
     QColor buttonHighlighted,
-    QColor buttonDisabled) : 
+    QColor buttonDisabled,
+    QColor buttonHovered) : 
     primaryColor_(primaryColor),
     secondaryColor_(secondaryColor),
     surfaceColor_(surfaceColor),
@@ -44,7 +46,8 @@ public:
     surfaceContrastColor_(surfaceContrastColor),
     buttonEnabled_(buttonEnabled),
     buttonHighlighted_(buttonHighlighted),
-    buttonDisabled_(buttonDisabled) {
+    buttonDisabled_(buttonDisabled),
+    buttonHovered_(buttonHovered) {
   }
 
   Theme(Theme const& rhs) : 
@@ -57,7 +60,8 @@ public:
     surfaceContrastColor_(rhs.surfaceContrastColor_),
     buttonEnabled_(rhs.buttonEnabled_),
     buttonHighlighted_(rhs.buttonHighlighted_),
-    buttonDisabled_(rhs.buttonDisabled_) {
+    buttonDisabled_(rhs.buttonDisabled_),
+    buttonHovered_(rhs.buttonHovered_) {
   }
 
   inline const QColor& primaryColor() const { return primaryColor_; }
@@ -70,6 +74,7 @@ public:
   inline const QColor& buttonEnabled() const { return buttonEnabled_; }
   inline const QColor& buttonHighlighted() const { return buttonHighlighted_; }
   inline const QColor& buttonDisabled() const { return buttonDisabled_; }
+  inline const QColor& buttonHovered() const { return buttonHovered_; }
 
 };
 

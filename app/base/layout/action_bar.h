@@ -5,38 +5,44 @@
 #include <QEvent>
 #include <QPushButton>
 #include <QMouseEvent>
-#include "base/common/memory.h"
 #include <vector>
+#include "base/common/include.h"
+#include "base/common/sig.h"
 #include "base/layout/div.h"
 #include "base/ui/svg_sprite.h"
 #include "platform/theme/themeservice.h"
 
 namespace nlive {
 
-namespace {
-
-class ActionBarItemView : public QPushButton {
+class ActionBarItemView : public QPushButton, public Sig {
 
 private:
-  QAction* action_;
+  sptr<IThemeService> theme_service_;
+
+  sptr<IAction> action_;
+
   bool pressed_;
 
-  SvgSprite* normal_sprite_;
-  SvgSprite* highlighted_sprite_;
-  SvgSprite* disabled_sprite_;
+  int width_;
+  int height_;
+  int padding_;
+
+  bool hover_;
 
 protected:
   void paintEvent(QPaintEvent* e) override;
 
+  void enterEvent(QEvent* e) override;
+  void leaveEvent(QEvent* e) override;
+
 public:
-  ActionBarItemView(QWidget* parent, QAction* action, QString svg_path,
+  ActionBarItemView(QWidget* parent, sptr<IAction> action,
     sptr<IThemeService> theme_service);
 
   void setSize(int width, int height);
+  void setPadding(int padding);
 
 };
-
-}
 
 class ActionBar : public Div {
 
@@ -45,6 +51,7 @@ private:
 
   std::vector<ActionBarItemView*> items_;
   QSize icon_size_;
+  int icon_padding_;
 
   void doLayout();
 
@@ -55,7 +62,13 @@ public:
   ActionBar(QWidget* parent, sptr<IThemeService> theme_service);
 
   void setIconSize(QSize size);
-  void addAction(QAction* action, QString svg_path);
+  void setIconPadding(int padding);
+  void addAction(sptr<IAction> action);
+
+  const QSize& icon_size() const;
+  int icon_padding() const;
+
+  QSize sizeHint() const override;
 
 };
 
