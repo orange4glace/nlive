@@ -4,9 +4,9 @@
 #include <QDockWidget>
 #include "base/common/memory.h"
 #include <vector>
-
 #include "browser/widgets/widget.h"
 #include "base/common/sig.h"
+#include "base/layout/include.h"
 #include "browser/services/play/play_service.h"
 #include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/timeline/sequenceview.h"
@@ -37,7 +37,11 @@ private:
   SequenceView* sequence_view_;
   
   sptr<ActionContext> action_context_;
-  std::unique_ptr<ActionBar> action_bar_;
+  ActionBar* action_bar_;
+
+  FlexLayout* container_;
+  FillParentBox* sequence_view_container_;
+  FillParentBox* action_bar_container_;
 
   void handleDidChangeCurrentTimelineWidget(timeline_widget::TimelineWidget* timeline_widget);
   void handleDidChangeSequenceView(timeline_widget::SequenceView* sequence_view);

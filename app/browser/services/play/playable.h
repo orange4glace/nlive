@@ -14,10 +14,12 @@ private:
 
   inline void play() {
     playing_ = true;
+    onPlay();
   }
 
   inline void stop() {
     playing_ = false;
+    onStop();
   }
 
 protected:

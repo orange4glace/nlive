@@ -42,6 +42,7 @@ public:
   void playingCallback(int64_t elapsed_time) override;
   void playStopCallback() override;
 
+  sptr<Sequence> sequence();
   inline video_renderer::SequenceRenderer* sequence_video_renderer() { return sequence_video_renderer_; };
 
 };

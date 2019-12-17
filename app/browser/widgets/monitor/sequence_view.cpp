@@ -10,13 +10,13 @@ namespace monitor_widget {
 
 SequenceView::SequenceView(QWidget* parent, timeline_widget::SequenceView* timeline_widget_sequence_view,
   sptr<PlayService> play_service) :
-  QWidget(parent), play_service_(play_service), timeline_widget_sequence_view_(timeline_widget_sequence_view) {
+  Div(parent), play_service_(play_service), timeline_widget_sequence_view_(timeline_widget_sequence_view) {
   sequence_ = timeline_widget_sequence_view->sequence();
   renderer_view_ = new SequenceRendererView(this, timeline_widget_sequence_view, play_service_);
   renderer_view_->show();
 }
 
-void SequenceView::resizeEvent(QResizeEvent* e) {
+void SequenceView::contentRectUpdated() {
   int ww = width();
   int hh = height();
   int sw = sequence_->width();

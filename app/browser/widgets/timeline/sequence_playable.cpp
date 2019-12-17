@@ -64,4 +64,8 @@ void SequencePlayable::playStopCallback() {
   invalidated_ = true;
 }
 
+sptr<Sequence> SequencePlayable::sequence() {
+  return sequence_;
+}
+
 }

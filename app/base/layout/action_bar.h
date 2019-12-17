@@ -14,6 +14,10 @@
 
 namespace nlive {
 
+enum Alignment {
+  Auto, Left, Center, Right
+};
+
 class ActionBarItemView : public QPushButton, public Sig {
 
 private:
@@ -50,8 +54,10 @@ private:
   sptr<IThemeService> theme_service_;
 
   std::vector<ActionBarItemView*> items_;
+
   QSize icon_size_;
   int icon_padding_;
+  Alignment alignment_;
 
   void doLayout();
 
@@ -63,10 +69,12 @@ public:
 
   void setIconSize(QSize size);
   void setIconPadding(int padding);
+  void setAlignment(Alignment alignment);
   void addAction(sptr<IAction> action);
 
   const QSize& icon_size() const;
   int icon_padding() const;
+  Alignment alignment() const;
 
   QSize sizeHint() const override;
 

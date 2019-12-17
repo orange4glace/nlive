@@ -2,7 +2,7 @@
 
 #include <QDebug>
 #include <QPainter>
-
+#include "base/layout/fillparentbox.h";
 #include "browser/widgets/timeline/timeline_widget_service.h"
 #include "browser/widgets/timeline/timeline_widget.h"
 #include "browser/widgets/monitor/sequence_view.h"
@@ -22,10 +22,29 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   theme_service_(theme_service),
   sequence_view_(nullptr) {
 
+  container_ = new FlexLayout(this, FlexLayout::Row);
+
+  sequence_view_container_ = new FillParentBox(nullptr);
+  action_bar_container_ = new FillParentBox(nullptr);
+  action_bar_container_->setPadding(Div::ALL, 10);
+  action_bar_container_->setFlexBasis(10 * 2 + 20 + 8 * 2);
+  action_bar_container_->setFlexShrink(0)->setFlexGrow(0);
+
   action_context_ = sptr<ActionContext>(new ActionContext());
-  action_bar_ = std::make_unique<ActionBar>(this, theme_service);
+  action_bar_ = new ActionBar(nullptr, theme_service);
+  action_bar_->setIconSize(QSize(20, 20));
+  action_bar_->setIconPadding(5);
+  action_bar_->setAlignment(Alignment::Center);
+  action_bar_->addAction(std::make_shared<ForwardCurrnetTimeAction>(action_context_, false));
   action_bar_->addAction(std::make_shared<ToggleAction>(action_context_,
     play_service));
+  action_bar_->addAction(std::make_shared<ForwardCurrnetTimeAction>(action_context_, true));
+  action_bar_container_->setContent(action_bar_);
+
+  container_->addChild(sequence_view_container_);
+  container_->addChild(action_bar_container_);
+  sequence_view_container_->show();
+  action_bar_container_->show();
 
   handleDidChangeCurrentTimelineWidget(timeline_widget_service_->current_widget());
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
@@ -63,7 +82,8 @@ void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* t
   action_context_->setSequence(nullptr);
   action_context_->setSequencePlayable(nullptr);
   if (timeline_widget_sequence_view) {
-    sequence_view_ = new SequenceView(this, timeline_widget_sequence_view, play_service_);
+    sequence_view_ = new SequenceView(nullptr, timeline_widget_sequence_view, play_service_);
+    sequence_view_container_->setContent(sequence_view_);
     sequence_view_->show();
     sequence_view_->resize(size());
     action_context_->setSequence(timeline_widget_sequence_view->sequence());
@@ -72,11 +92,7 @@ void MonitorWidget::handleDidChangeSequenceView(timeline_widget::SequenceView* t
 }
 
 void MonitorWidget::resizeEvent(QResizeEvent* event) {
-  int ACTION_BAR_HEIGHT = action_bar_->sizeHint().height();
-  if (sequence_view_) {
-    sequence_view_->setGeometry(0, 0, width(), height() - ACTION_BAR_HEIGHT);
-  }
-  action_bar_->setGeometry(0, height() - ACTION_BAR_HEIGHT, width(), ACTION_BAR_HEIGHT);
+  container_->resize(size());
 }
 
 

@@ -46,13 +46,22 @@ public:
 };
 
 class MonitorWidgetAction : public Action {
+  
+private:
+  sptr<SequencePlayable> playable_;
+
+  void update();
 
 protected:
   sptr<ActionContext> context_;
 
+  virtual void onPlayableChange(sptr<SequencePlayable> playable);
+
 public:
   MonitorWidgetAction(std::string id, std::wstring label,
       sptr<ActionContext> context);
+
+  sptr<SequencePlayable> playable();
 
 };
 
@@ -60,10 +69,30 @@ class ToggleAction : public MonitorWidgetAction {
 
 private:
   sptr<PlayService> play_service_;
-  sptr<SequencePlayable> playable_;
+
+  sig2_conn_t playable_conn0_;
+  sig2_conn_t playable_conn1_;
+
+  void update();
+
+protected:
+  void onPlayableChange(sptr<SequencePlayable> playable) override;
 
 public:
   ToggleAction(sptr<ActionContext> context, sptr<PlayService> play_service);
+
+  void run(IActionRunParam* param) override;
+
+};
+
+class ForwardCurrnetTimeAction : public MonitorWidgetAction {
+
+private:
+  bool forward_;
+
+public:
+  ForwardCurrnetTimeAction(sptr<ActionContext> context,
+    bool forward);
 
   void run(IActionRunParam* param) override;
 

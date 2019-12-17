@@ -17,6 +17,7 @@ std::string Action::id() const {
 
 void Action::setLabel(std::wstring value) {
   label_ = value;
+  onDidChange();
 }
 
 std::wstring Action::label() const {
@@ -25,6 +26,7 @@ std::wstring Action::label() const {
 
 void Action::setTooltip(std::wstring value) {
   tooltip_ = value;
+  onDidChange();
 }
 
 std::wstring Action::tooltip() const {
@@ -33,6 +35,7 @@ std::wstring Action::tooltip() const {
 
 void Action::setIcon(std::wstring value) {
   icon_ = value;
+  onDidChange();
 }
 
 std::wstring Action::icon() const {
@@ -41,6 +44,7 @@ std::wstring Action::icon() const {
 
 void Action::setEnabled(bool value) {
   enabled_ = value;
+  onDidChange();
 }
 
 bool Action::enabled() const {
@@ -49,6 +53,7 @@ bool Action::enabled() const {
 
 void Action::setChecked(bool value) {
   checked_ = value;
+  onDidChange();
 }
 
 bool Action::checked() const {

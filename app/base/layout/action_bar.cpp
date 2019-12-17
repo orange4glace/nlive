@@ -15,7 +15,8 @@ enum ActionBarItemViewState { Unchecked, Checked, Pressed, };
 
 ActionBarItemView::ActionBarItemView(QWidget* parent, sptr<IAction> action,
   sptr<IThemeService> theme_service) :
-  QPushButton(parent), theme_service_(theme_service), action_(action) {
+  QPushButton(parent), theme_service_(theme_service), action_(action),
+  pressed_(false) {
   setMouseTracking(true);
   width_ = height_ = 0;
   hover_ = false;
@@ -28,6 +29,10 @@ ActionBarItemView::ActionBarItemView(QWidget* parent, sptr<IAction> action,
   }
   connect(this, &QPushButton::pressed, [this]() {
     pressed_ = true;
+    update();
+  });
+  connect(this, &QPushButton::released, [this]() {
+    pressed_ = false;
     update();
   });
   connect(this, &QPushButton::clicked, [this]() {
@@ -65,7 +70,14 @@ static int FA = -1;
 void ActionBarItemView::paintEvent(QPaintEvent* e) {
   QPainter p(this);
   auto theme = theme_service_->getTheme();
-  if (hover_) {
+  if (pressed_) {
+    QPainterPath path;
+    path.addRoundedRect(rect(), 3, 3);
+    QPen pen(theme.surfaceDarkColor());
+    p.setPen(pen);
+    p.fillPath(path, theme.surfaceDarkColor());
+  }
+  else if (hover_) {
     QPainterPath path;
     path.addRoundedRect(rect(), 3, 3);
     QPen pen(theme.surfaceDarkColor());
@@ -90,7 +102,10 @@ void ActionBarItemView::paintEvent(QPaintEvent* e) {
     // else {
     //   pen.setColor(theme.buttonEnabled());
     // }
-    if (hover_) {
+    if (pressed_) {
+      pen.setColor(theme.buttonHighlighted());
+    }
+    else if (hover_) {
       pen.setColor(theme.buttonHovered());
     }
     else {
@@ -106,7 +121,6 @@ ActionBar::ActionBar(QWidget* parent, sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), icon_size_(20, 20), icon_padding_(8) {
   if (FA == -1) {
     FA = QFontDatabase::addApplicationFont(":/browser/FontAwesome.otf");
-    qDebug() << "FA = " << FA;
   }
 }
 
@@ -116,15 +130,26 @@ void ActionBar::contentRectUpdated() {
 
 void ActionBar::doLayout() {
   int x = 0, y = 0;
-  int icon_width = icon_size_.width() + icon_padding_;
-  int icon_height = icon_size_.height() + icon_padding_;
+  auto r = content_rect();
+  int icon_width = icon_size_.width() + icon_padding_ * 2;
+  int icon_height = icon_size_.height() + icon_padding_ * 2;
+  int total_width = icon_width * items_.size();
+  if (alignment_ == Alignment::Auto || alignment_ == Alignment::Left) {
+    x = 0;
+  }
+  else if (alignment_ == Alignment::Center) {
+    x = r.width() / 2 - total_width / 2;
+  }
+  else if (alignment_ == Alignment::Right) {
+    x = r.width() - total_width;
+  }
   for (auto item : items_) {
     setChildGeometry(item, QRect(x, y, icon_width, icon_height));
     x += icon_width;
-    if (x + icon_width >= rect().width()) {
-      x = 0;
-      y += icon_height;
-    }
+    // if (x + icon_width >= rect().width()) {
+    //   x = 0;
+    //   y += icon_height;
+    // }
   }
 }
 
@@ -139,6 +164,11 @@ void ActionBar::setIconPadding(int padding) {
   for (auto item : items_) item->setPadding(padding);
 }
 
+void ActionBar::setAlignment(Alignment alignment) {
+  alignment_ = alignment;
+  doLayout();
+}
+
 void ActionBar::addAction(sptr<IAction> action) {
   ActionBarItemView* item = new ActionBarItemView(this, action, theme_service_);
   item->setSize(icon_size_.width(), icon_size_.height());
@@ -149,6 +179,10 @@ void ActionBar::addAction(sptr<IAction> action) {
 
 const QSize& ActionBar::icon_size() const {
   return icon_size_;
+}
+
+Alignment ActionBar::alignment() const {
+  return alignment_;
 }
 
 QSize ActionBar::sizeHint() const {
