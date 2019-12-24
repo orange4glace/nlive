@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include "base/common/memory.h"
 #include "base/common/sig.h"
+#include "base/layout/div.h"
 #include "model/effect/property.h"
 #include "platform/theme/themeservice.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"

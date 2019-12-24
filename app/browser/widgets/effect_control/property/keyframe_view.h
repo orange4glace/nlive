@@ -4,6 +4,7 @@
 #include "base/common/memory.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <QDebug>
 #include "base/layout/div.h"
 #include "platform/theme/themeservice.h"
 
@@ -31,14 +32,20 @@ protected:
     path.lineTo(r.right(), c.y());
     path.lineTo(c.x(), r.bottom());
     path.lineTo(r.left(), c.y());
-    p.fillPath(path, theme.surfaceBrightColor());
+    p.fillPath(path, !active_ ?
+        theme.surfaceBrightColor() : theme.primaryColor());
+  }
+
+  void mousePressEvent(QMouseEvent* e) override {
+    qDebug() << "MousePressEvent";
+    onMousePress();
   }
 
 public:
   KeyframeView(QWidget* parent, sptr<effect::Keyframe<T>> keyframe,
     sptr<IThemeService> theme_service) :
     Div(parent), theme_service_(theme_service),
-    keyframe_(keyframe) {
+    keyframe_(keyframe), active_(false) {
 
   }
   
@@ -48,6 +55,8 @@ public:
   }
 
   sptr<effect::Keyframe<T>> keyframe() { return keyframe_; }
+
+  sig2_t<void ()> onMousePress;
 
 };
 
