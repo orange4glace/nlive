@@ -20,7 +20,7 @@ Vector2PropertyView::Vector2PropertyView(
   QString label,
   SequenceScrollView* sequence_scroll_view,
   sptr<IThemeService> theme_service) :
-  PropertyView<effect::value::Vector2>(
+  PropertyViewTpl<effect::value::Vector2>(
     parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();
   x_input_box_ = new NumberInputBox(nullptr, 0);

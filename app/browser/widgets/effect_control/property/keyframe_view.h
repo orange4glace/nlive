@@ -12,13 +12,12 @@ namespace nlive {
 
 namespace effect_control {
 
-template <class T>
 class KeyframeView : public Div {
 
 private:
   sptr<IThemeService> theme_service_;
 
-  sptr<effect::Keyframe<T>> keyframe_;
+  sptr<effect::IKeyframe> keyframe_;
   bool active_;
 
 protected:
@@ -37,12 +36,11 @@ protected:
   }
 
   void mousePressEvent(QMouseEvent* e) override {
-    qDebug() << "MousePressEvent";
     onMousePress();
   }
 
 public:
-  KeyframeView(QWidget* parent, sptr<effect::Keyframe<T>> keyframe,
+  KeyframeView(QWidget* parent, sptr<effect::IKeyframe> keyframe,
     sptr<IThemeService> theme_service) :
     Div(parent), theme_service_(theme_service),
     keyframe_(keyframe), active_(false) {
@@ -54,7 +52,7 @@ public:
     update();
   }
 
-  sptr<effect::Keyframe<T>> keyframe() { return keyframe_; }
+  sptr<effect::IKeyframe> keyframe() { return keyframe_; }
 
   sig2_t<void ()> onMousePress;
 

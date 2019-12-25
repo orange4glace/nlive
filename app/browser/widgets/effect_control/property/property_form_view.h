@@ -33,14 +33,13 @@ namespace effect_control {
 class EffectControlLayout;
 class NumberInputBox;
 
-template <class T>
 class PropertyAnimateToggleButton : public QPushButton, public Sig {
 
 private:
   sptr<IThemeService> theme_service_;
 
   bool animated_;
-  sptr<T> property_;
+  sptr<effect::IProperty> property_;
 
   void handleClick() {
     property_->setAnimated(!property_->animated());
@@ -72,7 +71,7 @@ public:
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
-    sptr<T> property,
+    sptr<effect::IProperty> property,
     sptr<IThemeService> theme_service) :
   QPushButton(parent), theme_service_(theme_service), property_(property) {
     animated_ = property->animated();
@@ -82,24 +81,23 @@ public:
     });
     property->onDidChangeAnimated.connect(
       sig2_t<void (bool)>::slot_type
-      (&PropertyAnimateToggleButton<T>::handleDidChangeAnimated, this, _1).track(__sig_scope_));
+      (&PropertyAnimateToggleButton::handleDidChangeAnimated, this, _1).track(__sig_scope_));
   }
 
 };
 
-template <class T>
 class PropertyFormView : public QWidget, protected Sig {
 
 private:
   QString label_;
-  PropertyAnimateToggleButton<T>* animate_toggle_button_;
+  PropertyAnimateToggleButton* animate_toggle_button_;
   TextBox* label_view_;
   std::vector<QWidget*> input_views_;
 
   void handleDidChangeAnimatable(bool value) {
     if (value) {
       if (animate_toggle_button_ != nullptr) return;
-      animate_toggle_button_ = new PropertyAnimateToggleButton<T>(
+      animate_toggle_button_ = new PropertyAnimateToggleButton(
         this, layout_params_, sequence_, clip_, property_, theme_service_);
       animate_toggle_button_->show();
       doLayout();
@@ -140,7 +138,7 @@ protected:
   sptr<EffectControlLayout> layout_params_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
-  sptr<T> property_;
+  sptr<effect::IProperty> property_;
 
   bool event(QEvent* event) override {
     switch (event->type()) {
@@ -161,7 +159,7 @@ public:
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
-    sptr<T> property,
+    sptr<effect::IProperty> property,
     QString label,
     sptr<IThemeService> theme_service) :
     theme_service_(theme_service),
@@ -176,7 +174,7 @@ public:
     handleDidChangeAnimatable(property->animatable());
     property->onDidChangeAnimatable.connect(
       sig2_t<void (bool)>::slot_type
-      (&PropertyFormView<T>::handleDidChangeAnimatable, this, _1).track(__sig_scope_));
+      (&PropertyFormView::handleDidChangeAnimatable, this, _1).track(__sig_scope_));
     layout_params_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
       [this]() { doLayout(); }
     )));

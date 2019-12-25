@@ -33,6 +33,8 @@ class VideoStorageItem;
 // Effect
 namespace effect {
 
+class IProperty;
+class IKeyframe;
 class Effect;
 class TransformEffect;
 class GrayScaleEffect;

@@ -14,7 +14,7 @@ namespace nlive {
 
 namespace effect_control {
 
-class ScalarPropertyView : public PropertyView<effect::value::Scalar> {
+class ScalarPropertyView : public PropertyViewTpl<effect::value::Scalar> {
 
 private:
   NumberInputBox* input_box_;

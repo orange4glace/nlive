@@ -15,7 +15,7 @@ ScalarPropertyView::ScalarPropertyView(
   QString label,
   SequenceScrollView* sequence_scroll_view,
   sptr<IThemeService> theme_service) :
-  PropertyView<effect::value::Scalar>(
+  PropertyViewTpl<effect::value::Scalar>(
     parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();
   input_box_ = new NumberInputBox(nullptr, 0);

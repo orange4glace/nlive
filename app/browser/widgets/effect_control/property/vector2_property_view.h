@@ -17,7 +17,7 @@ namespace effect_control {
 class EffectControlLayout;
 class NumberInputBox;
 
-class Vector2PropertyView : public PropertyView<effect::value::Vector2> {
+class Vector2PropertyView : public PropertyViewTpl<effect::value::Vector2> {
 
 private:
   NumberInputBox* x_input_box_;

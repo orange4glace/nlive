@@ -20,7 +20,6 @@ namespace nlive {
 
 namespace effect_control {
 
-template <class T>
 class PropertyView : public QWidget, public Sig {
 
 private:
@@ -37,10 +36,10 @@ protected:
   sptr<EffectControlLayout> layout_params_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
-  sptr<effect::Property<T>> property_;
+  sptr<effect::IProperty> property_;
 
-  PropertyFormView<effect::Property<T>>* form_view_;
-  PropertyTimelineView<T>* timeline_view_;
+  PropertyFormView* form_view_;
+  PropertyTimelineView* timeline_view_;
 
   SequenceScrollView* sequence_scroll_view_;
 
@@ -52,7 +51,7 @@ public:
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
-    sptr<effect::Property<T>> property,
+    sptr<effect::IProperty> property,
     QString label,
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service) :
@@ -60,16 +59,16 @@ public:
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
   property_(property), sequence_scroll_view_(sequence_scroll_view) {
 
-    form_view_ = new PropertyFormView<effect::Property<T>>(
+    form_view_ = new PropertyFormView(
       this, layout_params, sequence, clip, property, label, theme_service);
 
-    timeline_view_ = new PropertyTimelineView<T>(
+    timeline_view_ = new PropertyTimelineView(
       this, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
 
     property->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
-      &PropertyView<T>::updateValue, this).track(__sig_scope_));
+      &PropertyView::updateValue, this).track(__sig_scope_));
     sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
-      &PropertyView<T>::updateValue, this)));
+      &PropertyView::updateValue, this)));
 
     layout_params_->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
       [this](){ doLayout(); }
@@ -93,16 +92,38 @@ public:
     return QSize(-1, 20);
   }
 
-  sptr<effect::Property<T>>* property() {
+  sptr<effect::IProperty> property() {
     return property_;
   }
 
-  PropertyFormView<effect::Property<T>>* form_view() {
+  PropertyFormView* form_view() {
     return form_view_;
   }
 
-  PropertyTimelineView<T>* timeline_view() {
+  PropertyTimelineView* timeline_view() {
      return timeline_view_;
+  }
+
+};
+
+template <class T>
+class PropertyViewTpl : public PropertyView {
+
+protected:
+  sptr<effect::Property<T>> property_;
+
+  PropertyViewTpl(
+    QWidget* parent,
+    sptr<EffectControlLayout> layout,
+    sptr<Sequence> sequence,
+    sptr<Clip> clip,
+    sptr<effect::Property<T>> property,
+    QString label,
+    SequenceScrollView* sequence_scroll_view,
+    sptr<IThemeService> theme_service) :
+    PropertyView(parent, layout, sequence, clip, property, label,
+      sequence_scroll_view, theme_service), property_(property) {
+
   }
 
 };

@@ -9,8 +9,15 @@ namespace nlive {
 
 namespace effect {
 
+class IKeyframe {
+
+public:
+  virtual int64_t time() const = 0;
+  
+};
+
 template <class T>
-class Keyframe {
+class Keyframe : public IKeyframe {
   
 private:
   Keyframe() = default;
@@ -37,7 +44,7 @@ public:
     value_ = value;
   }
 
-  int64_t time() const {
+  int64_t time() const override {
     return time_;
   }
 

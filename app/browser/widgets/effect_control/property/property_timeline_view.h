@@ -16,7 +16,6 @@ namespace nlive {
 
 namespace effect_control {
 
-template <class T>
 class PropertyTimelineView : public Div {
 
 private:
@@ -24,17 +23,17 @@ private:
   sptr<EffectControlLayout> layout_params_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
-  sptr<effect::Property<T>> property_;
+  sptr<effect::IProperty> property_;
   SequenceScrollView* sequence_scroll_view_;
-  std::map<sptr<effect::Keyframe<T>>, KeyframeView<T>*> keyframe_view_map_;
-  std::map<sptr<effect::Keyframe<T>>, std::vector<sig2_conn_t>> keyframe_view_conns_;
+  std::map<sptr<effect::IKeyframe>, KeyframeView*> keyframe_view_map_;
+  std::map<sptr<effect::IKeyframe>, std::vector<sig2_conn_t>> keyframe_view_conns_;
 
-  std::set<sptr<effect::Keyframe<T>>> focused_keyframes_;
+  std::set<sptr<effect::IKeyframe>> focused_keyframes_;
 
-  void doCreateKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
-    KeyframeView<T>* kf_view = new KeyframeView<T>(this, keyframe, theme_service_);
+  void doCreateKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 0);
     Q_ASSERT(keyframe_view_conns_.count(keyframe) == 0);
+    KeyframeView* kf_view = new KeyframeView(this, keyframe, theme_service_);
     keyframe_view_map_[keyframe] = kf_view;
     keyframe_view_conns_[keyframe] = {};
     std::vector<sig2_conn_t>& conns = keyframe_view_conns_[keyframe];
@@ -44,10 +43,10 @@ private:
     updateKeyframeViewPosition(kf_view);
   }
 
-  void doRemoveKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
+  void doRemoveKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 1);
     Q_ASSERT(keyframe_view_conns_.count(keyframe) == 1);
-    KeyframeView<T>* kf_view = keyframe_view_map_[keyframe];
+    KeyframeView* kf_view = keyframe_view_map_[keyframe];
     auto& conns = keyframe_view_conns_[keyframe];
     for (auto& conn : conns) {
       conn.disconnect();
@@ -56,14 +55,14 @@ private:
     keyframe_view_conns_.erase(keyframe);
   }
 
-  bool doFocusKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
+  bool doFocusKeyframeView(sptr<effect::IKeyframe> keyframe) {
     auto view = getKeyframeView(keyframe);
     view->setActive(true);
     auto ret = focused_keyframes_.insert(keyframe);
     return ret.second;
   }
 
-  bool doBlurKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
+  bool doBlurKeyframeView(sptr<effect::IKeyframe> keyframe) {
     auto view = getKeyframeView(keyframe);
     view->setActive(false);
     size_t ret = focused_keyframes_.erase(keyframe);
@@ -77,7 +76,7 @@ private:
     }
   }
 
-  void updateKeyframeViewPosition(KeyframeView<T>* keyframe_view) {
+  void updateKeyframeViewPosition(KeyframeView* keyframe_view) {
     auto keyframe = keyframe_view->keyframe();
     int st = sequence_scroll_view_->start_time();
     int ed = sequence_scroll_view_->end_time();
@@ -98,7 +97,7 @@ public:
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
-    sptr<effect::Property<T>> property,
+    sptr<effect::IProperty> property,
     SequenceScrollView* sequence_scroll_view,  
     sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
@@ -113,8 +112,8 @@ public:
       auto kf = kfp.second;
       doCreateKeyframeView(kf);
     }
-    property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (sptr<effect::Keyframe<T>>)>::slot_type(
-      [this](sptr<effect::Keyframe<T>> keyframe) {
+    property->onDidAddKeyframe.connect(SIG2_TRACK(sig2_t<void (sptr<effect::IKeyframe>)>::slot_type(
+      [this](sptr<effect::IKeyframe> keyframe) {
       doCreateKeyframeView(keyframe);
     })));
     clip->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
@@ -133,7 +132,7 @@ public:
     })));
   }
 
-  KeyframeView<T>* getKeyframeView(sptr<effect::Keyframe<T>> keyframe) {
+  KeyframeView* getKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 1);
     return keyframe_view_map_[keyframe];
   }

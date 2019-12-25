@@ -14,8 +14,31 @@ namespace nlive {
 
 namespace effect {
 
+class IProperty {
+
+public:
+  virtual void setAnimated(bool value) = 0;
+  virtual void setAnimatable(bool value) = 0;
+
+  virtual bool animatable() const = 0;
+  virtual bool animated() const = 0;
+
+  virtual std::map<int64_t, sptr<IKeyframe>> const& keyframes() = 0;
+
+  sig2_t<void (bool)> onDidChangeAnimated;
+  sig2_t<void (bool)> onDidChangeAnimatable;
+  sig2_t<void (void)> onDidUpdate;
+
+  sig2_t<void (sptr<IKeyframe>)> onDidAddKeyframe;
+  sig2_t<void (sptr<IKeyframe>)> onWillRemoveKeyframe;
+  sig2_t<void (sptr<IKeyframe>)> onDidChangeKeyframeTime;
+
+};
+
+#define CAST_KF(V) std::static_pointer_cast<Keyframe<T>>(V)
+
 template <class T>
-class Property {
+class Property : public IProperty {
 
 private:
   Property() = default;
@@ -24,7 +47,7 @@ private:
 
   std::string type_;
   T default_value_;
-  std::map<int64_t, sptr<Keyframe<T>>> keyframes_;
+  std::map<int64_t, sptr<IKeyframe>> keyframes_;
 
   bool animatable_;
   bool animated_;
@@ -48,7 +71,7 @@ private:
   void doUpdateKeyframe(int64_t time, const T& value) {
     auto match_it = keyframes_.find(time);
     Q_ASSERT(match_it != keyframes_.end());
-    sptr<Keyframe<T>> kf = match_it->second;
+    sptr<Keyframe<T>> kf = CAST_KF(match_it->second);
     kf->setValue(value);
     onDidUpdate();
   }
@@ -83,34 +106,35 @@ public:
     }
     auto next = keyframes_.lower_bound(time);
     if (next == keyframes_.end()) {
-      sptr<Keyframe<T>> kf = (*(keyframes_.rbegin())).second;
+      sptr<Keyframe<T>> kf = CAST_KF((*(keyframes_.rbegin())).second);
       return kf->value();
     }
     if (next == keyframes_.begin()) {
-      return (*next).second->value();
+      sptr<Keyframe<T>> kf = CAST_KF((*next).second);
+      return kf->value();
     }
     auto prev = std::prev(next);
-    auto& prev_value = (*prev).second->value();
+    auto& prev_value = CAST_KF((*prev).second)->value();
     auto prev_time = (*prev).first;
-    auto& next_value = (*next).second->value();
+    auto& next_value = CAST_KF((*next).second)->value();
     auto next_time = (*next).first;
     double t = (double)(time - prev_time) / (next_time - prev_time);
     return T::interpolate(prev_value, next_value, t);
   }
 
-  void setAnimated(bool value) {
+  void setAnimated(bool value) override {
     animated_ = value;
     onDidChangeAnimated(value);
     onDidUpdate();
   }
 
-  void setAnimatable(bool value) {
+  void setAnimatable(bool value) override {
     animatable_ = value;
     onDidChangeAnimatable(value);
     onDidUpdate();
   }
 
-  std::map<int64_t, sptr<Keyframe<T>>> const& keyframes() {
+  std::map<int64_t, sptr<IKeyframe>> const& keyframes() override {
     return keyframes_;
   }
 
@@ -122,22 +146,17 @@ public:
     return default_value_;
   }
 
-  bool animatable() const {
+  bool animatable() const override {
     return animatable_;
   }
 
-  bool animated() const {
+  bool animated() const override {
     return animated_;
   }
 
-  sig2_t<void (bool)> onDidChangeAnimated;
-  sig2_t<void (bool)> onDidChangeAnimatable;
-  sig2_t<void (void)> onDidUpdate;
-  sig2_t<void (sptr<Keyframe<T>>)> onDidAddKeyframe;
-  sig2_t<void (sptr<Keyframe<T>>)> onWillRemoveKeyframe;
-  sig2_t<void (sptr<Keyframe<T>>)> onDidChangeKeyframeTime;
-
 };
+
+#undef CAST_KF
 
 template <class T>
 struct Property<T>::access_ {
