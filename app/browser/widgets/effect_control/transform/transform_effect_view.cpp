@@ -14,6 +14,7 @@ namespace effect_control {
 
 TransformEffectView::TransformEffectView(
   QWidget* parent,
+  sptr<IKeyframesController> kfs_ctrl,
   sptr<EffectControlLayout> layout_params,
   sptr<Sequence> sequence,
   sptr<Clip> clip,
@@ -21,12 +22,13 @@ TransformEffectView::TransformEffectView(
   SequenceScrollView* sequence_scroll_view,
   sptr<IThemeService> theme_service,
   sptr<IMementoService> memento_service) :
-  EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service, memento_service) {
+  EffectView(parent, kfs_ctrl, layout_params, sequence, clip,
+      effect, sequence_scroll_view, theme_service, memento_service) {
   position_property_view_ =
-      new Vector2PropertyView(this, layout_params, sequence, clip, effect->position(),
+      new Vector2PropertyView(this, kfs_ctrl, layout_params, sequence, clip, effect->position(),
           QString("Position"), sequence_scroll_view,theme_service);
   scale_property_view_ =
-      new Vector2PropertyView(this, layout_params, sequence, clip, effect->scale(),
+      new Vector2PropertyView(this, kfs_ctrl, layout_params, sequence, clip, effect->scale(),
         QString("Scale"), sequence_scroll_view, theme_service);
   insertPropertyView(position_property_view_, 0);
   insertPropertyView(scale_property_view_, 1);
@@ -35,6 +37,7 @@ TransformEffectView::TransformEffectView(
 TransformEffectViewFactory::TransformEffectViewFactory() {}
 TransformEffectView* TransformEffectViewFactory::create(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -48,7 +51,7 @@ TransformEffectView* TransformEffectViewFactory::create(
     return nullptr;
   }
   sptr<effect::TransformEffect> transform_effect = std::static_pointer_cast<effect::TransformEffect>(effect);
-  return new TransformEffectView(parent, layout_params, sequence,
+  return new TransformEffectView(parent, keyframes_controller, layout_params, sequence,
     clip, transform_effect, sequence_scroll_view, theme_service, memento_service);
 }
 

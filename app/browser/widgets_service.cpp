@@ -1,10 +1,12 @@
 #include "browser/widgets_service.h"
 
+#include <QDebug>
 #include <assert.h>
 
 namespace nlive {
 
-WidgetsService::WidgetsService() {
+WidgetsService::WidgetsService() :
+  focused_widget_(nullptr) {
 
 }
 
@@ -23,6 +25,15 @@ Widget* WidgetsService::getWidget(std::string type) {
 std::set<Widget*> WidgetsService::getWidgets(std::string type) {
   if (!widgets_.count(type)) return std::set<Widget*>();
   return widgets_[type];
+}
+
+void WidgetsService::setFocusedWidget(Widget* widget) {
+  focused_widget_ = widget;
+  onDidChangeFocusedWidget(widget);
+}
+
+Widget* WidgetsService::focused_widget() {
+  return focused_widget_;
 }
 
 void WidgetsService::setMainWindow(MainWindow* main_window) {

@@ -8,6 +8,7 @@
 #include "platform/theme/themeservice.h"
 #include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 
 class QWidget;
 
@@ -33,6 +34,7 @@ public:
   EffectViewFactory();
   virtual EffectView* create(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,

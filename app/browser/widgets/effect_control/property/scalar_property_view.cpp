@@ -8,6 +8,7 @@ namespace effect_control {
 
 ScalarPropertyView::ScalarPropertyView(
   QWidget* parent,
+  sptr<IKeyframesController> keyframes_controller,
   sptr<EffectControlLayout> layout_params,
   sptr<Sequence> sequence,
   sptr<Clip> clip,
@@ -16,7 +17,7 @@ ScalarPropertyView::ScalarPropertyView(
   SequenceScrollView* sequence_scroll_view,
   sptr<IThemeService> theme_service) :
   PropertyViewTpl<effect::value::Scalar>(
-    parent, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
+    parent, keyframes_controller, layout_params, sequence, clip, property, label, sequence_scroll_view, theme_service) {
   auto form_view = this->form_view();
   input_box_ = new NumberInputBox(nullptr, 0);
   input_box_->setTextColor(theme_service->getTheme().surfaceTextColor());

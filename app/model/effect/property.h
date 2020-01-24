@@ -17,6 +17,11 @@ namespace effect {
 class IProperty {
 
 public:
+  virtual void addKeyframeAt(int64_t time, sptr<IKeyframe> keyframe) = 0;
+  virtual void removeKeyframe(sptr<IKeyframe> keyframe) = 0;
+  virtual bool removeKeyframeAt(int64_t time) = 0;
+  virtual sptr<IKeyframe> getKeyframeAt(int64_t time) = 0;
+
   virtual void setAnimated(bool value) = 0;
   virtual void setAnimatable(bool value) = 0;
 
@@ -94,6 +99,37 @@ public:
   void setDefaultValue(T value) {
     default_value = value;
     onDidUpdate();
+  }
+
+  void addKeyframeAt(int64_t time, sptr<IKeyframe> keyframe) override {
+    auto match_it = keyframes_.find(time);
+    Q_ASSERT(match_it == keyframes_.end());
+    auto kf = keyframe;
+    kf->setTime(time);
+    keyframes_.insert(make_pair(time, keyframe));
+    onDidUpdate();
+    onDidAddKeyframe(keyframe);
+  }
+
+  void removeKeyframe(sptr<IKeyframe> keyframe) override {
+    auto match_it = keyframes_.find(keyframe->time());
+    Q_ASSERT(match_it != keyframes_.end());
+    Q_ASSERT(match_it->second == keyframe);
+    onWillRemoveKeyframe(keyframe);
+    keyframes_.erase(match_it);
+  }
+
+  bool removeKeyframeAt(int64_t time) override {
+    auto it = keyframes_.find(time);
+    if (it == keyframes_.end()) return false;
+    onWillRemoveKeyframe(it->second);
+    keyframes_.erase(it);
+  }
+
+  sptr<IKeyframe> getKeyframeAt(int64_t time) override {
+    auto it = keyframes_.find(time);
+    if (it == keyframes_.end()) return nullptr;
+    return it->second;
   }
 
   void upsertKeyframe(int64_t time, T& value) {

@@ -125,23 +125,23 @@ MainWindow::MainWindow(sptr<IWidgetsService> widgets_service) :
   auto track2 = sequence->addTrack();
 
   project_widget::ProjectWidget::Initialize(service_locator_);
-  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service, service_locator_);
+  auto project_widget = new project_widget::ProjectWidget(nullptr, theme_service, *s_import_service, widgets_service, service_locator_);
   addDockWidget(Qt::BottomDockWidgetArea, project_widget);
   widgets_service->addWidget(project_widget);
   project_widget->setDirectory(project->root_storage_directory());
 
-  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service, projects_service, sequences_service);
+  auto timeline_widget = new timeline_widget::TimelineWidget(nullptr, theme_service, timeline_widget_service, *play_service, projects_service, sequences_service, widgets_service);
   // timeline_widget->setSequence(sequence);
   addDockWidget(Qt::BottomDockWidgetArea, timeline_widget);
   widgets_service->addWidget(timeline_widget);
 
   effect_control::EffectControlWidget::Initialize();
   auto effect_control_widget = new effect_control::EffectControlWidget(
-    this, theme_service, timeline_widget_service, *memento_service);
+    this, theme_service, timeline_widget_service, *memento_service, widgets_service);
   addDockWidget(Qt::TopDockWidgetArea, effect_control_widget);
   widgets_service->addWidget(effect_control_widget);
 
-  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service, *play_service);
+  auto monitor_widget = new monitor_widget::MonitorWidget(nullptr, timeline_widget_service, theme_service, *play_service, widgets_service);
   addDockWidget(Qt::TopDockWidgetArea, monitor_widget);
   widgets_service->addWidget(monitor_widget);
 }

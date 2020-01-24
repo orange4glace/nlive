@@ -9,6 +9,7 @@
 #include "model/sequence/clip.h"
 #include "model/effect/effect.h"
 #include "browser/widgets/effect_control/effect_control_layout.h"
+#include "browser/widgets/effect_control/property/property_view.h"
 
 namespace nlive {
 
@@ -57,6 +58,7 @@ QSize EffectViewHeader::sizeHint() const {
 
 EffectView::EffectView(
     QWidget* parent,
+    sptr<IKeyframesController> kfs_ctrl,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -64,9 +66,9 @@ EffectView::EffectView(
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service,
     sptr<IMementoService> memento_service) :
-  QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
-  opened_(true), layout_(layout), clip_(clip), effect_(effect), 
-  sequence_scroll_view_(sequence_scroll_view) {
+    QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
+    opened_(true), keyframes_controller_(kfs_ctrl), layout_(layout),
+    clip_(clip), effect_(effect),  sequence_scroll_view_(sequence_scroll_view) {
   header_ = new EffectViewHeader(this, layout, sequence, clip, effect, theme_service);
   header_->show();
 
@@ -81,7 +83,7 @@ EffectView::EffectView(
     })));
 }
 
-void EffectView::insertPropertyView(QWidget* view, int index) {
+void EffectView::insertPropertyView(PropertyView* view, int index) {
   Q_ASSERT(property_views_.size() >= index && index >= 0);
   property_views_.insert(property_views_.begin() + index, view);
   view->show();
@@ -146,6 +148,10 @@ QSize EffectView::sizeHint() const {
       height += property_view->sizeHint().height();
   }
   return QSize(width(), height);
+}
+
+const std::vector<PropertyView*>& EffectView::property_views() {
+  return property_views_;
 }
 
 }

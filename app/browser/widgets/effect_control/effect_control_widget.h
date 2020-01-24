@@ -2,12 +2,13 @@
 #define NLIVE_EFFECT_CONTROL_WIDGET_H_
 
 #include <QDockWidget>
-#include "base/common/memory.h"
 #include <QMetaObject>
-#include "browser/widgets/widget.h"
+#include "base/common/memory.h"
 #include "base/common/sig.h"
+#include "browser/widgets/widget.h"
 #include "browser/widgets/timeline/scrollview/sequencescrollview.h"
 #include "browser/services/memento/memento_service.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 
 namespace nlive {
 
@@ -28,9 +29,8 @@ class SequenceView;
 
 class EffectControlWidget : public Widget {
   Q_OBJECT
-  
-public:
-  static const std::string TYPE;
+
+  DECLARE_WIDGET("nlive.widget.EffectControl");
 
 private:
   sptr<IThemeService> theme_service_;
@@ -41,6 +41,7 @@ private:
   sig2_conn_t timeline_widget_connection_;
   effect_control::SequenceView* sequence_view_;
 
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<EffectControlLayout> layout_params_;
 
   void setTargetTimelineWidget(timeline_widget::TimelineWidget* widget);
@@ -56,9 +57,11 @@ public:
     QWidget* parent,
     sptr<IThemeService> theme_service,
     sptr<ITimelineWidgetService> timeline_widget_service,
-    sptr<IMementoService> memento_service);
-
-  inline std::string name() const override { return TYPE; }
+    sptr<IMementoService> memento_service,
+    sptr<IWidgetsService> widgets_service);
+  
+  effect_control::SequenceView* sequence_view();
+  sptr<IKeyframesController> keyframes_controller();
 
 };
 

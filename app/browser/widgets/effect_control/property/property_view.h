@@ -14,6 +14,7 @@
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/effect_control/property/property_form_view.h"
 #include "browser/widgets/effect_control/property/property_timeline_view.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
@@ -33,6 +34,7 @@ private:
 protected:
   sptr<IThemeService> theme_service_;
   
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<EffectControlLayout> layout_params_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
@@ -48,6 +50,7 @@ protected:
 public:
   PropertyView(
     QWidget* widget,
+    sptr<IKeyframesController> kfs_ctrl,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -55,7 +58,7 @@ public:
     QString label,
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service) :
-  QWidget(widget), theme_service_(theme_service),
+  QWidget(widget), theme_service_(theme_service), keyframes_controller_(kfs_ctrl),
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
   property_(property), sequence_scroll_view_(sequence_scroll_view) {
 
@@ -114,6 +117,7 @@ protected:
 
   PropertyViewTpl(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -121,7 +125,7 @@ protected:
     QString label,
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service) :
-    PropertyView(parent, layout, sequence, clip, property, label,
+    PropertyView(parent, keyframes_controller, layout, sequence, clip, property, label,
       sequence_scroll_view, theme_service), property_(property) {
 
   }

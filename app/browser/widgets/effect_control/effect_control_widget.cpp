@@ -12,12 +12,12 @@
 
 #include "browser/widgets/effect_control/transform/transform_effect_view.h"
 #include "browser/widgets/effect_control/effects/gray_scale_effect_view.h"
+#include "browser/widgets/effect_control/keyframes_controller_impl.h"
+#include "browser/widgets/effect_control/actions.h"
 
 namespace nlive {
 
 namespace effect_control {
-
-const std::string EffectControlWidget::TYPE = "widget.EffectControl";
 
 void EffectControlWidget::Initialize() {
   // Register pre-defined views
@@ -27,17 +27,20 @@ void EffectControlWidget::Initialize() {
   EffectViewFactoryRegistry::registerFactory(
     effect::GrayScaleEffect::TYPE,
     new GrayScaleEffectViewFactory());
+  registerEffectControlContributions();
 }
 
 EffectControlWidget::EffectControlWidget(
   QWidget* parent,
   sptr<IThemeService> theme_service,
   sptr<ITimelineWidgetService> timeline_widget_service,
-  sptr<IMementoService> memento_service) :
-  Widget(parent, theme_service), theme_service_(theme_service), memento_service_(memento_service),
+  sptr<IMementoService> memento_service,
+  sptr<IWidgetsService> widgets_service) :
+  Widget(parent, widgets_service, theme_service), theme_service_(theme_service), memento_service_(memento_service),
   timeline_widget_service_(timeline_widget_service),
   target_timeline_widget_(nullptr),
   sequence_view_(nullptr) {
+  keyframes_controller_ = sptr<IKeyframesController>(new KeyframesController(this));
   layout_params_ = sptr<EffectControlLayout>(new EffectControlLayout(0.5));
   timeline_widget_service_->onDidChangeCurrentWidget.connect(
     sig2_t<void (timeline_widget::TimelineWidget*)>::slot_type(
@@ -71,8 +74,8 @@ void EffectControlWidget::setTargetTimelineWidgetSequenceView(timeline_widget::S
     delete sequence_view_;
   if (sequence_view == nullptr) return;
   qDebug() << "[EffectControlWidget] Create a SequenceView\n";
-  sequence_view_ = new SequenceView(this, layout_params_, sequence_view,
-    theme_service_, memento_service_);
+  sequence_view_ = new SequenceView(this, keyframes_controller_, layout_params_,
+    sequence_view, theme_service_, memento_service_);
   sequence_view_->resize(size());
   sequence_view_->show();
   updateGeometry();
@@ -83,6 +86,14 @@ void EffectControlWidget::resizeEvent(QResizeEvent* event) {
   if (sequence_view_ != nullptr) {
     sequence_view_->setGeometry(0, 0, width(), height() - 15);
   }
+}
+
+effect_control::SequenceView* EffectControlWidget::sequence_view() {
+  return sequence_view_;
+}
+
+sptr<IKeyframesController> EffectControlWidget::keyframes_controller() {
+  return keyframes_controller_;
 }
 
 }

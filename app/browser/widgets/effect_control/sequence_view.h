@@ -10,6 +10,7 @@
 #include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 
 namespace nlive {
 
@@ -31,6 +32,7 @@ class SequenceView : public QWidget, public Sig {
 private:
   sptr<IThemeService> theme_service_;
   sptr<IMementoService> memento_service_;
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<EffectControlLayout> layout_params_;
   timeline_widget::SequenceView* timeline_widget_sequence_view_;
   SequenceScrollView* sequence_scroll_view_;
@@ -52,10 +54,13 @@ protected:
 public:
   SequenceView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     timeline_widget::SequenceView* timeline_widget_sequence_view,
     sptr<IThemeService> theme_service,
     sptr<IMementoService> memento_service);
+
+  ClipView* clip_view();
 
 };
 

@@ -116,6 +116,10 @@ public:
       [this](sptr<effect::IKeyframe> keyframe) {
       doCreateKeyframeView(keyframe);
     })));
+    property->onWillRemoveKeyframe.connect(SIG2_TRACK(sig2_t<void (sptr<effect::IKeyframe>)>::slot_type(
+      [this](sptr<effect::IKeyframe> keyframe) {
+      doRemoveKeyframeView(keyframe);
+    })));
     clip->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
       [this]() {
         updateAll();
@@ -135,6 +139,10 @@ public:
   KeyframeView* getKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 1);
     return keyframe_view_map_[keyframe];
+  }
+
+  const std::set<sptr<effect::IKeyframe>>& focused_keyframes() {
+    return focused_keyframes_;
   }
 
 };

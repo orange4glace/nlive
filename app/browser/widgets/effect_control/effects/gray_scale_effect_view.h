@@ -23,6 +23,7 @@ private:
 public:
   inline GrayScaleEffectView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -30,9 +31,10 @@ public:
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service,
     sptr<IMementoService> memento_service) :
-    EffectView(parent, layout_params, sequence, clip, effect, sequence_scroll_view, theme_service, memento_service) {
+    EffectView(parent, keyframes_controller, layout_params, sequence, clip,
+        effect, sequence_scroll_view, theme_service, memento_service) {
     scale_property_view_ =
-        new ScalarPropertyView(this, layout_params, sequence, clip, effect->scale(),
+        new ScalarPropertyView(this, keyframes_controller, layout_params, sequence, clip, effect->scale(),
           QString("Scale"), sequence_scroll_view, theme_service);
     scale_property_view_->input_box()->setSlidingStep(0.1);
     insertPropertyView(scale_property_view_, 0);
@@ -46,6 +48,7 @@ public:
   inline GrayScaleEffectViewFactory() {}
   inline GrayScaleEffectView* create(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -59,7 +62,7 @@ public:
     return nullptr;
   }
   sptr<effect::GrayScaleEffect> gray_scale_effect = std::static_pointer_cast<effect::GrayScaleEffect>(effect);
-  return new GrayScaleEffectView(parent, layout_params, sequence,
+  return new GrayScaleEffectView(parent, keyframes_controller, layout_params, sequence,
     clip, gray_scale_effect, sequence_scroll_view, theme_service, memento_service);
   }
 

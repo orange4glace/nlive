@@ -20,8 +20,6 @@ namespace nlive {
 
 namespace project_widget {
 
-const std::string ProjectWidget::TYPE = "widget.Project";
-
 void ProjectWidget::Initialize(sptr<ServiceLocator> service_locator) {
   // Register pre-defined views
   StorageItemViewFactoryRegistry::registerDefaultFactory(new NullStorageItemViewFactory(service_locator));
@@ -34,8 +32,9 @@ void ProjectWidget::Initialize(sptr<ServiceLocator> service_locator) {
 ProjectWidget::ProjectWidget(QWidget* parent,
     sptr<IThemeService> theme_service,
     sptr<IImportService> import_service,
+    sptr<IWidgetsService> widgets_service,
     sptr<ServiceLocator> service_locator) :
-  Widget(parent, theme_service), theme_service_(theme_service),
+  Widget(parent, widgets_service, theme_service), theme_service_(theme_service),
   import_service_(import_service), service_locator_(service_locator),
   directory_view_(nullptr) {
   setTitleBarWidget(new QWidget());
@@ -72,6 +71,10 @@ void ProjectWidget::setDirectory(sptr<StorageDirectory> directory) {
   outer_view_->addChild(directory_view);
   directory_view_ = directory_view;
   directory_path_view_->setText(directory_->getAbsoluteNamePath());
+}
+
+sptr<StorageDirectory> ProjectWidget::directory() {
+  return directory_;
 }
 
 void ProjectWidget::resizeEvent(QResizeEvent* event) {

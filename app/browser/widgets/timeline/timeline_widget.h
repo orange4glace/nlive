@@ -24,9 +24,8 @@ class SequenceView;
 
 class TimelineWidget : public Widget {
   Q_OBJECT;
-  
-public:
-  static const std::string TYPE;
+
+  DECLARE_WIDGET("nlive.widget.Timeline");
 
 private:
   sptr<IThemeService> theme_service_;
@@ -50,14 +49,13 @@ public:
     sptr<ITimelineWidgetService> timeline_widget_service,
     sptr<PlayService> play_service,
     sptr<IProjectsService> projects_service,
-    sptr<SequencesService> sequences_service);
+    sptr<SequencesService> sequences_service,
+    sptr<IWidgetsService> widgets_service);
 
   void setSequenceStorageItem(sptr<SequenceStorageItem> sequence_storage_item);
 
   sptr<SequenceStorageItem> sequence_storage_item();
   SequenceView* sequence_view();
-
-  inline std::string name() const override { return TYPE; }
   
   sig2_t<void (sptr<SequenceStorageItem>)> onDidChangeSequenceStorageItem;
 

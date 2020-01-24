@@ -29,6 +29,7 @@ protected:
 public:
   Vector2PropertyView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,

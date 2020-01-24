@@ -7,20 +7,14 @@
 #include <vector>
 #include <map>
 #include "base/common/sig.h"
+#include "model/include.h"
 #include "browser/services/memento/memento_service.h"
 #include "browser/widgets/timeline/sequenceview.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 
 namespace nlive {
 
 class IThemeService;
-class Sequence;
-class Clip;
-
-namespace effect {
-
-class Effect;
-
-}
 
 namespace effect_control {
 
@@ -33,6 +27,7 @@ class ClipView : public QWidget, public Sig {
 private:
   sptr<IThemeService> theme_service_;
   sptr<IMementoService> memento_service_;
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<EffectControlLayout> layout_params_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
@@ -51,6 +46,7 @@ protected:
 public:
   ClipView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -59,6 +55,8 @@ public:
     sptr<IMementoService> memento_service);
 
   QSize sizeHint() const;
+
+  const std::vector<std::pair<sptr<effect::Effect>, EffectView*>>& effect_views();
 
 };
 

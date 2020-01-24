@@ -7,18 +7,18 @@
 #include "base/common/sig.h"
 #include "base/layout/flex_layout.h"
 #include "base/ui/svg_button.h"
-#include "model/sequence/sequence.h"
-#include "model/sequence/clip.h"
-#include "model/effect/effect.h"
+#include "model/include.h"
 #include "platform/theme/themeservice.h"
-#include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/services/memento/memento_service.h"
-#include "browser/widgets/effect_control/effect_control_layout.h"
 #include "browser/widgets/timeline/sequenceview.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
+#include "browser/widgets/effect_control/effect_control_layout.h"
 
 namespace nlive {
 
 namespace effect_control {
+
+class PropertyView;
 
 namespace {
 
@@ -62,7 +62,7 @@ class EffectView : public QWidget, public Sig {
 
 private:
   EffectViewHeader* header_;
-  std::vector<QWidget*> property_views_;
+  std::vector<PropertyView*> property_views_;
   bool opened_;
 
   void doLayout();
@@ -71,6 +71,7 @@ private:
 protected:
   sptr<IThemeService> theme_service_;
   sptr<IMementoService> memento_service_;
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<EffectControlLayout> layout_;
   sptr<Clip> clip_;
   sptr<effect::Effect> effect_;
@@ -81,6 +82,7 @@ protected:
 public:
   EffectView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -89,11 +91,13 @@ public:
     sptr<IThemeService> theme_service,
     sptr<IMementoService> memento_service);
 
-  void insertPropertyView(QWidget* view, int index);
+  void insertPropertyView(PropertyView* view, int index);
 
   void setOpened(bool value);
 
   QSize sizeHint() const override;
+
+  const std::vector<PropertyView*>& property_views();
 
 };
 

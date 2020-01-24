@@ -41,6 +41,7 @@ private:
 public:
   TransformEffectView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -57,6 +58,7 @@ public:
   TransformEffectViewFactory();
   TransformEffectView* create(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,

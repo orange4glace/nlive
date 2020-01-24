@@ -12,6 +12,7 @@ class WidgetsService : public IWidgetsService {
 
 private:
   std::map<std::string, std::set<Widget*>> widgets_;
+  Widget* focused_widget_;
 
   MainWindow* main_window_;
 
@@ -21,6 +22,9 @@ public:
   void addWidget(Widget* widget) override;
   Widget* getWidget(std::string type) override;
   std::set<Widget*> getWidgets(std::string type) override;
+
+  void setFocusedWidget(Widget* widget) override;
+  Widget* focused_widget() override;
 
   void setMainWindow(MainWindow* main_window);
 

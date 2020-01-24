@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QMouseEvent>
 #include <vector>
+#include <optional>
 #include "base/common/include.h"
 #include "base/common/sig.h"
 #include "base/layout/div.h"
@@ -18,7 +19,40 @@ enum Alignment {
   Auto, Left, Center, Right
 };
 
-class ActionBarItemView : public QPushButton, public Sig {
+struct IActionViewItem {
+  virtual void render(QWidget* parent) = 0;
+};
+
+using IActionViewItemProvider =
+    std::function<IActionViewItem* (sptr<IAction> action)>;
+
+struct IActionBarOptions {
+  std::optional<IActionViewItemProvider> action_view_item_provider;
+};
+
+class BaseActionViewItem : public QPushButton, public IActionViewItem, public Sig {
+
+private:
+  int width_;
+  int height_;
+  int padding_;
+
+protected:
+  sptr<IThemeService> theme_service_;
+  sptr<IAction> action_;
+  
+public:
+  BaseActionViewItem(QWidget* parent, sptr<IAction> action,
+    sptr<IThemeService> theme_service);
+
+  void setSize(int width, int height);
+  void setPadding(int padding);
+  
+  void render(QWidget* parent) override;
+
+};
+
+class ActionBarViewItem : public BaseActionViewItem {
 
 private:
   sptr<IThemeService> theme_service_;
@@ -40,11 +74,8 @@ protected:
   void leaveEvent(QEvent* e) override;
 
 public:
-  ActionBarItemView(QWidget* parent, sptr<IAction> action,
+  ActionBarViewItem(QWidget* parent, sptr<IAction> action,
     sptr<IThemeService> theme_service);
-
-  void setSize(int width, int height);
-  void setPadding(int padding);
 
 };
 
@@ -52,8 +83,9 @@ class ActionBar : public Div {
 
 private:
   sptr<IThemeService> theme_service_;
+  IActionBarOptions options_;
 
-  std::vector<ActionBarItemView*> items_;
+  std::vector<ActionBarViewItem*> items_;
 
   QSize icon_size_;
   int icon_padding_;
@@ -65,7 +97,8 @@ protected:
   void contentRectUpdated() override;
 
 public:
-  ActionBar(QWidget* parent, sptr<IThemeService> theme_service);
+  ActionBar(QWidget* parent, std::optional<IActionBarOptions> options,
+      sptr<IThemeService> theme_service);
 
   void setIconSize(QSize size);
   void setIconPadding(int padding);

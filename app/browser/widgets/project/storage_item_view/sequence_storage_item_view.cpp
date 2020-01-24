@@ -20,8 +20,7 @@ SequenceStorageItemView::SequenceStorageItemView(QWidget* parent, sptr<SequenceS
 }
 
 void SequenceStorageItemView::onMouseDoubleClick() {
-  auto widget = widgets_service_->getWidget(timeline_widget::TimelineWidget::TYPE);
-  qDebug() << "DBCL" << widget;
+  auto widget = widgets_service_->getWidget(timeline_widget::TimelineWidget::ID);
   if (!widget) return;
   auto timeline_widget = static_cast<timeline_widget::TimelineWidget*>(widget);
   timeline_widget->setSequenceStorageItem(item_);

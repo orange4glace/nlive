@@ -6,6 +6,9 @@ set(NLIVE_SOURCES
   ${NLIVE_SOURCES}
   browser/widgets/effect_control/effect_control_widget.h
   browser/widgets/effect_control/effect_control_widget.cpp
+  browser/widgets/effect_control/keyframes_controller.h
+  browser/widgets/effect_control/keyframes_controller_impl.h
+  browser/widgets/effect_control/keyframes_controller_impl.cpp
   browser/widgets/effect_control/effect_control_layout.h
   browser/widgets/effect_control/sequence_view.h
   browser/widgets/effect_control/sequence_view.cpp
@@ -15,5 +18,7 @@ set(NLIVE_SOURCES
   browser/widgets/effect_control/effect_view.cpp
   browser/widgets/effect_control/effect_view_factory.h
   browser/widgets/effect_control/effect_view_factory.cpp
+  browser/widgets/effect_control/actions.h
+  browser/widgets/effect_control/actions.cpp
   PARENT_SCOPE
 )

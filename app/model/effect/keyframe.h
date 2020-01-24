@@ -12,8 +12,9 @@ namespace effect {
 class IKeyframe {
 
 public:
+  virtual void setTime(int64_t value) = 0;
   virtual int64_t time() const = 0;
-  
+
 };
 
 template <class T>
@@ -38,6 +39,9 @@ public:
   Keyframe(int64_t time, const T& value) :
     time_(time), value_(value) {
 
+  }
+  void setTime(int64_t value) override {
+    time_ = value;
   }
 
   void setValue(const T& value) {

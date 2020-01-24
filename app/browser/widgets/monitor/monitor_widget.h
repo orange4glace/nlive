@@ -24,9 +24,7 @@ namespace monitor_widget {
 class SequenceView;
 
 class MonitorWidget : public Widget {
-
-public:
-  static const std::string TYPE;
+  DECLARE_WIDGET("nlive.widget.Monitor");
 
 private:
   sptr<ITimelineWidgetService> timeline_widget_service_;
@@ -53,9 +51,8 @@ public:
   MonitorWidget(QWidget* parent,
     sptr<ITimelineWidgetService> timeline_widget_service,
     sptr<IThemeService> theme_service,
-    sptr<PlayService> play_service);
-    
-  inline std::string name() const override { return TYPE; }
+    sptr<PlayService> play_service,
+    sptr<IWidgetsService> widgets_service);
 
 };
 

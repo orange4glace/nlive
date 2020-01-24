@@ -18,6 +18,7 @@ namespace effect_control {
 
 ClipView::ClipView(
   QWidget* parent,
+  sptr<IKeyframesController> kfs_ctrl,
   sptr<EffectControlLayout> layout_params,
   sptr<Sequence> sequence,
   sptr<Clip> clip,
@@ -25,7 +26,7 @@ ClipView::ClipView(
   sptr<IThemeService> theme_service,
   sptr<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
-  layout_params_(layout_params),
+  keyframes_controller_(kfs_ctrl), layout_params_(layout_params),
   sequence_(sequence), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
 
   clip->onDidChangeTime.connect(SIG2_TRACK(sig2_t<void (int64_t, int64_t, int64_t)>::slot_type(
@@ -49,7 +50,7 @@ void ClipView::addEffectView(sptr<effect::Effect> effect, int index) {
     spdlog::get(LOGGER_DEFAULT)->warn("[EffectControl_ClipView] EffectViewFactory not found! expected factory type = {}", effect->type());
     return;
   }
-  auto view = factory->create(this, layout_params_, sequence_,
+  auto view = factory->create(this, keyframes_controller_, layout_params_, sequence_,
     clip_, effect, sequence_scroll_view_, theme_service_, memento_service_);
   if (!view) {
     spdlog::get(LOGGER_DEFAULT)->warn("[EffectControl_ClipView] View is null! item type = {}", effect->type());
@@ -87,6 +88,11 @@ QSize ClipView::sizeHint() const {
   for (auto effect_view : effect_views_)
     height += effect_view.second->sizeHint().height();
   return QSize(width(), height);
+}
+
+const std::vector<std::pair<sptr<effect::Effect>, EffectView*>>& 
+    ClipView::effect_views() {
+  return effect_views_;
 }
 
 }

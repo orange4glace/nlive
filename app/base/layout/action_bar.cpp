@@ -10,13 +10,33 @@
 namespace nlive {
 
 namespace {
-enum ActionBarItemViewState { Unchecked, Checked, Pressed, };
+enum ActionBarViewItemState { Unchecked, Checked, Pressed, };
 }
 
-ActionBarItemView::ActionBarItemView(QWidget* parent, sptr<IAction> action,
+BaseActionViewItem::BaseActionViewItem(QWidget* parent, sptr<IAction> action,
+    sptr<IThemeService> theme_service) :
+    QPushButton(parent), theme_service_(theme_service), action_(action) {
+
+}
+
+void BaseActionViewItem::setSize(int width, int height) {
+  width_ = width;
+  height_ = height;
+}
+
+void BaseActionViewItem::setPadding(int padding) {
+  padding_ = padding;
+  update();
+}
+
+void BaseActionViewItem::render(QWidget* parent) {
+  setParent(parent);
+}
+
+ActionBarViewItem::ActionBarViewItem(QWidget* parent, sptr<IAction> action,
   sptr<IThemeService> theme_service) :
-  QPushButton(parent), theme_service_(theme_service), action_(action),
-  pressed_(false) {
+    BaseActionViewItem(parent, action, theme_service), pressed_(false),
+    action_(action), theme_service_(theme_service) {
   setMouseTracking(true);
   width_ = height_ = 0;
   hover_ = false;
@@ -42,24 +62,14 @@ ActionBarItemView::ActionBarItemView(QWidget* parent, sptr<IAction> action,
   });
 }
 
-void ActionBarItemView::setSize(int width, int height) {
-  width_ = width;
-  height_ = height;
-}
-
-void ActionBarItemView::setPadding(int padding) {
-  padding_ = padding;
-  update();
-}
-
-void ActionBarItemView::enterEvent(QEvent* e) {
+void ActionBarViewItem::enterEvent(QEvent* e) {
   if (!hover_) {
     hover_ = true;
     update();
   }
 }
 
-void ActionBarItemView::leaveEvent(QEvent* e) {
+void ActionBarViewItem::leaveEvent(QEvent* e) {
   if (hover_) {
     hover_ = false;
     update();
@@ -67,7 +77,7 @@ void ActionBarItemView::leaveEvent(QEvent* e) {
 }
 
 static int FA = -1;
-void ActionBarItemView::paintEvent(QPaintEvent* e) {
+void ActionBarViewItem::paintEvent(QPaintEvent* e) {
   QPainter p(this);
   auto theme = theme_service_->getTheme();
   if (pressed_) {
@@ -89,7 +99,7 @@ void ActionBarItemView::paintEvent(QPaintEvent* e) {
   QFont font;
   font.setPixelSize(width_);
   font.setFamily("Font Awesome 5 Free Solid");
-  ActionBarItemViewState state;
+  ActionBarViewItemState state;
   if (!action_->enabled()) {
     pen.setColor(theme.buttonDisabled());
   }
@@ -117,11 +127,18 @@ void ActionBarItemView::paintEvent(QPaintEvent* e) {
   p.drawText(rect(), Qt::AlignCenter, QString::fromStdWString(action_->icon()));
 }
 
-ActionBar::ActionBar(QWidget* parent, sptr<IThemeService> theme_service) :
+static IActionBarOptions default_options = {
+  {}
+};
+
+ActionBar::ActionBar(QWidget* parent, std::optional<IActionBarOptions> options,
+    sptr<IThemeService> theme_service) :
   Div(parent), theme_service_(theme_service), icon_size_(20, 20), icon_padding_(8) {
   if (FA == -1) {
     FA = QFontDatabase::addApplicationFont(":/browser/FontAwesome.otf");
   }
+  if (!options) options_ = default_options;
+  else options_ = options.value();
 }
 
 void ActionBar::contentRectUpdated() {
@@ -170,7 +187,14 @@ void ActionBar::setAlignment(Alignment alignment) {
 }
 
 void ActionBar::addAction(sptr<IAction> action) {
-  ActionBarItemView* item = new ActionBarItemView(this, action, theme_service_);
+  ActionBarViewItem* item = nullptr;
+  if (options_.action_view_item_provider) {
+
+  }
+  else {
+    item = new ActionBarViewItem(this, action, theme_service_);
+  }
+  if (!item) return;
   item->setSize(icon_size_.width(), icon_size_.height());
   item->setPadding(icon_padding_);
   items_.push_back(item);

@@ -15,12 +15,13 @@ namespace effect_control {
 
 SequenceView::SequenceView(
   QWidget* parent,
+  sptr<IKeyframesController> kfs_ctrl,
   sptr<EffectControlLayout> layout,
   timeline_widget::SequenceView* timeline_widget_sequence_view,
   sptr<IThemeService> theme_service,
   sptr<IMementoService> memento_service) :
   QWidget(parent), theme_service_(theme_service), memento_service_(memento_service),
-  layout_params_(layout),
+  keyframes_controller_(kfs_ctrl), layout_params_(layout),
   timeline_widget_sequence_view_(timeline_widget_sequence_view),
   clip_(nullptr), clip_view_(nullptr) {
   sequence_scroll_view_ = new SequenceScrollView(this, nullptr, timeline_widget_sequence_view->sequence(), theme_service_);
@@ -59,8 +60,8 @@ void SequenceView::createClipView(sptr<Clip> clip) {
   clip_ = clip;
   qDebug() << "[SequenceView] createClipView " << clip.get() << ", # of effects = " << clip->effects().size() << "\n";
   auto sequence = timeline_widget_sequence_view_->sequence();
-  clip_view_ = new ClipView(this, layout_params_, sequence, clip, sequence_scroll_view_,
-    theme_service_, memento_service_);
+  clip_view_ = new ClipView(this, keyframes_controller_, layout_params_,
+    sequence, clip, sequence_scroll_view_, theme_service_, memento_service_);
   clip_view_->setGeometry(0, 30, width(), clip_view_->sizeHint().height());
   clip_view_->show();
   clip_view_->raise();
@@ -94,6 +95,10 @@ void SequenceView::resizeEvent(QResizeEvent* event) {
     // form_background_->setGeometry(0, 0, form_width, height());
     // timeline_background_->setGeometry(form_width, 0, width() - form_width, height());
   }
+}
+
+ClipView* SequenceView::clip_view() {
+  return clip_view_;
 }
 
 }

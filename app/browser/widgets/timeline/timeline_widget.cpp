@@ -17,16 +17,15 @@ namespace nlive {
 
 namespace timeline_widget {
 
-const std::string TimelineWidget::TYPE = "widget.Timeline";
-
 TimelineWidget::TimelineWidget(
   QWidget* parent,
   sptr<IThemeService> theme_service,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<PlayService> play_service,
   sptr<IProjectsService> projects_service,
-  sptr<SequencesService> sequences_service) :
-  Widget(parent, theme_service),
+  sptr<SequencesService> sequences_service,
+  sptr<IWidgetsService> widgets_service) :
+  Widget(parent, widgets_service, theme_service),
   theme_service_(theme_service), play_service_(play_service),
   timeline_widget_service_(timeline_widget_service), projects_service_(projects_service),
   sequences_service_(sequences_service),

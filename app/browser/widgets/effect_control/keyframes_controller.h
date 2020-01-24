@@ -1,14 +1,17 @@
 #ifndef NLIVE_BROWSER_EFFECT_CONTROL_KEYFRAMES_CONTROLLER_H_
 #define NLIVE_BROWSER_EFFECT_CONTROL_KEYFRAMES_CONTROLLER_H_
 
+#include <stdint.h>
+
 namespace nlive {
 
 namespace effect_control {
 
-class KeyframesController {
+class IKeyframesController {
 
 public:
-  void 
+  virtual void translate(int64_t time) = 0;
+  virtual void remove() = 0;
 
 };
 

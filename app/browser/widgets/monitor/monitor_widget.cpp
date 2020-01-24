@@ -11,13 +11,12 @@ namespace nlive {
 
 namespace monitor_widget {
 
-const std::string MonitorWidget::TYPE = "widget.Monitor";
-
 MonitorWidget::MonitorWidget(QWidget* parent,
   sptr<ITimelineWidgetService> timeline_widget_service,
   sptr<IThemeService> theme_service,
-  sptr<PlayService> play_service) :
-  Widget(parent, theme_service),
+  sptr<PlayService> play_service,
+  sptr<IWidgetsService> widgets_service) :
+  Widget(parent, widgets_service, theme_service),
   timeline_widget_service_(timeline_widget_service), play_service_(play_service),
   theme_service_(theme_service),
   sequence_view_(nullptr) {
@@ -31,7 +30,7 @@ MonitorWidget::MonitorWidget(QWidget* parent,
   action_bar_container_->setFlexShrink(0)->setFlexGrow(0);
 
   action_context_ = sptr<ActionContext>(new ActionContext());
-  action_bar_ = new ActionBar(nullptr, theme_service);
+  action_bar_ = new ActionBar(nullptr, {}, theme_service);
   action_bar_->setIconSize(QSize(20, 20));
   action_bar_->setIconPadding(5);
   action_bar_->setAlignment(Alignment::Center);

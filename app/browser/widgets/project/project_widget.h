@@ -20,9 +20,7 @@ namespace project_widget {
 class DirectoryView;
 
 class ProjectWidget : public Widget {
-  
-public:
-  static const std::string TYPE;
+  DECLARE_WIDGET("nlive.widget.Project");
 
 private:
   sptr<IThemeService> theme_service_;
@@ -45,11 +43,11 @@ public:
   ProjectWidget(QWidget* parent,
     sptr<IThemeService> theme_service,
     sptr<IImportService> import_service,
+    sptr<IWidgetsService> widgets_service,
     sptr<ServiceLocator> service_locator);
 
   void setDirectory(sptr<StorageDirectory> directory);
-
-  inline std::string name() const override { return TYPE; }
+  sptr<StorageDirectory> directory();
 
 };
 
