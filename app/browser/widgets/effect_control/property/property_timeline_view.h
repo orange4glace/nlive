@@ -5,11 +5,12 @@
 #include <QPainter>
 #include <map>
 #include "base/layout/div.h"
-#include "browser/widgets/effect_control/effect_control_layout.h"
-#include "browser/widgets/effect_control/property/keyframe_view.h"
 #include "model/sequence/sequence.h"
 #include "model/sequence/clip.h"
 #include "model/effect/property.h"
+#include "browser/widgets/effect_control/effect_control_layout.h"
+#include "browser/widgets/effect_control/property/keyframe_view.h"
+#include "browser/widgets/effect_control/keyframes_controller.h"
 #include "browser/widgets/timeline/sequenceview.h"
 
 namespace nlive {
@@ -21,6 +22,7 @@ class PropertyTimelineView : public Div {
 private:
   sptr<IThemeService> theme_service_;
   sptr<EffectControlLayout> layout_params_;
+  sptr<IKeyframesController> keyframes_controller_;
   sptr<Sequence> sequence_;
   sptr<Clip> clip_;
   sptr<effect::IProperty> property_;
@@ -33,7 +35,8 @@ private:
   void doCreateKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 0);
     Q_ASSERT(keyframe_view_conns_.count(keyframe) == 0);
-    KeyframeView* kf_view = new KeyframeView(this, keyframe, theme_service_);
+    KeyframeView* kf_view = new KeyframeView(this, keyframes_controller_, keyframe,
+        sequence_scroll_view_, theme_service_);
     keyframe_view_map_[keyframe] = kf_view;
     keyframe_view_conns_[keyframe] = {};
     std::vector<sig2_conn_t>& conns = keyframe_view_conns_[keyframe];
@@ -53,6 +56,8 @@ private:
     }
     keyframe_view_map_.erase(keyframe);
     keyframe_view_conns_.erase(keyframe);
+    focused_keyframes_.erase(keyframe);
+    delete kf_view;
   }
 
   bool doFocusKeyframeView(sptr<effect::IKeyframe> keyframe) {
@@ -94,14 +99,15 @@ private:
 public:
   PropertyTimelineView(
     QWidget* parent,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
     sptr<effect::IProperty> property,
     SequenceScrollView* sequence_scroll_view,  
     sptr<IThemeService> theme_service) :
-  Div(parent), theme_service_(theme_service), layout_params_(layout_params), sequence_(sequence),
-  property_(property), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
+  Div(parent), theme_service_(theme_service), keyframes_controller_(keyframes_controller),
+  layout_params_(layout_params), sequence_(sequence), property_(property), clip_(clip), sequence_scroll_view_(sequence_scroll_view) {
   
     property->onDidUpdate.connect(
       sig2_t<void ()>::slot_type([this]() {
@@ -119,6 +125,11 @@ public:
     property->onWillRemoveKeyframe.connect(SIG2_TRACK(sig2_t<void (sptr<effect::IKeyframe>)>::slot_type(
       [this](sptr<effect::IKeyframe> keyframe) {
       doRemoveKeyframeView(keyframe);
+    })));
+    property->onDidChangeKeyframeTime.connect(SIG2_TRACK(sig2_t<void (sptr<effect::IKeyframe>, int)>::slot_type(
+      [this](sptr<effect::IKeyframe> keyframe, int old_time) {
+      auto kf_view = getKeyframeView(keyframe);
+      updateKeyframeViewPosition(kf_view);
     })));
     clip->onDidUpdate.connect(SIG2_TRACK(sig2_t<void()>::slot_type(
       [this]() {
@@ -139,6 +150,10 @@ public:
   KeyframeView* getKeyframeView(sptr<effect::IKeyframe> keyframe) {
     Q_ASSERT(keyframe_view_map_.count(keyframe) == 1);
     return keyframe_view_map_[keyframe];
+  }
+
+  bool focusKeyframeView(sptr<effect::IKeyframe> keyframe) {
+    return doFocusKeyframeView(keyframe);
   }
 
   const std::set<sptr<effect::IKeyframe>>& focused_keyframes() {

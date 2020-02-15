@@ -20,6 +20,7 @@ public:
   virtual void addKeyframeAt(int64_t time, sptr<IKeyframe> keyframe) = 0;
   virtual void removeKeyframe(sptr<IKeyframe> keyframe) = 0;
   virtual bool removeKeyframeAt(int64_t time) = 0;
+  virtual bool moveKeyframeTo(sptr<IKeyframe> keyframe, int64_t time) = 0;
   virtual sptr<IKeyframe> getKeyframeAt(int64_t time) = 0;
 
   virtual void setAnimated(bool value) = 0;
@@ -36,7 +37,8 @@ public:
 
   sig2_t<void (sptr<IKeyframe>)> onDidAddKeyframe;
   sig2_t<void (sptr<IKeyframe>)> onWillRemoveKeyframe;
-  sig2_t<void (sptr<IKeyframe>)> onDidChangeKeyframeTime;
+  sig2_t<void (sptr<IKeyframe>, int old_time)> onDidChangeKeyframeTime;
+  sig2_t<void (sptr<IKeyframe>)> onDidInvalidate;
 
 };
 
@@ -124,6 +126,21 @@ public:
     if (it == keyframes_.end()) return false;
     onWillRemoveKeyframe(it->second);
     keyframes_.erase(it);
+  }
+
+  bool moveKeyframeTo(sptr<IKeyframe> keyframe, int64_t time) override {
+    Q_ASSERT(
+      keyframes_.count(keyframe->time()) &&
+      keyframes_[keyframe->time()] == keyframe);
+    auto it = keyframes_.find(time);
+    if (it != keyframes_.end()) return false;
+    int old_time = time;
+    keyframes_.erase(keyframe->time());
+    keyframe->setTime(time);
+    keyframes_.insert(make_pair(time, keyframe));
+    onDidChangeKeyframeTime(keyframe, old_time);
+    onDidInvalidate(keyframe);
+    return true;
   }
 
   sptr<IKeyframe> getKeyframeAt(int64_t time) override {

@@ -50,7 +50,7 @@ protected:
 public:
   PropertyView(
     QWidget* widget,
-    sptr<IKeyframesController> kfs_ctrl,
+    sptr<IKeyframesController> keyframes_controller,
     sptr<EffectControlLayout> layout_params,
     sptr<Sequence> sequence,
     sptr<Clip> clip,
@@ -58,7 +58,7 @@ public:
     QString label,
     SequenceScrollView* sequence_scroll_view,
     sptr<IThemeService> theme_service) :
-  QWidget(widget), theme_service_(theme_service), keyframes_controller_(kfs_ctrl),
+  QWidget(widget), theme_service_(theme_service), keyframes_controller_(keyframes_controller),
   layout_params_(layout_params), sequence_(sequence), clip_(clip),
   property_(property), sequence_scroll_view_(sequence_scroll_view) {
 
@@ -66,10 +66,14 @@ public:
       this, layout_params, sequence, clip, property, label, theme_service);
 
     timeline_view_ = new PropertyTimelineView(
-      this, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
+      this, keyframes_controller, layout_params, sequence, clip, property, sequence_scroll_view, theme_service);
 
     property->onDidUpdate.connect(sig2_t<void (void)>::slot_type(
       &PropertyView::updateValue, this).track(__sig_scope_));
+    property->onDidInvalidate.connect(sig2_t<void (sptr<effect::IKeyframe>)>::slot_type(
+      [this](sptr<effect::IKeyframe>) {
+        updateValue();
+      }).track(__sig_scope_));
     sequence_scroll_view->onDidUpdate.connect(SIG2_TRACK(sig2_t<void ()>::slot_type(
       &PropertyView::updateValue, this)));
 

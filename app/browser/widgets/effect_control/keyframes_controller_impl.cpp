@@ -36,6 +36,18 @@ void KeyframesController::translate(int64_t time) {
     }
   }
   if (!valid) return;
+  for (auto& effect_view : effect_views) {
+    auto& property_views = effect_view.second->property_views();
+    for (auto& property_view : property_views) {
+      auto property = property_view->property();
+      auto timeline_view = property_view->timeline_view();
+      auto& focused_kfs = timeline_view->focused_keyframes();
+      for (auto& kf : focused_kfs) {
+        int64_t dst_time = kf->time() + time;
+        property->moveKeyframeTo(kf, dst_time);
+      }
+    }
+  }
 }
 
 void KeyframesController::remove() {

@@ -37,9 +37,13 @@ public:
   template <class T>
   void connectProperty(sptr<T> property) {
     property->onDidUpdate.connect(
-      sig2_t<void (void)>::slot_type([this] {
+      sig2_t<void (void)>::slot_type([this]() {
       onDidUpdate();
-    }));
+    }).track(__sig_scope_));
+    property->onDidInvalidate.connect(
+      sig2_t<void (sptr<effect::IKeyframe>)>::slot_type([this](sptr<effect::IKeyframe>) {
+      onDidUpdate();
+    }).track(__sig_scope_));
   }
 
   sig2_t<void (void)> onDidUpdate;
