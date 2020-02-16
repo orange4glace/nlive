@@ -8,5 +8,7 @@ set(NLIVE_SOURCES
   browser/widgets/monitor/sequence_view.cpp
   browser/widgets/monitor/sequence_renderer_view.h
   browser/widgets/monitor/sequence_renderer_view.cpp
+  browser/widgets/monitor/gizmo_view.h
+  browser/widgets/monitor/gizmo_view.cpp
   PARENT_SCOPE
 )
